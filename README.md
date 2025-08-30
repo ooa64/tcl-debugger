@@ -23,9 +23,9 @@ To run: run the file `main.tcl` with `wish`.
 
 *Note: the starkit functionality for 8.6 probably needs fixing.*
 
-The Help menu item on the Debugger's menu bar has an option to open the TclPro
-user's guide, which will appear as a PDF file in the user's default browser.
-The information in the chapter on the Debugger is still valid.
+For usage instructions, see the Chapter 4 of the
+[TclPro User's Guide](https://www.tcl-lang.org/software/tclpro/doc/TclProUsersGuide14.pdf)
+which is also accessible from the Help menu item on the Debugger's menu bar.
 
 Below is the relevant portion of the Flightaware README
 
