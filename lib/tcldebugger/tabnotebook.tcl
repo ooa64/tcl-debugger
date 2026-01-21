@@ -537,8 +537,7 @@ widget create Tabnotebook
 		}
 	    }
 	    default {
-		return -code error "unknown option '$key', must be:\
-			[join [array names s] {, }]"
+		return -code error "unknown option '$key'"
 	    }
 	}
     }
