@@ -303,6 +303,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
 	} else {
 	    puts $usageStr
 	}
+	dbg::finalize
 	exit 1
     }
 
@@ -354,6 +355,7 @@ proc ExitDebugger {} {
     # project file (i.e., window sizes.)
 
     if {![system::saveDefaultPrefs 1]} {
+	dbg::finalize
 	exit
     }
     return

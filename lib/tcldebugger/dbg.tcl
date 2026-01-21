@@ -30,7 +30,8 @@ namespace eval dbg {
     #   libDir		The directory that contains the debugger scripts.
 
     variable libDir {}
-    
+    variable tempDir {}
+
     # nub communication data structure --
     #
     #	Communication with the nub is performed using a socket.  The
@@ -131,10 +132,17 @@ namespace eval dbg {
 proc dbg::start {application startDir script argList clientData} {
     variable appState
     variable libDir
+    variable tempDir
     variable serverPort
 
     if {$appState != "dead"} {
 	error "dbg::start called with an app that is already started."
+    }
+
+    if {$tempDir ne {}} {
+	set appLaunch [file join $tempDir appLaunch.tcl]
+    } else {
+	set appLaunch [file join $libDir appLaunch.tcl]
     }
 
     set oldDir [pwd]
@@ -152,33 +160,32 @@ proc dbg::start {application startDir script argList clientData} {
 	
 	# start up the application
 
-        # Windows-specific code disabled. See https://github.com/tcltk-depot/tcl-debugger/issues/2
-	if {0 && $::tcl_platform(platform) == "windows"} {
-            set args ""
-            foreach arg [list \
-                             [file nativename [file join $libDir appLaunch.tcl]] \
-                             127.0.0.1 \
-                             $serverPort \
-                             [file nativename $script] \
-                             $clientData] {
-                if {([string length $arg] == 0) \
-                        || ([string first " " $arg] != -1)} {
-                    set quote 1
-                } else {
-                    set quote 0
-                }
-                regsub -all {(\\)*"} $arg {\1\1\\"} arg
-                if {$quote} {
-                    lappend args "\"$arg\""
-                } else {
-                    lappend args $arg
-                }
-            }
-            exec {*}[auto_execok start] [file nativename $application] {*}$args {*}$argList &
-        } else {
-            set args ""
-            # Ensure that the argument string is a valid Tcl list so we can
-            # safely pass it through eval.
+	if {$::tcl_platform(platform) == "windows"} {
+	    set args ""
+	    foreach arg [list \
+		    [file nativename $appLaunch] \
+		    127.0.0.1 \
+		    $serverPort \
+		    [file nativename $script] \
+		    $clientData] {
+		if {([string length $arg] == 0) \
+			|| ([string first " " $arg] != -1)} {
+		    set quote 1
+		} else {
+		    set quote 0
+		}
+		regsub -all {(\\)*"} $arg {\1\1\\"} arg
+		if {$quote} {
+		    lappend args "\"$arg\""
+		} else {
+		    lappend args $arg
+		}
+	    }
+	    exec {*}[auto_execok start] [file nativename $application] {*}$args {*}$argList &
+	} else {
+	    set args ""
+	    # Ensure that the argument string is a valid Tcl list so we can
+	    # safely pass it through eval.
 
 	    if {[catch {
 		foreach arg $argList {
@@ -1105,6 +1112,7 @@ proc dbg::enableBreakpoint {breakpoint} {
 
 proc dbg::initialize {{dir {}}} {
     variable libDir
+    variable tempDir
 
     # Find the library directory for the debugger.  If one is not specified
     # look in the directory containing the startup script.
@@ -1119,6 +1127,13 @@ proc dbg::initialize {{dir {}}} {
     cd $libDir
     set libDir [pwd]
     cd $oldcwd
+
+    if {$::tcl_platform(platform) == "windows" && [lindex [file system $libDir] 0] ne "native"} {
+	close [file tempfile tempDir TCLDEBUGGER]
+	file delete $tempDir
+	file mkdir $tempDir
+	file copy [file join $libDir appLaunch.tcl] $tempDir
+    }
 
     return
 }
@@ -1257,6 +1272,15 @@ proc dbg::quit {} {
     blk::release all
     return
 }
+
+proc dbg::finalize {} {
+    variable tempDir
+ 
+    if {$tempDir ne {}} {
+        catch {file delete -force $tempDir}
+    }
+}
+
 
 # dbg::HandleClientExit --
 #
