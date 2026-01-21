@@ -180,6 +180,7 @@ proc system::initGroups {} {
 	    appDirList		{}			{} \
 	    appInterpList	[system::getInterps]	{} \
 	    appType		$::debugger::parameters(appType) {} \
+	    appInstrumentList	{}			{} \
 	    breakList		{}			{} \
 	    errorAction		1		dbg::initInstrument	\
 	    dontInstrument	{}		dbg::initInstrument	\

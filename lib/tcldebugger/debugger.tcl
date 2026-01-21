@@ -320,6 +320,12 @@ proc debugger::init {argv newParameters} {
 	proj::openProjCmd $projPath
     }
 
+    foreach file [pref::prefGet appInstrumentList] {
+	if {[catch {uplevel \#0 [list source $file]} err]} {
+	    bgerror "Error loading $file:\n$err"
+	}
+    }
+
     return
 }
 
