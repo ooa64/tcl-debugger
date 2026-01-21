@@ -368,7 +368,7 @@ proc coverage::highlightRanges {blk} {
 
 	variable maxRepeatedCoverage
 	set numShades 20
-	set step [expr int($maxRepeatedCoverage / $numShades) + 1]
+	set step [expr {int($maxRepeatedCoverage / $numShades) + 1}]
 	if {$step < 2} {
 	    set step 2
 	}

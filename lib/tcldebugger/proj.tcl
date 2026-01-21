@@ -912,7 +912,7 @@ proc proj::applyDefaultProjCmd {destroy} {
 	# Check if port value is valid (numeric); if it's not, make it valid
 	set port [pref::prefGet portRemote]
 	set newPort $port
-	while {[catch {expr $newPort + 0}]} {
+	while {[catch {expr {$newPort + 0}}]} {
 	    set newPort [portWin::showWindow $newPort]
 	}
 	pref::prefSet Project portRemote $newPort
