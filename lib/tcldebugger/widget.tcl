@@ -145,7 +145,7 @@ proc widget { cmd args } {
     }
     set datacons [join $datacons]
     set basecons [join $basecons "\n    "]
-    
+
     ## More of this proc could be configured ahead of time for increased
     ## construction speed.  It's delicate, so handle with extreme care.
     ;proc $CLASS {w args} "
@@ -427,7 +427,7 @@ proc widget { cmd args } {
     catch { rename \$w {} }
     catch { unset data }
     return\n"
-    
+
     if {[string match {} [info commands $CLASS:destroy]]} {
 	## The user can optionally provide a special destroy handler
 	;proc $CLASS:destroy {w args}  {
@@ -628,7 +628,7 @@ proc widget { cmd args } {
 ##   the base widget type for this class.  This key is optional and
 ##   represents what kind of widget will be the base for the class. This
 ##   way we know what default methods/options you'll have.  If not
-##   specified, it defaults to the container type.  
+##   specified, it defaults to the container type.
 ##   To the global $w array, the key "basecmd" will be added by the widget
 ##   instantiation function to point to a new proc that will be the direct
 ##   accessor command for the base widget ("text" in the case of the
@@ -645,7 +645,7 @@ proc widget { cmd args } {
 ##   widget in it.  Use these keys to access your subwidgets.  It is from
 ##   this component list and the base and type about that the subwidget
 ##   method is created.
-##  
+##
 ## Aside from that, any $CLASS key that matches -* will be considered an
 ## option that this megawidget handles.  The value can either be a
 ## 3-tuple list of the form {databaseName databaseClass defaultValue}, or

@@ -6,11 +6,10 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 
 namespace eval var {
-    # Handles to the text windows that display variable names 
+    # Handles to the text windows that display variable names
     # and values.
 
     variable valuText {}
@@ -32,7 +31,7 @@ proc var::createWindow {masterFrm} {
     variable nameText
     variable valuText
     variable vbpText
-    
+
     array set bar [system::getBar]
 
     set varFrm [frame $masterFrm.varFrm]
@@ -92,7 +91,7 @@ proc var::createWindow {masterFrm} {
 		"Click to expand or flatten the array"}]
     }
     $valuText tag bind handle <Leave> {
-	if {[info exists ::gui::afterStatus(%W)]} { 
+	if {[info exists ::gui::afterStatus(%W)]} {
 	    after cancel $::gui::afterStatus(%W)
 	    unset ::gui::afterStatus(%W)
 	    gui::updateStatusMessage -msg {}
@@ -104,14 +103,14 @@ proc var::createWindow {masterFrm} {
 
 # var::updateWindow --
 #
-#	Update the display of the Var window.  This routine 
+#	Update the display of the Var window.  This routine
 #	expects the return of gui::getCurrentLevel to give
 #	the level displayed in the Stack Window.
 #
 # Arguments:
 #	None.
 #
-# Results: 
+# Results:
 #	None.
 
 proc var::updateWindow {} {
@@ -163,7 +162,7 @@ proc var::resetWindow {{msg {}}} {
 
 # var::checkState --
 #
-#	This proc is executed whenever the selection 
+#	This proc is executed whenever the selection
 #	in the Var Window changes.
 #
 # Arguments:
@@ -205,7 +204,7 @@ proc var::addToWatch {} {
 #	Move the Var Window to show the variable that was selected
 #	in the Stack Window.  The Var Window is assumed to be updated
 #	to the current frame and that the variable exists in the
-#	frame.  
+#	frame.
 #
 # Arguments:
 #	varName		The name of the variable to be moved into
@@ -221,7 +220,7 @@ proc var::seeVarInWindow {varName moveFocus} {
     variable valuText
 
     # Build a list of line numbers, one foreach line in the
-    # Var Window.  The pass this to watch::getVarNames to 
+    # Var Window.  The pass this to watch::getVarNames to
     # retrieve a list of all valid var names.
 
     set varNameList {}
@@ -231,7 +230,7 @@ proc var::seeVarInWindow {varName moveFocus} {
     }
 
     # Search the list of var names to see if the var exists in the
-    # Var Window.  If so select the line and possibly force the 
+    # Var Window.  If so select the line and possibly force the
     # focus to the Var WIndow.
 
     set line [expr {[lsearch $varNameList $varName] + 1}]

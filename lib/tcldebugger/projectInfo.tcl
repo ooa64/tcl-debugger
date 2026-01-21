@@ -8,7 +8,7 @@
 #
 # See the file "license.terms" for information on usage and redistribution
 # of this file, and for a DISCLAIMER OF ALL WARRANTIES.
-# 
+
 package provide projectInfo 2.0
 namespace eval projectInfo {
     # This is the primary product name
@@ -145,7 +145,7 @@ on usage and redistribution of this file.
 
     # Specify other directories containing .pcx and .pdx extension
     # files via the following environment variable:
-    
+
     variable pcxPdxVar TCLPRO_LOCAL
 
     # Store location of help file/url for modules in this product.
@@ -198,7 +198,7 @@ proc projectInfo::getPreviousPrefslocation {{curLoc {}}} {
 # projectInfo::printCopyrightOnly --
 #
 #	This command will print the copyright information to the tty
-#	unless the printCopyright variable in this package has been 
+#	unless the printCopyright variable in this package has been
 #	set to 0.  We may want to rename 'printCopyright' below and
 #	have it call this routine at a loater date.
 #
@@ -229,7 +229,7 @@ proc projectInfo::printCopyrightOnly {name {extra {}}} {
 # projectInfo::printCopyright --
 #
 #	This command will print the copyright information to the tty
-#	unless the printCopyright variable in this package has been 
+#	unless the printCopyright variable in this package has been
 #	set to 0.  It will also confirm that the user has the correct
 #	license to run this product.
 #

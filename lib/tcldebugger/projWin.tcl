@@ -1,22 +1,22 @@
 # projWin.tcl --
 #
-#	This file implements the Project Windows for the file based 
+#	This file implements the Project Windows for the file based
 #	projects system.
 #
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
+#
 
 namespace eval projWin {
     # The focusOrder variable is an array with one entry for
     # each tabbed window.  The value is a list of widget handles,
-    # which is the order for the tab focus traversial of the 
-    # window. 
+    # which is the order for the tab focus traversial of the
+    # window.
 
     variable focusOrder
 
-    # The command to eval when the Project Settings window is 
+    # The command to eval when the Project Settings window is
     # applied or destroyed.
 
     variable applyCmd {}
@@ -29,7 +29,7 @@ namespace eval projWin {
     variable appBut
 
     # Widget handles for the Font selection window.
-    # 
+    #
     # noInstText	The text widget that lists the glob patterns for
     #			files that are not to be instrumented.
     # doInstText	The text widget that lists the glob patterns for
@@ -48,12 +48,12 @@ namespace eval projWin {
     variable remDoBut
 
     # Widget handles for the Application Arguments window.
-    #    
+    #
     # scriptCombo  The combobox for the script arg.
     # argCombo     The combobox for the arg arg.
     # dirCombo     The combobox for the dir arg.
     # interpCombo  The combobox for the interp arg.
- 
+
     variable localFrm    {}
     variable scriptCombo {}
     variable argCombo    {}
@@ -62,7 +62,7 @@ namespace eval projWin {
 
     variable remoteFrm   {}
     variable portEnt     {}
-    variable portLbl     {}  
+    variable portLbl     {}
     variable localRad    {}
     variable remoteRad   {}
 }
@@ -76,7 +76,7 @@ namespace eval projWin {
 #	title	The title of the window.
 #	aCmd	Callback to eval when the window is applied.  Can be null
 #	dCmd	Callback to eval when the window is destroyed.  Can be null
-#			
+#
 #
 # Results:
 #	None.
@@ -89,7 +89,7 @@ proc projWin::showWindow {title {aCmd {}} {dCmd {}}} {
 	projWin::createWindow
 	focus $::gui::gui(projSettingWin)
     } else {
-	projWin::DestroyWindow	
+	projWin::DestroyWindow
 	projWin::createWindow
 	focus $::gui::gui(projSettingWin)
     }
@@ -120,7 +120,7 @@ proc projWin::createWindow {} {
     set bd   0
     set pad  6
     set pad2 2
-    
+
     if {[info exists focusOrder]} {
 	unset focusOrder
     }
@@ -141,7 +141,7 @@ proc projWin::createWindow {} {
     $tabWin add "Application" 	  -window $scptFrm
     $tabWin add "Instrumentation" -window $instFrm
     $tabWin add "Errors"          -window $errFrm
-    
+
     # Application Info
     set scriptWin [projWin::CreateScriptWindow $scptFrm]
     pack $scriptWin -fill x -anchor n -padx $pad
@@ -149,12 +149,12 @@ proc projWin::createWindow {} {
     # Instrumentation
     set instFileWin [projWin::CreateNoInstruFilesWindow $instFrm]
     set instOptsWin [projWin::CreateInstruOptionsWindow $instFrm]
-    pack $instFileWin -fill both -expand true -anchor n -padx $pad -pady $pad2 
+    pack $instFileWin -fill both -expand true -anchor n -padx $pad -pady $pad2
     pack $instOptsWin -fill x -anchor n -padx $pad
 
     # Errors
     set errorWin [projWin::CreateErrorWindow $errFrm]
-    pack $errorWin -fill x -anchor n -padx $pad -pady $pad2 
+    pack $errorWin -fill x -anchor n -padx $pad -pady $pad2
 
     # Create the modal buttons.
     set butFrm [frame $top.butFrm]
@@ -167,12 +167,12 @@ proc projWin::createWindow {} {
 
     bind $top <Return> "$okBut invoke"
     bind $top <Escape> "$canBut invoke"
-    
+
     pack $appBut -side right -padx $pad -pady $pad
     pack $canBut -side right -pady $pad
     pack $okBut  -side right -padx $pad -pady $pad
 
-    pack $butFrm -side bottom -fill x 
+    pack $butFrm -side bottom -fill x
     pack $tabWin -side bottom -fill both -expand true -padx $pad -pady $pad
 
     # Add default bindings.
@@ -197,7 +197,7 @@ proc projWin::createWindow {} {
 
 proc projWin::updateWindow {{title {}}} {
     variable portEnt
-    variable portLbl     
+    variable portLbl
     variable localRad
     variable remoteRad
 
@@ -277,9 +277,9 @@ proc projWin::ApplyProjSettings {destroy} {
     # crashes or is terminated.
 
     system::saveDefaultPrefs 0
-    
-    # Apply the project preferences.  If the applyCmd pointer is not 
-    # empty, evaluate the command at the global scope. Delete the 
+
+    # Apply the project preferences.  If the applyCmd pointer is not
+    # empty, evaluate the command at the global scope. Delete the
     # window if the destroy bit is true.
 
     pref::groupApply TempProj Project
@@ -338,7 +338,7 @@ proc projWin::DestroyWindow {} {
 
 # projWin::SetBindings --
 #
-#	Set the tab order and default bindings on the 
+#	Set the tab order and default bindings on the
 #	active children of all sub windows.
 #
 # Arguments:
@@ -364,14 +364,14 @@ proc projWin::SetBindings {mainFrm name} {
 	bind::addBindTags $win pref${name}Tab
     }
     lappend focusOrder($mainFrm) $okBut $canBut $appBut
-    bind::commonBindings pref${name}Tab $focusOrder($mainFrm)    
-    
+    bind::commonBindings pref${name}Tab $focusOrder($mainFrm)
+
     return
 }
 
 # projWin::NewFocus --
 #
-#	Re-bind the modal buttons so the correct tab order 
+#	Re-bind the modal buttons so the correct tab order
 #	is maintained.
 #
 # Arguments:
@@ -418,8 +418,8 @@ proc projWin::AddToCombo {combo value} {
     set result [$combo add $value]
 
     # Empty strings are not stored in the ComboBox listbox.  To
-    # preserve this state, append the empty string to the 
-    # beginning of the data list so it can be placed in the 
+    # preserve this state, append the empty string to the
+    # beginning of the data list so it can be placed in the
     # ComboBox entry widget on the next display request.
 
     set size [pref::prefGet comboListSize]
@@ -448,22 +448,22 @@ proc projWin::AddToCombo {combo value} {
 #	A handle to the frame containing the Error interface.
 
 proc projWin::CreateScriptWindow {mainFrm} {
-    variable localFrm    
+    variable localFrm
     variable localRad
     variable remoteRad
-    variable scriptCombo 
-    variable argCombo    
-    variable dirCombo    
-    variable interpCombo 
-    variable remoteFrm   
-    variable portEnt     
-    variable portLbl     
+    variable scriptCombo
+    variable argCombo
+    variable dirCombo
+    variable interpCombo
+    variable remoteFrm
+    variable portEnt
+    variable portLbl
     variable focusOrder
 
     set pad  6
     set pad2 10
 
-    # Toggle frame that switches between the local and remote 
+    # Toggle frame that switches between the local and remote
     # preference windows.
 
     set cntrFrm [frame $mainFrm.cntrFrm]
@@ -478,7 +478,7 @@ proc projWin::CreateScriptWindow {mainFrm} {
 	    -command [list projWin::ShowDebuggingType $mainFrm remote] \
 	    -variable [pref::prefVar appType TempProj] \
 	    -value remote]
-    
+
     # Local Debugging Window -
     # Create the interface for entering basic info about the
     # script to be debugged; script name, arguments, working
@@ -494,17 +494,17 @@ proc projWin::CreateScriptWindow {mainFrm} {
 	    -command [list proj::openComboFileWindow $scriptCombo \
 	    [list {{Tcl Scripts} {.tcl .tk}} {{Test Scripts} .test} \
 	    {{All files} *}]]]
-    
+
     set argLbl [label $localFrm.argLbl -text "Script Arguments:"]
     set argCombo [guiUtil::ComboBox $localFrm.argCombo \
 	    -textvariable [pref::prefVar appArg TempProj] \
 	    -listheight 1]
-    
+
     set dirLbl [label $localFrm.dirLbl -text "Working Directory:"]
     set dirCombo [guiUtil::ComboBox $localFrm.dirCombo \
 	    -textvariable [pref::prefVar appDir TempProj] \
 	    -listheight 1]
-    
+
     set interpLbl [label $localFrm.interpLbl -text "Interpreter:"]
     set interpCombo [guiUtil::ComboBox $localFrm.interpCombo \
 	    -textvariable [pref::prefVar appInterp TempProj] \
@@ -521,7 +521,7 @@ proc projWin::CreateScriptWindow {mainFrm} {
     set i [pref::prefGet appInterpList TempProj]
 
     # If the interp list is empty, or just contains white space, fill it with
-    # the default values.  This code was added to make up for prior 
+    # the default values.  This code was added to make up for prior
     # releases that left the interp list empty on Windows.
 
     if {[llength $i] < 2} {
@@ -539,7 +539,7 @@ proc projWin::CreateScriptWindow {mainFrm} {
 
 	set firstInterp [lindex $i 0]
 	pref::prefSet Project appInterp $firstInterp
-	pref::prefSet TempProj appInterp $firstInterp	
+	pref::prefSet TempProj appInterp $firstInterp
     }
 
     eval {$scriptCombo add} $s
@@ -601,7 +601,7 @@ proc projWin::CreateScriptWindow {mainFrm} {
 	lappend focusOrder($mainFrm) $portEnt
     } else {
 	pack $cntrFrm.localFrm -fill both -expand true
-	
+
 	lappend focusOrder($mainFrm) $scriptCombo $argCombo \
 		$dirCombo $interpCombo
     }
@@ -617,7 +617,7 @@ proc projWin::CreateScriptWindow {mainFrm} {
 # projWin::ShowDebuggingType --
 #
 #	Used by the Application window, toggle between the Remote
-#	interface and the loacl interface.
+#	interface and the local interface.
 #
 # Arguments:
 #	type	Indicates which type is being toggled to. (local or remote)
@@ -626,13 +626,13 @@ proc projWin::CreateScriptWindow {mainFrm} {
 #	None.
 
 proc projWin::ShowDebuggingType {mainFrm type} {
-    variable localFrm    
-    variable scriptCombo 
-    variable argCombo    
-    variable dirCombo    
-    variable interpCombo 
-    variable remoteFrm   
-    variable portEnt     
+    variable localFrm
+    variable scriptCombo
+    variable argCombo
+    variable dirCombo
+    variable interpCombo
+    variable remoteFrm
+    variable portEnt
     variable focusOrder
 
     wm geometry $::gui::gui(projSettingWin) \
@@ -644,7 +644,7 @@ proc projWin::ShowDebuggingType {mainFrm type} {
 
 	set focusOrder($mainFrm) [lreplace $focusOrder($mainFrm) 2 2 \
 		$scriptCombo $argCombo $dirCombo $interpCombo]
-	bind::commonBindings prefApplicationTab $focusOrder($mainFrm)    
+	bind::commonBindings prefApplicationTab $focusOrder($mainFrm)
     } else {
 	pack forget $localFrm
 	pack $remoteFrm -fill both -expand true
@@ -687,7 +687,7 @@ proc projWin::CreateErrorWindow {mainFrm} {
 	    -text "Never stop on errors." \
 	    -variable [pref::prefVar errorAction TempProj] \
 	    -value 0]
-    
+
     grid $errRad1 -row 0 -column 0 -sticky w -padx $pad
     grid $errRad2   -row 1 -column 0 -sticky w -padx $pad
     grid $errRad3   -row 2 -column 0 -sticky w -padx $pad
@@ -792,10 +792,10 @@ proc projWin::CreateNoInstruFilesWindow {mainFrm} {
     bind::addBindTags $doInstText [list prefDoInstText scrollText selectFocus \
 	    selectLine selectRange selectCopy moveCursor]
     sel::setWidgetCmd $noInstText all {
-	projWin::CheckInstruFilesState 
+	projWin::CheckInstruFilesState
     }
     sel::setWidgetCmd $doInstText all {
-	projWin::CheckInstruFilesState 
+	projWin::CheckInstruFilesState
     }
     bind prefNoInstText <1> {
 	focus %W
@@ -931,7 +931,7 @@ proc projWin::UpdateDoInstruFilesWindow {} {
 
 # projWin::AddInstruGlob --
 #
-#	Add a new glob pattern to the list of uninstrumented 
+#	Add a new glob pattern to the list of uninstrumented
 #	files as long as the glob pattern is not a duplicate
 #	or an empty string.
 #
@@ -944,7 +944,7 @@ proc projWin::UpdateDoInstruFilesWindow {} {
 #	None.
 
 proc projWin::AddInstruGlob {globPat doInst} {
-    
+
     if {$doInst} {
 	set instPref doInstrument
 	set updateCmd projWin::UpdateDoInstruFilesWindow
@@ -959,7 +959,7 @@ proc projWin::AddInstruGlob {globPat doInst} {
 	pref::prefSet TempProj $instPref $globList
     }
     $updateCmd
-    projWin::CheckInstruFilesState 
+    projWin::CheckInstruFilesState
 }
 
 # projWin::AddInstruGlobFromEntry --
@@ -1012,7 +1012,7 @@ proc projWin::nonEmptyInstruText {} {
 proc projWin::RemoveSelectedInstru {doInst} {
     variable noInstText
     variable doInstText
-    
+
     if {$doInst} {
 	set selectedLines [sel::getSelectedLines $doInstText]
 	set selectCursor  [sel::getCursor $doInstText]
@@ -1025,7 +1025,7 @@ proc projWin::RemoveSelectedInstru {doInst} {
 	set updateCmd projWin::UpdateNoInstruFilesWindow
     }
 
-    # Create a new globList containing only the unselected 
+    # Create a new globList containing only the unselected
     # glob patterns.  Then call updateWindow to display the
     # updated globList.
 
@@ -1054,7 +1054,7 @@ proc projWin::RemoveSelectedInstru {doInst} {
 
 # projWin::CheckInstruFilesState --
 #
-#	If one or more glob patterns is selected then 
+#	If one or more glob patterns is selected then
 #	enable the "Remove" button.
 #
 # Arguments:
@@ -1115,7 +1115,7 @@ proc projWin::updateScriptList {} {
 	# Add the current combo entry to the combo's drop down 
 	# list.  The result of the command is the ordered list
 	# of elements in the combo's drop down list.
-	
+
 	set script [pref::prefGet appScript TempProj]
 	set sList  [projWin::AddToCombo $scriptCombo $script]
 	
@@ -1145,7 +1145,7 @@ proc projWin::updateInterpList {} {
 	# Add the current combo entry to the combo's drop down 
 	# list.  The result of the command is the ordered list
 	# of elements in the combo's drop down list.
-	
+
 	set interp [pref::prefGet appInterp TempProj]
 	set iList  [projWin::AddToCombo $interpCombo $interp]
 
@@ -1175,7 +1175,7 @@ proc projWin::updateArgList {} {
 	# Add the current combo entry to the combo's drop down 
 	# list.  The result of the command is the ordered list
 	# of elements in the combo's drop down list.
-	
+
 	set arg   [pref::prefGet appArg TempProj]
 	set aList [projWin::AddToCombo $argCombo $arg]
 
@@ -1205,7 +1205,7 @@ proc projWin::updateDirList {} {
 	# Add the current combo entry to the combo's drop down 
 	# list.  The result of the command is the ordered list
 	# of elements in the combo's drop down list.
-	
+
 	set dir   [pref::prefGet appDir TempProj]
 	set dList [projWin::AddToCombo $dirCombo $dir]
 

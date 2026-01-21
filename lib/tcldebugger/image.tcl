@@ -7,7 +7,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval image {
     variable image
@@ -15,8 +14,7 @@ namespace eval image {
     # Unix images are of the "photo" type.  We store the photo data in
     # base64 format (converted from gif format) to aid packaging by
     # eliminating binary files.
-    
-    
+
     set image(break_disable) [image create photo \
 	    -file $::debugger::libdir/images/break_d.gif]
     set image(break_enable) [image create photo \

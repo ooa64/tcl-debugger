@@ -5,8 +5,6 @@
 # Copyright (c) 1996 Dartmouth College
 # Copyright (c) 1998 Scriptics Corporation
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
-# RCS: @(#) $Id: hiqState.tcl,v 1.2 2000/10/31 23:31:09 welch Exp $
 
 
 # start_game --
@@ -24,19 +22,19 @@ proc start_game {w {restart 0}} {
 	$w delete hole
 	new_message $w "-----------RESTARTING GAME-----------"
 	update
-	after 2000 "new_message $w {restarted game}"	  
+	after 2000 "new_message $w {restarted game}"
 	vwait msg
     } else {
 	new_message $w "started new game"
     }
-    
+
     # create pegs and holes
     create_pegs_and_holes $w 0 240 40
 
     # all pegs become visible except the top of the pyramid
     $w raise peg
     $w delete peg(0,0)
-    
+
     # reinitialize the list of moves
     set list_of_moves {}
 }
@@ -81,9 +79,9 @@ proc move_peg {oldx oldy newx newy} {
     set board($newx,$newy) 1
     # remove the piece in between the new and old pieces
     set board($avgx,$avgy) 0
-    
+
     set game_is_over [find_new_moves]
-    
+
     # return x and y coords of peg to remove and game_is_over bool
     return "$avgx $avgy $game_is_over"
 }
@@ -105,7 +103,7 @@ proc unmove_peg {oldx oldy newx newy midx midy} {
 #
 proc find_new_moves {} {
     global board
-    
+
     # for each peg,
     for {set pcol 0} {$pcol < 5} {incr pcol} {
 	for {set prow 0} {$prow <= $pcol} {incr prow} {
@@ -140,13 +138,13 @@ proc correct_distance {xdiff ydiff} {
 
     # moving horizontally, or
     if {($abs_xdiff == 2) && ($ydiff == 0)} {return 1}
-    
+
     # moving southwest or northeast, or
     if {($xdiff == 0) && ($abs_ydiff == 2)} {return 1}
-    
+
     # moving northwest or southeast
     if {$xdiff == $ydiff && $abs_xdiff == 2} {return 1}
-    
+
     return 0
 }
 
@@ -154,9 +152,9 @@ proc correct_distance {xdiff ydiff} {
 #
 proc undo_move {w} {
     global list_of_moves color
-    
+
     set moves [llength $list_of_moves]
-  
+
     if {!$moves} {
 	new_message $w "no moves to be undone"
 	return
@@ -189,10 +187,10 @@ proc undo_move {w} {
 
     # record the changes to the board
     eval "unmove_peg $move_to_undo"
-    
+
     # remove the move from the list of moves
-    set list_of_moves [lreplace $list_of_moves $moves $moves] 
-  
+    set list_of_moves [lreplace $list_of_moves $moves $moves]
+
     new_message $w "undid one move"
 }
 

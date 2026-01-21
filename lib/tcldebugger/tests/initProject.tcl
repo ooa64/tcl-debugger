@@ -6,9 +6,9 @@
 #
 # Arguments:
 #	projPath
-#	script		
-#	arg		
-#	dir		
+#	script
+#	arg
+#	dir
 #	interp
 #
 # Results:
@@ -16,7 +16,7 @@
 
 proc initProject {projPath script arg dir interp} {
     cleanProject
-    
+
     initGlobalDefault
 
     pref::groupInit Project [list \
@@ -116,7 +116,7 @@ proc initGlobalDefault {} {
 	    winGeoms		{}			{} \
     ]
 
-    # Only set the widget attributes if we have loaded the image 
+    # Only set the widget attributes if we have loaded the image
     # file.  If it hasn't been loaded, we assume the tests are non
     # gui test and therefore have not sourced needed files.
 
@@ -177,9 +177,9 @@ proc initProjectDefault {} {
 proc initProjectFiles {dummy} {
     global projDir
     global corruptProj
-    global noreadProj 
+    global noreadProj
     global nowriteProj
-    global localProj 
+    global localProj
     global remoteProj
     global tcl_platform
 
@@ -191,7 +191,7 @@ proc initProjectFiles {dummy} {
     set remoteProj  [file join $projDir Remote.tpj]
 
     set ::proj::projectOpen 1
- 
+
     set file [open $::corruptProj w]
     puts $file "set"
     close $file
@@ -201,7 +201,7 @@ proc initProjectFiles {dummy} {
     pref::groupCopy ProjectDefault Project
     proj::saveProj $noreadProj
     pref::groupDelete Project
-    
+
     proj::setProjectPath $nowriteProj
     pref::groupNew Project {proj::SaveProjCmd [proj::getProjectPath]} {}
     pref::groupCopy ProjectDefault Project
@@ -232,7 +232,7 @@ proc initProjectFiles {dummy} {
     pref::prefSet Project appType remote
     proj::saveProj $remoteProj
     pref::groupDelete Project
- 
+
     set ::proj::projectOpen 0
     pref::prefSet GlobalDefault projectList {}
     return
@@ -277,9 +277,9 @@ proc cleanProject {} {
 proc cleanProjectFiles {} {
     global projDir
     global corruptProj
-    global noreadProj 
+    global noreadProj
     global nowriteProj
-    global localProj 
+    global localProj
     global remoteProj
     global tcl_platform
 
@@ -305,7 +305,7 @@ proc cleanProjectFiles {} {
     catch {unset nowriteProj}
     catch {unset localProj}
     catch {unset remoteProj}
- 
+
     return
 }
 
@@ -318,7 +318,7 @@ proc cleanProjectFiles {} {
 #	group	The name of the group to restore preferences into.
 #
 # Results:
-#	Return a boolean, 1 means that the save did not succeed, 
+#	Return a boolean, 1 means that the save did not succeed,
 #	0 means it succeeded.
 
 proc system::winRestoreCmd {group} {

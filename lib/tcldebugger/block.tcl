@@ -5,13 +5,12 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 package provide blk 1.0
 namespace eval blk {
     # block data type --
     #
-    #   A block encapsulates the state associated with a unit of 
+    #   A block encapsulates the state associated with a unit of
     #   instrumented code.  Each block is represented by a Tcl array
     #   whose name is of the form blk<num> and contains the
     #   following elements:
@@ -57,7 +56,7 @@ proc blk::makeBlock {file} {
     variable blockFiles
 
     # check to see if the block already exists
-    
+
     set formatFile [system::formatFilename $file]
     if {[info exists blockFiles($formatFile)]} {
 	return $blockFiles($formatFile)
@@ -73,7 +72,7 @@ proc blk::makeBlock {file} {
 	    file $file \
 	    version 0 \
 	    instrumented 0 lines {}]
-    
+
     # don't create an entry for dynamic blocks
 
     if {$file != ""} {
@@ -307,8 +306,8 @@ proc blk::unmarkInstrumented {} {
 		unset ${block}(script)
 	    }
 	}
-    } 
-   return
+    }
+    return
 }
 
 # blk::getVersion --

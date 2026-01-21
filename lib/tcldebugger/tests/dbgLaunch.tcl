@@ -6,7 +6,6 @@
 # Copyright (c) 1998-2000 by Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
 
 # Load the minimum set of files needed to get the debugger engine working.
 
@@ -83,7 +82,7 @@ proc initDbg {} {
 
     set ::blk::blockCounter 0
     dbg::initialize
-    
+
     dbg::register linebreak {eventProc linebreak}
     dbg::register error     {eventProc error}
     dbg::register attach    {eventProc attach}
@@ -95,7 +94,7 @@ proc initDbg {} {
 
 # quitDbg --
 #
-#	Stop debugging the application and unregister the eventProcs	
+#	Stop debugging the application and unregister the eventProcs
 #
 # Arguments:
 #	None.
@@ -154,7 +153,7 @@ proc testDbg {nubScript testScript {setupScript {}} {exename tclsh}} {
 
 	# Now run the test script.
 	set result [uplevel 1 $setupScript]
-	
+
 	# Start the application and wait for the "attach" event.
 	dbg::start $interp $dir dummy.tcl $arg $proj
 	waitForApp
@@ -162,7 +161,7 @@ proc testDbg {nubScript testScript {setupScript {}} {exename tclsh}} {
 	# Step to the first command of the script.
 	dbg::step any
 	waitForApp
-	
+
 	# Now run the test script.
 	set result [uplevel 1 $testScript]
     } msg]

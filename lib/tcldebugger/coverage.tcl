@@ -6,7 +6,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
 
 package provide coverage 1.0
 namespace eval coverage {
@@ -116,7 +115,7 @@ proc coverage::clearAllCoverage {text} {
 	return
     }
 
-    coverage::clearCoverageArray    
+    coverage::clearCoverageArray
     coverage::updateWindow
 }
 
@@ -137,17 +136,17 @@ proc coverage::clearBlockCoverage {text} {
     if {$state != "running" && $state != "stopped"} {
 	return
     }
-    
+
     set line [sel::getCursor $text]
     if {[lsearch -exact [$text tag names $line.0] fileName] < 0} {
 	return
     }
 
     # Get the name and block number associated with the selected file.
-    
+
     set file [$text get "$line.0" "$line.0 lineend"]
     set blk $instrumentedBlock($file)
-    
+
     coverage::clearCoverageArray $blk
     coverage::updateWindow
 }
@@ -168,7 +167,7 @@ proc coverage::clearCoverageArray {{blk -1}} {
     variable currentUncoverage
     variable currentCoverage
     variable maxRepeatedCoverage
-    
+
     if {$blk == -1} {
 	unset currentCoverage
 	array set currentCoverage {}
@@ -191,7 +190,7 @@ proc coverage::clearCoverageArray {{blk -1}} {
 # coverage::createWindow --
 #
 #	Create the Coverage Window that will display
-#	all the instrumented files in the running application. 
+#	all the instrumented files in the running application.
 #
 # Arguments:
 #	None.
@@ -216,7 +215,7 @@ proc coverage::createWindow {} {
     set bd 2
     set pad  6
 
-    # Create the text widget that displays all files and the 
+    # Create the text widget that displays all files and the
     # "Show Code" button.
 
     set mainFrm [frame $top.mainFrm -bd $bd -relief raised]
@@ -339,7 +338,7 @@ proc coverage::highlightRanges {blk} {
     variable currentCoverage
     variable hilitUncvr
     variable radio
-    
+
     # remove any prior "*covered*" tags
 
     foreach tag [$::code::codeWin tag names] {
@@ -347,7 +346,7 @@ proc coverage::highlightRanges {blk} {
 	    $::code::codeWin tag remove $tag 0.0 end
 	}
     }
-    
+
     if {$radio(val)} {
 
 	# Find the uncovered ranges, tag them "uncovered", and
@@ -398,7 +397,7 @@ proc coverage::highlightRanges {blk} {
 	    if {$shade < $minIntensity} {
 		set shade $minIntensity
 	    }
-	    
+
 	    # Construct a color by convertin <shade> to hex:
 	    # #<shade>00<shade>
 
@@ -436,11 +435,11 @@ proc coverage::init {} {
 
 # coverage::resetWindow --
 #
-#	Reset the window to be blank, or leave a message 
+#	Reset the window to be blank, or leave a message
 #	in the text box.
 #
 # Arguments:
-#	msg	If not empty, then put this message in the 
+#	msg	If not empty, then put this message in the
 #		coverText text widget.
 #
 # Results:
@@ -449,7 +448,7 @@ proc coverage::init {} {
 proc coverage::resetWindow {{msg {}}} {
     variable coverText
     variable coverWin
-    
+
     if {![winfo exists $coverWin]} {
 	return
     }
@@ -505,7 +504,7 @@ proc coverage::showCode {text} {
 # coverage::showWindow --
 #
 #	Create the Coverage Window that will display
-#	all the instrumented files in the running application. 
+#	all the instrumented files in the running application.
 #
 # Arguments:
 #	None.
@@ -546,17 +545,17 @@ proc coverage::tabulateCoverage {coverage} {
     variable currentUncoverage
     variable currentCoverage
     variable maxRepeatedCoverage
-    
+
     # For each covered location store the block number, range, line number,
     # total number of times the location was covered.
 
     foreach {location qty} $coverage {
 	set location [lindex [split $location :] 1]
-	
+
 	set blk [::loc::getBlock $location]
 	set line [::loc::getLine $location]
 	set range [::loc::getRange $location]
-	    
+
 	set currentCoverage(${blk}:R:${range}) [list $line $qty]
 	if {$qty > $maxRepeatedCoverage} {
 	    set maxRepeatedCoverage $qty
@@ -576,7 +575,7 @@ proc coverage::tabulateCoverage {coverage} {
 	    }
 	} else {
 	    set expectedRanges [::blk::getRanges $blk]
-	    
+
 	    # remove uninstrumented block from the array
 
 	    if {$expectedRanges == -1} {
@@ -613,7 +612,7 @@ proc coverage::tagRange {blk range tag} {
     set src   [blk::getSource $blk]
     set start [parse charindex $src $range]
     set end   [expr {$start + [parse charlength $src $range]}]
-    
+
     set cmdStart [$::code::codeWin index "0.0 + $start chars"]
     set cmdMid   [$::code::codeWin index "$cmdStart lineend"]
     set cmdEnd   [$::code::codeWin index "0.0 + $end chars"]
@@ -630,7 +629,7 @@ proc coverage::tagRange {blk range tag} {
 # coverage::updateWindow --
 #
 #	Populate the Coverage Window's list box with file names
-#	currently instrumented in the running app. 
+#	currently instrumented in the running app.
 #
 # Arguments:
 #	None.
@@ -680,7 +679,7 @@ proc coverage::updateWindow {} {
     foreach {file block} [file::getUniqueFiles] {
 	if {[blk::isInstrumented $block]} {
 	    set instrumentedBlock($file) $block
-	    $coverText insert end "$file\n" fileName 
+	    $coverText insert end "$file\n" fileName
 	}
     }
 

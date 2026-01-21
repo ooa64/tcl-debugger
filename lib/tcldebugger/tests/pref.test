@@ -5,7 +5,6 @@
 #
 # See the file "license.terms" for information on usage and redistribution
 # of this file, and for a DISCLAIMER OF ALL WARRANTIES.
-#
 
 if {[string compare test [info procs test]] == 1} {
     lappend auto_path [file join [file dirname [info script]] ..]
@@ -334,7 +333,7 @@ test pref-7.1 {pref::groupDelete} {
     pref::prefNew  FOO BAR 1 updateCmd
     pref::prefNew  FOO DOG 1 updateCmd
     pref::prefNew  FOO CAT 1 updateCmd
-    
+
     pref::groupDelete FOO
     list [info exists ::pref::groups(FOO,saveCmd)] \
 	    [info exists ::pref::groups(FOO,restoreCmd)] \
@@ -472,14 +471,14 @@ test pref-12.2 {pref::prefSet, pref doesnt exist} {
 test pref-12.3 {pref::prefSet, check the value} {
     cleanPrefs
     pref::groupNew FOO {} {}
-    pref::prefNew FOO BAR 1 {} 
+    pref::prefNew FOO BAR 1 {}
     pref::prefSet FOO BAR 1
     pref::prefGet BAR FOO
 } {1}
 test pref-12.4 {pref::prefSet, check the value} {
     cleanPrefs
     pref::groupNew FOO {} {}
-    pref::prefNew FOO BAR 1 {} 
+    pref::prefNew FOO BAR 1 {}
     pref::prefSet FOO BAR 1
     pref::prefSet FOO BAR a
     pref::prefGet BAR FOO
@@ -487,7 +486,7 @@ test pref-12.4 {pref::prefSet, check the value} {
 test pref-12.5 {pref::prefSet, check the dirty bit} {
     cleanPrefs
     pref::groupNew FOO {} {}
-    pref::prefNew FOO BAR 1 {} 
+    pref::prefNew FOO BAR 1 {}
     lappend result [pref::groupIsDirty FOO]
     pref::prefSet FOO BAR 1
     lappend result [pref::groupIsDirty FOO]
@@ -500,27 +499,27 @@ test pref-13.1 {pref::prefExists, pref doesnt exist} {
 test pref-13.2 {pref::prefExists, pref exist, group is shadowed} {
     cleanPrefs
     pref::groupNew FOO {} {}
-    pref::prefNew  FOO BAR 1 {} 
-    pref::prefExists BAR DOG 
+    pref::prefNew  FOO BAR 1 {}
+    pref::prefExists BAR DOG
 } {0}
 test pref-13.3 {pref::prefExists, pref exist, group is shadowed} {
     cleanPrefs
     pref::setGroupOrder FOO
     pref::groupNew FOO {} {}
-    pref::prefNew  FOO BAR 1 {} 
+    pref::prefNew  FOO BAR 1 {}
     pref::prefExists BAR DOG
 } {0}
 test pref-13.4 {pref::prefExists, pref exist, group is specified} {
     cleanPrefs
     pref::groupNew FOO {} {}
-    pref::prefNew  FOO BAR 1 {} 
+    pref::prefNew  FOO BAR 1 {}
     pref::prefExists BAR FOO
 } {1}
 test pref-13.5 {pref::prefExists, pref exist, group is registered} {
     cleanPrefs
     pref::setGroupOrder FOO
     pref::groupNew FOO {} {}
-    pref::prefNew  FOO BAR 1 {} 
+    pref::prefNew  FOO BAR 1 {}
     pref::prefExists BAR
 } {1}
 
@@ -532,7 +531,7 @@ test pref-14.1 {pref::prefVar, pref doesnt exist} {
 test pref-14.2 {pref::prefVar, pref exist, group is shadowed} {
     cleanPrefs
     pref::groupNew FOO {} {}
-    pref::prefNew  FOO BAR 1 {} 
+    pref::prefNew  FOO BAR 1 {}
     set result [catch {pref::prefVar BAR DOG} err]
     lappend result $err
 } {1 {pref "BAR" does not exist.}}
@@ -540,21 +539,21 @@ test pref-14.3 {pref::prefVar, pref exist, group is registered} {
     cleanPrefs
     pref::setGroupOrder FOO
     pref::groupNew FOO {} {}
-    pref::prefNew  FOO BAR 1 {} 
+    pref::prefNew  FOO BAR 1 {}
     set result [catch {pref::prefVar BAR DOG} err]
     lappend result $err
 } {1 {pref "BAR" does not exist.}}
 test pref-14.4 {pref::prefVar, pref exist, group is specified} {
     cleanPrefs
     pref::groupNew FOO {} {}
-    pref::prefNew  FOO BAR 1 {} 
+    pref::prefNew  FOO BAR 1 {}
     pref::prefVar BAR FOO
 } {::pref::valueFOO(BAR)}
 test pref-14.5 {pref::prefVar, pref exist, group is registered} {
     cleanPrefs
     pref::setGroupOrder FOO
     pref::groupNew FOO {} {}
-    pref::prefNew  FOO BAR 1 {} 
+    pref::prefNew  FOO BAR 1 {}
     pref::prefVar BAR
 } {::pref::valueFOO(BAR)}
 

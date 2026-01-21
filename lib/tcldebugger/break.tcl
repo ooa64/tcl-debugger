@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 package provide break 1.0
 namespace eval break {
@@ -273,7 +272,7 @@ proc break::preserveBreakpoints {varName} {
 	    lappend data [list $file $line [getState $bp] \
 		    [getTest $bp]]
 	}
-    }		
+    }
     return
 }
 

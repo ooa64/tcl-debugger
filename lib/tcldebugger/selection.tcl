@@ -1,14 +1,14 @@
 # selection.tcl --
 #
 #	This file defines the APIs for selecting lines in
-#	a text widget.  They imitate the Windows style 
+#	a text widget.  They imitate the Windows style
 #	selection of:
-#		
-#		<B1-Leave> 
-#		<B1-Enter> 
+#
+#		<B1-Leave>
+#		<B1-Enter>
 #		<ButtonRelease-1> Scrolls the viewable text region.
-#		
-#		<FocusIn>	
+#
+#		<FocusIn>
 #		<FocusOut>	Updates the "focus" feedback.
 #
 #		<Button-1>  	Select current line and remove
@@ -31,9 +31,9 @@
 #
 #		<Ctrl-a>    	Select all lines.
 #
-#		<Page-Up>	
-#		<Page-Down>	
-#		<Home>		
+#		<Page-Up>
+#		<Page-Down>
+#		<Home>
 #		<End>		What they say...
 #
 #		<<Copy>>	Copies the highlighted text to the
@@ -42,12 +42,11 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval sel {
-    # When selecting a range of lines, the range is computed to be 
-    # between the anchor and the selectCursor.  Any selection 
-    # (other than selectLineRange) will set the anchor at the 
+    # When selecting a range of lines, the range is computed to be
+    # between the anchor and the selectCursor.  Any selection
+    # (other than selectLineRange) will set the anchor at the
     # current position.  When selectLineRange is called, if there
     # is no value for anchor, the selectCursor becomes the anchor.
     #
@@ -56,7 +55,7 @@ namespace eval sel {
 
     variable selectAnchor
 
-    # The selectCursor is a cursor the can move around the text 
+    # The selectCursor is a cursor the can move around the text
     # widget without selecting or unselecting lines.  It is used
     # to do selection with key strokes.
     #
@@ -72,9 +71,9 @@ namespace eval sel {
     variable selectStart
 
     # The selectPreserve stores selection data; lines selected,
-    # cursor position and anchor position, so it can be 
+    # cursor position and anchor position, so it can be
     # restored at a later date.
-    
+
     variable selectPreserve
 
     # After every selection event has fired, a check is done
@@ -86,7 +85,7 @@ namespace eval sel {
     variable widgetCmd
 
     # scrollText --
-    #	Add this tag to a text widget so the widget will scroll 
+    #	Add this tag to a text widget so the widget will scroll
     #	on B1-Leave events and stop scrolling when B1 is released
     # 	or re-enters the text widget.
 
@@ -115,7 +114,7 @@ namespace eval sel {
     }
 
     # selectCopy --
-    # Add this tag to any window that where you would like 
+    # Add this tag to any window that where you would like
     # to copy the highlighted text to the Clipboard.
 
     bind selectCopy <<Copy>> {
@@ -169,7 +168,7 @@ namespace eval sel {
 
     # Create these bindings as no-ops, so the event can propagate
     # to other bindtags.  Otherwise the developer will have to order
-    # the bindtags correctly so that modified events propagate 
+    # the bindtags correctly so that modified events propagate
     # correctly.
 
     bind selectLine <B1-Motion> {
@@ -197,7 +196,7 @@ namespace eval sel {
     bind selectLine <Control-Key-space> {
     }
     bind selectLine <Shift-Key-space> {
-    }    
+    }
     bind selectLine <Control-Key-Up> {
     }
     bind selectLine <Control-Key-Down> {
@@ -210,7 +209,7 @@ namespace eval sel {
     }
     bind selectLine <Control-End> {
     }
-    
+
     # selectRange --
     #	Add this tag to a text widget so the widget will allow
     # 	a region of text to be at one time.  All of the mouse
@@ -258,7 +257,7 @@ namespace eval sel {
 
     # moveCursor --
     #	Add this tag to a text widget so the widget will allow
-    # 	the selection cursor to move apart from the current 
+    # 	the selection cursor to move apart from the current
     # 	selection.  This is usually used in conjunction with
     # 	selecting ranges.  All  of the mouse and keyboard events
     #	are defined according to Windows default opreations.
@@ -298,7 +297,7 @@ namespace eval sel {
     bind moveCursor <Shift-Key-space> {
 	sel::selectCursorRange %W
 	break
-    }    
+    }
     bind moveCursor <Key-space> {
 	sel::selectCursor %W
 	break
@@ -319,7 +318,7 @@ namespace eval sel {
 #
 # Arguments:
 #	w	The widget recieving the selection event.
-#	type	The type of event that occured. 
+#	type	The type of event that occured.
 #		  line   A line was selected
 #		  multi  Multiple lines were selected.
 #		  range  A discontinous range of text was selected.
@@ -343,11 +342,11 @@ proc sel::setWidgetCmd {w type cmd {seeCmd {}}} {
 #
 #	Execute the command, if it exists, that is bound
 #	to the widget.  This command is executed after
-#	any selection event.  
+#	any selection event.
 #
 # Arguments:
 #	w	The widget recieving the selection event.
-#	type	The type of event that occured. 
+#	type	The type of event that occured.
 #		  line   A line was selected
 #		  multi  Multiple lines were selected.
 #		  range  A discontinous range of text was selected.
@@ -370,8 +369,8 @@ proc sel::widgetCmd {w type} {
 #
 #	Execute the command, if it exists, that is bound
 #	to the widget.  This command is executed after
-#	any "see" event.  
-#	
+#	any "see" event.
+#
 #
 # Arguments:
 #	w	The widget recieving the selection event.
@@ -428,7 +427,7 @@ proc sel::selectAllLines {text} {
 
 # sel::selectLine --
 #
-#	Select a new line in the text widget, and  
+#	Select a new line in the text widget, and
 #	remove all of the previously highlights.
 #
 # Arguments:
@@ -487,7 +486,7 @@ proc sel::selectLineRange {text index} {
 
 # sel::moveSelection --
 #
-#	Move the selection of the text widget up or 
+#	Move the selection of the text widget up or
 #	down, removing any previous selection.
 #
 # Arguments:
@@ -505,7 +504,7 @@ proc sel::moveSelection {text amount} {
 	set newLine $amount
     }
 
-    # Adjust the newLine so the line numbers are 
+    # Adjust the newLine so the line numbers are
     # between the ranges of the text window.
     if {$newLine < 1} {
 	set newLine 1
@@ -536,9 +535,9 @@ proc sel::moveSelectionRange {text amount} {
 	set newLine [expr {$::sel::selectCursor($text) + $amount}]
     } else {
 	set newLine $amount
-    }    
+    }
 
-    # Adjust the newLine so the line numbers are 
+    # Adjust the newLine so the line numbers are
     # between the ranges of the text window.
     if {$newLine < 1} {
 	set newLine 1
@@ -570,7 +569,7 @@ proc sel::moveCursor {text amount} {
     } else {
 	set newCursor $amount
     }
-    
+
     sel::setCursor $text $newCursor
     sel::updateCursor $text
 }
@@ -608,7 +607,7 @@ proc sel::selectCursorRange {text} {
 	set newLine $::sel::selectCursor($text)
     } else {
 	set newLine 0
-    }    
+    }
     sel::lineRange $text $newLine
     sel::updateCursor $text
 }
@@ -640,7 +639,7 @@ proc sel::selectCursor {text} {
 
 # sel::toggleCursor --
 #
-#	Toggle the selection of the line indicated by the 
+#	Toggle the selection of the line indicated by the
 #	selectCursor without deleting the previous selection.
 #
 # Arguments:
@@ -654,7 +653,7 @@ proc sel::toggleCursor {text} {
 	set newLine $::sel::selectCursor($text)
     } else {
 	set newLine 0
-    }    
+    }
     sel::multiLine $text $newLine
 }
 
@@ -683,7 +682,7 @@ proc sel::updateCursor {text} {
 
 # sel::line --
 #
-#	Select a new line in the text  Window, and  
+#	Select a new line in the text  Window, and
 #	remove all of the previously highlights.
 #
 # Arguments:
@@ -722,7 +721,7 @@ proc sel::multiLine {text line} {
     set end   [$text index "$line.0 lineend + 1 chars"]
     if {[sel::isSelected $text $line]} {
 	$text tag remove highlight $start $end
-    } else { 
+    } else {
 	$text tag add highlight $start $end
     }
     sel::widgetCmd $text multi
@@ -764,7 +763,7 @@ proc sel::lineRange {text line} {
 #
 #	Preserve the line selection data; lines selected,
 #	cursor postion, and anchor position.  This proc
-#	is useful when a text widget is updated by 
+#	is useful when a text widget is updated by
 #	deleting all text and restoring it.
 #
 # Arguments:
@@ -796,7 +795,7 @@ proc sel::preserve {text} {
 
 proc sel::restore {text} {
     variable selectPreserve
-    
+
     if {[info exists ::selectPreserve($text)]} {
 	foreach line [lindex $selectPreserve($text) 2] {
 	    sel::selectMultiLine $text $line.0
@@ -815,7 +814,7 @@ proc sel::restore {text} {
 #	None.
 #
 # Results:
-#	A list of line number that specify which lines in the 
+#	A list of line number that specify which lines in the
 #	text window are highlighted.
 
 proc sel::getSelectedLines {text} {
@@ -864,7 +863,7 @@ proc sel::getCursor {text} {
     if {![info exists ::sel::selectCursor($text)]} {
 	set ::sel::selectCursor($text) 1
     }
-	
+
     return $::sel::selectCursor($text)
 }
 
@@ -947,7 +946,7 @@ proc sel::isTagInLine {text index tag} {
     set range [lindex [$text tag nextrange $tag $start $end] 0]
     if {$range != {}} {
 	# We did get a range for the tag in between the index.  See
-	# if the line number of the range is identical to the line 
+	# if the line number of the range is identical to the line
 	# number of the index.
 
 	set thisLine [lindex [split $index .] 0]
@@ -958,7 +957,7 @@ proc sel::isTagInLine {text index tag} {
     } else {
 	# We did not get a range value.  It may be that the tag spans
 	# several lines.  Find all of the ranges with tag before start.
-	# If start is in the middle of any of these ranges, then it 
+	# If start is in the middle of any of these ranges, then it
 	# is selected.
 
 	set range [$text tag prevrange $tag $start]
@@ -995,7 +994,7 @@ proc sel::indexPastEnd {text index} {
 #	text	The text widget getting the copy request.
 #
 # Results:
-#	Returns a list of the lines of text copied to 
+#	Returns a list of the lines of text copied to
 #	the clipboard.
 
 proc sel::copy {text} {
@@ -1023,11 +1022,11 @@ proc sel::copy {text} {
 }
 
 # sel::scrollPages --
-# 	This is a utility procedure used in bindings for moving up 
-#	and down pages and possibly extending the selection along 
-#	the way.  It scrolls the view in the widget by the number 
-#	of pages, and it returns the index of the character that 
-#	is at the same position in the new view as the insertion 
+# 	This is a utility procedure used in bindings for moving up
+#	and down pages and possibly extending the selection along
+#	the way.  It scrolls the view in the widget by the number
+#	of pages, and it returns the index of the character that
+#	is at the same position in the new view as the insertion
 #	cursor used to be in the old view.
 #
 # Arguments:

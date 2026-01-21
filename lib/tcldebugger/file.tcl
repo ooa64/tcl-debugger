@@ -6,7 +6,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval file {
     # A list of most-recently-used files in their absolute
@@ -23,12 +22,12 @@ namespace eval file {
 # file::update --
 #
 #	The list of ordered blocks and unique file names
-#	is computed lazily and the results are cached 
+#	is computed lazily and the results are cached
 #	internally.  Call this command when the lists
 #	need to be re-computed (e.g. after a break.)
 #
 # Arguments:
-#	hard	Boolean, if true, do a hard update that 
+#	hard	Boolean, if true, do a hard update that
 #		resets the mruList to {}.  This should
 #		only be true when the app is restarted.
 #
@@ -56,18 +55,18 @@ proc file::update {{hard 0}} {
 #
 # Results:
 #	Returns an ordered list of blocks.  The list
-#	is ordered in a most-recently-used order, then 
+#	is ordered in a most-recently-used order, then
 #	any remaining blocks are appended to the end.
 
 proc file::getOrderedBlocks {} {
-    variable orderedList 
+    variable orderedList
     variable updateOrdered
 
     if {$updateOrdered} {
 	# Copy the list of MRU blocks into the result.  Then
 	# append any blocks that are not in the MRU list onto
 	# the end of the new list.
-	
+
 	set orderedList $::file::mruList
 	set blockList   [lsort [blk::getFiles]]
 	foreach block $blockList {
@@ -85,9 +84,9 @@ proc file::getOrderedBlocks {} {
 
 # file::getUniqueFiles --
 #
-#	Get a list of open files where each name is a 
+#	Get a list of open files where each name is a
 #	unique name for the file.  If there are more than
-#	one open file with the same name, then the name 
+#	one open file with the same name, then the name
 #	will have a unique identifier.
 #
 # Arguments:
@@ -96,12 +95,12 @@ proc file::getOrderedBlocks {} {
 # Results:
 #	Returns a list of tuples containing the unique name
 #	and the block number for the file.  The list
-#	is ordered in a most-recently-used order, then 
+#	is ordered in a most-recently-used order, then
 #	any remaining files are appended to the end.
 
 proc file::getUniqueFiles {} {
     variable prevUnique
-    variable uniqueList 
+    variable uniqueList
     variable updateUnique
 
     if {$updateUnique} {
@@ -122,7 +121,7 @@ proc file::getUniqueFiles {} {
 		# cache the ID for future use.
 
 		incr unique($short)
-		set prevUnique($block) $unique($short) 
+		set prevUnique($block) $unique($short)
 		set short "$short <$unique($short)>"
 	    } else {
 		# This is a file w/o a matching name,
@@ -182,7 +181,7 @@ proc file::pushBlock {block} {
 # file::getUntitledFile --
 #
 #	Return a filename of <Name><N> where Name is the default name
-#	to use and N is the first integer that creates a filename the 
+#	to use and N is the first integer that creates a filename the
 #	doesn't exist in this directory.
 #
 # Arguments:
@@ -191,7 +190,7 @@ proc file::pushBlock {block} {
 #	ext	The file extension to append to the filename.
 #
 # Results:
-#	A string that is the filename to use.  The directory is not 
+#	A string that is the filename to use.  The directory is not
 #	included in the filename.
 
 proc file::getUntitledFile {dir name ext} {

@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval menu {
     variable showCmd
@@ -28,7 +27,7 @@ namespace eval menu {
 	<<Paste>>		{}
 	<<Delete>>		{}
 	<<Dbg_Find>>		{}
-	<<Dbg_FindNext>>	menu::editPostCmd	
+	<<Dbg_FindNext>>	menu::editPostCmd
 	<<Dbg_Goto>>		{}
 	<<Dbg_Break>>		{}
 	<<Dbg_Eval>>		{}
@@ -146,11 +145,11 @@ proc menu::create {mainDbgWin} {
     $file add command -label "Exit" \
 	    -command {ExitDebugger} -underline 1 \
 	    -acc $menuKeys(Dbg_Exit)
-    
+
     # New/Edit Project Cascade
     set recent [menu $file.runPrj -tearoff 0 \
 	    -postcommand "menu::recentProjPostCmd"]
-    
+
     # Edit menu.
     set edit [menu $menubar.edit -tearoff 0 \
 	    -postcommand "menu::editPostCmd"]
@@ -296,7 +295,7 @@ proc menu::create {mainDbgWin} {
 
     # Enable the debug menu.  This is controlled by the debugMenu
     # preference.  This code is for internal use only.
-    # To cause the menu to appear menually add a prefence called 
+    # To cause the menu to appear menually add a prefence called
     # debugMenu and set the value to "1".
 
     if {[pref::prefExists debugMenu] && [pref::prefGet debugMenu]} {
@@ -357,18 +356,18 @@ proc menu::filePostCmd {} {
     variable menu
 
     menu::changeState {newProj openProj projSettings} normal
-    
+
     if {[llength [pref::prefGet projectList]] == 0} {
 	menu::changeState recentProj disabled
     } else {
 	menu::changeState recentProj normal
     }
-    
+
     if {[proj::isProjectOpen]} {
 	menu::changeState {closeProj saveProj saveAsProj openFile} normal
-	
+
 	# If  (1) the project has been previously saved
-	# And (2) the project file exists 
+	# And (2) the project file exists
 	# And (3) the project preferences are all up to date
 	# Set the "Save Project" menu entry to be disabled.
 
@@ -380,7 +379,7 @@ proc menu::filePostCmd {} {
     } else {
 	menu::changeState {closeProj saveProj saveAsProj openFile} disabled
     }
-    
+
     # Enable the refresh button if the current block is associated
     # with a file that is currently instrumented.
 
@@ -417,7 +416,7 @@ proc menu::filePostCmd {} {
 proc menu::recentProjPostCmd {} {
     set m $::menu::menu(recent)
     $m delete 0 end
-    
+
     set i   1
     set end [pref::prefGet comboListSize]
 
@@ -505,7 +504,7 @@ proc menu::dbgPostCmd {} {
     set state([gui::getCurrentState]) 1
 
     set remote [proj::isRemoteProj]
-    
+
     # The following expressions determine the conditions under which
     # the given menu item will be enabled.
 
@@ -598,7 +597,7 @@ proc menu::bpsPostCmd {} {
 # menu::winPostCmd --
 #
 #	This command is a "post command" for the Windows menu item.
-#	We use this command to see if we need to update our list of 
+#	We use this command to see if we need to update our list of
 #	files in the menu list.  We also do all the work of adding them
 #	if the files need to be updated.
 #
@@ -622,7 +621,7 @@ proc menu::winPostCmd {} {
     set family [font actual $font -family]
     set size   [font actual $font -size]
     set italic [list $family $size italic]
- 
+
     set line 0
     foreach {file block} [file::getUniqueFiles] {
 	set code  [list gui::showCode [loc::makeLocation $block {}]]
@@ -705,20 +704,20 @@ proc menu::refreshFile {} {
     cd  $dir
     set absfile [file join [pwd] [file tail $file]]
     cd  $oldwd
-    
+
     pref::prefSet GlobalDefault fileOpenDir $dir
-    
+
     set block [blk::makeBlock $absfile]
     set loc [loc::makeLocation $block {}]
     gui::showCode $loc
-    
+
     return
 }
 
 # menu::showOrHideDbgWindow --
 #
 #	Display or remove the current frame from the window. It is
-#	assumed that the window has already been created and just 
+#	assumed that the window has already been created and just
 #	needs additional management by the packer.
 #
 # Arguments:
@@ -743,7 +742,7 @@ proc menu::showOrHideDbgWindow {showFrm geomCmd} {
 # menu::changeState --
 #
 #	Change the state of menu items.  There is a limited number
-#	of menu items whose state will change over the course of the 
+#	of menu items whose state will change over the course of the
 #	debug session.  Given the name of the menu item, this routine
 #	locates the handle to the menu item and updates the state.
 #
@@ -884,7 +883,7 @@ proc menu::showFileWindow {showList} {
 	menu::createFileWindow
 	menu::updateFileWindow $showList
 	focus $::menu::selectText
-    }    
+    }
 
     grab release $::gui::gui(mainDbgWin)
 
@@ -902,7 +901,7 @@ proc menu::showFileWindow {showList} {
 #	None.
 
 proc menu::createFileWindow {} {
-    variable selectText 
+    variable selectText
 
     set bd 2
     set pad 6
@@ -964,7 +963,7 @@ proc menu::createFileWindow {} {
 #			to contain:
 #		          block		The block of the file.
 #			  code		The code to run to show the file.
-#			  instrumented	Boolean, true if the file is 
+#			  instrumented	Boolean, true if the file is
 #					instrumented.
 #
 # Results:
@@ -1037,8 +1036,8 @@ proc menu::removeFileWindow {} {
 
 # menu::accKeyPress --
 #
-#	All key bindings are routed through this routine.  If a 
-#	"post command" exists for the event, then it is run to 
+#	All key bindings are routed through this routine.  If a
+#	"post command" exists for the event, then it is run to
 #	update the state and determine if the event should be
 #	trapped or executed.
 #

@@ -7,7 +7,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval procWin {
     # Handles to widgets in the Proc Window.
@@ -42,7 +41,7 @@ namespace eval procWin {
 # procWin::showWindow --
 #
 #	Create the procedure window that will display
-#	all the procedures in the running application. 
+#	all the procedures in the running application.
 #
 # Arguments:
 #	None.
@@ -68,7 +67,7 @@ proc procWin::showWindow {} {
 # procWin::createWindow --
 #
 #	Create the procedure window that will display
-#	all the procedures in the running application. 
+#	all the procedures in the running application.
 #
 # Arguments:
 #	None.
@@ -104,12 +103,12 @@ proc procWin::createWindow {} {
     set patBut [button $mainFrm.patBut -text "Search" \
 	    -command procWin::updateWindow]
 
-    # Place a separating line between the var info and the 
+    # Place a separating line between the var info and the
     # value of the var.
 
     set sepFrm [frame $mainFrm.sep1 -bd $bd -relief groove -height $bd]
-    
-    # Create the text widget that displays all procs and the 
+
+    # Create the text widget that displays all procs and the
     # "Show Code" button.
 
     set showChk  [checkbutton $mainFrm.showChk -variable [namespace current]::showChkVar \
@@ -184,7 +183,7 @@ proc procWin::createWindow {} {
 # procWin::updateWindow --
 #
 #	Populate the Proc Windows list box with procedures
-#	currently defined in the running app. 
+#	currently defined in the running app.
 #
 # Arguments:
 #	preserve	Preserve the selection status if true.
@@ -242,7 +241,7 @@ proc procWin::updateWindow {{preserve 0}} {
 	set patValue "*"
     }
 
-    # The list returned from dbg::getProcs is a list of pairs 
+    # The list returned from dbg::getProcs is a list of pairs
     # containing {procName <loc>}.  For each item in the list
     # insert the proc name in the window if it matches the
     # pattern.  If the proc is not instrumented, then add the
@@ -283,20 +282,20 @@ proc procWin::updateWindow {{preserve 0}} {
 
 # procWin::resetWindow --
 #
-#	Reset the window to be blank, or leave a message 
+#	Reset the window to be blank, or leave a message
 #	in the text box.
 #
 # Arguments:
-#	msg	If not empty, then put this message in the 
+#	msg	If not empty, then put this message in the
 #		procText text widget.
 #
 # Results:
 #	None.
 
 proc procWin::resetWindow {{msg {}}} {
-    variable procCache    
+    variable procCache
     variable procText
-    
+
     if {![winfo exists $::gui::gui(procDbgWin)]} {
 	return
     }
@@ -340,8 +339,8 @@ proc procWin::showCode {text} {
 	return
     }
 
-    # If we can succesfully extracted a procName, 
-    # verify that there is a <loc> cached for the 
+    # If we can succesfully extracted a procName,
+    # verify that there is a <loc> cached for the
     # procName.  If the <loc> is {}, then this may
     # be uninstrumented code.  Request a <loc> based
     # on the proc name.
@@ -376,7 +375,7 @@ proc procWin::showCode {text} {
 #	This function is run when we want to either instrument or
 #	uninstrument the selected procedure in the proc window.  It will
 #	interact with the text box to find the selected procedure, find the
-#	corresponding location (if available), and the do the operation 
+#	corresponding location (if available), and the do the operation
 #	specified by the op argument.
 #
 # Arguments:
@@ -395,19 +394,19 @@ proc procWin::instrument {op text} {
 	code::resetWindow $msg
 	return
     }
-    
+
     set lines [sel::getSelectedLines $text]
     foreach line $lines {
 	if {[lsearch -exact [$text tag names $line.0] procName] < 0} {
 	    continue
 	}
-	
-	# If we can succesfully extracted a procName, 
-	# verify that there is a <loc> cached for the 
+
+	# If we can succesfully extracted a procName,
+	# verify that there is a <loc> cached for the
 	# procName.  If the <loc> is {}, then this may
 	# be uninstrumented code.  Request a <loc> based
 	# on the proc name.
-	
+
 	set loc {}
 	set procName [procWin::getProcName $text $line]
 	if {[info exists procCache($procName)]} {
@@ -432,7 +431,7 @@ proc procWin::instrument {op text} {
 	}
     }
 
-    # Extract and save the block number associated with the 
+    # Extract and save the block number associated with the
     # proc name pointed to by the selection cursor.  This
     # will be used to update the Code Window if the currently
     # displayed block number is identical to the block number
@@ -447,23 +446,23 @@ proc procWin::instrument {op text} {
 	set blk {}
     }
 
-    # Update the Proc Windows display.  This has the side affect 
+    # Update the Proc Windows display.  This has the side affect
     # of assigning new block numbers to each proc name.
 
     procWin::updateWindow 1
 
     # Display the code if the old proc body was being displayed.
-    # This needs to be called after "procWin::updateWindow" is 
+    # This needs to be called after "procWin::updateWindow" is
     # called, so the new block is displayed.
 
     if {($blk != {}) && ([gui::getCurrentBlock] == $blk) \
 	    && [blk::isDynamic $blk]} {
 	procWin::showCode $text
     }
-    
-    # The blocks have been changed.  Reset the block-to-filename 
+
+    # The blocks have been changed.  Reset the block-to-filename
     # relationship.
-    
+
     file::update
 }
 
@@ -499,7 +498,7 @@ proc procWin::checkState {text} {
 	}
 	if {$loc == ""} {
 	    set inst 1
-	} else { 
+	} else {
 	    set uninst 1
 	}
     }
@@ -528,7 +527,7 @@ proc procWin::checkState {text} {
 
 # procWin::trimProcName --
 #
-#	If the app is 8.0 or higher, then namespaces exist.  
+#	If the app is 8.0 or higher, then namespaces exist.
 #	This proc strips off the leading ::'s if the apps
 #	tcl_version is 8.0 or greater.  This procedure will
 #	also stip the name of characters that could cause
@@ -558,8 +557,8 @@ proc procWin::trimProcName {procName} {
 
 # procWin::getProcName --
 #
-#	Get the procName from the text widget.  If the 
-#	app is 8.0 or higher, then namespaces exist.  
+#	Get the procName from the text widget.  If the
+#	app is 8.0 or higher, then namespaces exist.
 #	This proc appends the leading ::'s if the apps
 #	tcl_version is 8.0 or greater.
 #

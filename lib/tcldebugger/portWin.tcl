@@ -6,7 +6,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval portWin {
     # Widgets that are used througout this module for updating
@@ -15,7 +14,7 @@ namespace eval portWin {
     variable msgLbl
     variable portEnt
 
-    # Vwait variable used to indicate when a valid port has been 
+    # Vwait variable used to indicate when a valid port has been
     # entered.
 
     variable newPortVar
@@ -23,7 +22,7 @@ namespace eval portWin {
 
 # portWin::showWindow --
 #
-#	Show the window.  If it does not exist, create it.  If it does 
+#	Show the window.  If it does not exist, create it.  If it does
 #	exist, bring it to focus.
 #
 # Arguments:
@@ -49,7 +48,7 @@ proc portWin::showWindow {port} {
 
 # portWin::CreateWindow --
 #
-#	Create the window from scratch.  It is assumed that the window 
+#	Create the window from scratch.  It is assumed that the window
 #	currently does not exist.
 #
 # Arguments:
@@ -160,8 +159,8 @@ proc portWin::UpdateWindow {port} {
 
 # portWin::ApplyWindow --
 #
-#	Verify the new port is valid.  If the nerw port is valid then 
-#	destroy the window and set the vwait var to the value of the 
+#	Verify the new port is valid.  If the nerw port is valid then
+#	destroy the window and set the vwait var to the value of the
 #	port.  Otherwise beep and update the error message.
 #
 # Arguments:
@@ -203,7 +202,7 @@ proc portWin::isPortValid {port} {
     if {[catch {incr port 0}]} {
 	return 0
     }
-  
+
     # If the errorCode is not EADDRINUSE nor EACCES then an error occured
     # that was not a taken port.  Make sure to close the port when one
     # is found, so the correct routine can be called to re-open

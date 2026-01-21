@@ -6,7 +6,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 # Register the TclBlend extension
 
@@ -43,7 +42,7 @@ proc blend::parseTry {tokens index} {
     set argc [llength $tokens]
     while {$i < $argc} {
 	# At this point in the loop, there are 3X + 2 more args.
-	
+
 	if {$i == [expr {$argc - 2}]} {
 	    lappend argList parseWord parseBody
 	    incr i 2

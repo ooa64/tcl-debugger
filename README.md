@@ -30,7 +30,7 @@ which is also accessible from the Help menu item on the Debugger's menu bar.
 Below is the relevant portion of the Flightaware README
 
 ```
-The debugger code has been upgraded to function with up-to-date releases of 
+The debugger code has been upgraded to function with up-to-date releases of
 Tcl/Tk (i.e., versions 8.5, 8.6):
 
 * Tk GUI code upgraded to work with current Tk API.

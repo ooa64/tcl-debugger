@@ -58,7 +58,7 @@ namespace eval debugger {
 
     wm withdraw .
 }
-	
+
 
 proc ::Source { path } {
     variable ::hasLoader
@@ -68,7 +68,7 @@ proc ::Source { path } {
     if {($hasLoader == 1) && ([file exists $stem.tbc] == 1)} {
 	set loadTcl [catch {uplevel 1 [list source $stem.tbc]}]
     }
-    
+
     if {$loadTcl == 1} {
 	uplevel 1 [list source $stem.tcl]
     }
@@ -208,12 +208,12 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
 	}
 	exit 1
     }
-    
+
     # WARNING. These routines need to be called in this order!
 
     TestForSockets
     system::init
-    
+
     # Display the splash screen and set a timer to remove it.
 
     set about [gui::showAboutWindow]
@@ -224,7 +224,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
     if {[info commands send] == "send"} {
 	rename send ""
     }
-    
+
     # Calculate the font data for the current font.
 
     font::configure [pref::prefGet fontType] [pref::prefGet fontSize]
@@ -266,7 +266,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
 
     # Load any external extensions from <ProRoot>/lib and
     # from env(TCLPRO_LOCAL).
-    
+
     namespace eval :: {namespace import -force ::instrument::*}
     set files [glob -nocomplain \
 	    [file join [file dir [info nameofexecutable]] ../../lib/*.pdx]]
@@ -279,7 +279,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
 	    bgerror "Error loading $file:\n$err"
 	}
     }
-    
+
     # Hide the main window until the splash screen is gone.
 
     if {[winfo exists $about]} {
@@ -290,9 +290,9 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
 
     # Defer the update until after we've sourced any extensions to avoid
     # annoying refreshes.
- 
+
     update
-    
+
     # If there are more than one arguments left on the command line
     # dump the usage string and exit.  However, on windows
     # there is not stdout so we display the message to a message box.
@@ -388,7 +388,7 @@ proc CleanExit {} {
 # TestForSockets --
 #
 #	The debugger requires sockets to work.  This routine
-#	tests to ensure we have sockets.  If we don't have 
+#	tests to ensure we have sockets.  If we don't have
 #	sockets we gen an error message and exit.
 #
 # Arguments:

@@ -6,12 +6,11 @@
 # Copyright (c) 1998-2000 by Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 if {[info exists ::tcltest::testSingleFile]} {
     if {!$::tcltest::testSingleFile} {
 	set saveOutput $::tcltest::temporaryDirectory
-    }   
+    }
 }
 
 lappend auto_path [file join [file dirname [info script]] ..]

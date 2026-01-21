@@ -1,12 +1,11 @@
 # evalWin.tcl --
 #
-#	The file implements the Debuger interface to the 
+#	The file implements the Debuger interface to the
 #	TkCon console (or whats left of it...)
 #
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval evalWin {
 
@@ -14,7 +13,7 @@ namespace eval evalWin {
 
     variable evalText
 
-    # The handle to the combo box that contains the list of 
+    # The handle to the combo box that contains the list of
     # valid level to eval commands in.
 
     variable levelCombo
@@ -48,7 +47,7 @@ proc evalWin::showWindow {} {
 	evalWin::updateWindow
 	focus $::evalWin::evalText
 	return $::gui::gui(evalDbgWin)
-    }    
+    }
 }
 
 # evalWin::createWindow --
@@ -89,7 +88,7 @@ proc evalWin::createWindow {} {
     pack $levelCombo -side left -padx 3
     pack $closeBut -side right
 
-    # Place a separating line between the var info and the 
+    # Place a separating line between the var info and the
     # value of the var.
 
     set sepFrm [frame $mainFrm.sep1 -bd $bd -relief groove -height $bd]
@@ -151,7 +150,7 @@ proc evalWin::updateWindow {} {
 
     # Enable typing in the console and remove the disabled
     # look of the console by removing the disabled tags.
-    
+
     $evalText tag remove disable 0.0 "end + 1 lines"
     bind::removeBindTag $::evalWin::evalText disableKeys
 
@@ -254,7 +253,7 @@ proc evalWin::evalResult {id code result errCode errInfo} {
 
 # evalWin::moveLevel --
 #
-#	Move the current eval level up or down within range 
+#	Move the current eval level up or down within range
 #	of acceptable levels.
 #
 # Arguments:
@@ -284,7 +283,7 @@ proc evalWin::moveLevel {amount} {
 
 # evalWin::requestLevel --
 #
-#	Request a level, between 0 and 9, to evaluate the next 
+#	Request a level, between 0 and 9, to evaluate the next
 #	command in.  If the level is invalid, do nothing.
 #
 # Arguments:
@@ -314,7 +313,7 @@ proc evalWin::requestLevel {level} {
 proc evalWin::getLevels {} {
     variable evalText
     variable levelCombo
-    
+
     set maxLevel [dbg::getLevel]
     set result {}
     for {set i 0} {$i <= $maxLevel} {incr i} {

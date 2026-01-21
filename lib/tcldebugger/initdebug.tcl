@@ -6,9 +6,8 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
 
-   
+
 #
 # This file comprises the public interface to the TclPro Debugger for use
 # by applications that are not launched directly from the debugger.  The
@@ -101,7 +100,7 @@ proc debugger_eval {args} {
 
 # debugger_break --
 #
-#	This command may be inserted in user code to cause a break 
+#	This command may be inserted in user code to cause a break
 #	to occur at the location of this command.  If the application
 #	is not connected to the debugger this command is a no-op.
 #
@@ -154,5 +153,5 @@ proc debugger_setCatchFlag {flag} {
     return 1
 }
 
-    
+
 }

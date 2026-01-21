@@ -4,7 +4,7 @@ exec protclsh82 "$0" "$@"
 
 # fac.tcl --
 #
-# This program computes factorials.  It is intended as a 
+# This program computes factorials.  It is intended as a
 # simple demo application for TclPro.
 
 # This procedure computes the factorial of its argument using a
@@ -31,9 +31,9 @@ while {$iter == 1} {
     # Output the factorial
 
     puts "${value}! is [fac $value]"
-    
+
     # Do it again?
-    
+
     puts -nonewline "Calculate another factorial? (y/n) "
     flush stdout
     set iter [regexp {^[yY]} [gets stdin]]

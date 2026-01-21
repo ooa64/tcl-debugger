@@ -2,13 +2,12 @@
 #
 #	This file implements the Find and Goto Windows.  The find
 #	namespace and associated code are at the top portion of
-#	this file.  The goto namespace and associated files are 
+#	this file.  The goto namespace and associated files are
 #	at the bottom portion of this file.
 #
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval find {
     # These vars are used to generalized the find command
@@ -30,7 +29,7 @@ namespace eval find {
     # findBox	The handle to the combobox used to show history.
     # findList	The list of items in the history (persistent between runs)
     # findVar	The pattern/word to search for.
-    
+
     variable findBox
     variable findList  {}
     variable findVar   {}
@@ -51,10 +50,10 @@ namespace eval find {
 
     # These vars are used for performing incremental searches.
     # Such as searching for the next var that matches.
-    # 
+    #
     # blkIndex	The index where the search will start.
     # blkList	The list of blocks to search.
-    # nextBlk	An index into the blkList that points to the 
+    # nextBlk	An index into the blkList that points to the
     #		next block to search.
     # startBlk	Stores where the search began to pervent infinite loops.
     # found	Array that stores previously found words.
@@ -88,7 +87,7 @@ proc find::showWindow {} {
 	find::createWindow
 	focus $::find::findBox.e
 	return $::gui::gui(findDbgWin)
-    }  
+    }
 }
 
 # find::createWindow --
@@ -234,14 +233,14 @@ proc find::execute {} {
 proc find::init {} {
     variable findText
     variable searchVar
-    variable blkList 
+    variable blkList
     variable blkIndex
     variable nextBlk
     variable startBlk
     variable found
 
     # Create the list of documents to search through.  If the
-    # user selected "search all open..." then the list will 
+    # user selected "search all open..." then the list will
     # contain all files, otherwise it will only contain the
     # currently displayed block.
 
@@ -266,7 +265,7 @@ proc find::init {} {
 
     set startBlk $nextBlk
 
-    # If there is data for found matches, remove them and 
+    # If there is data for found matches, remove them and
     # start searching fresh.
 
     if {[info exists found]} {
@@ -276,7 +275,7 @@ proc find::init {} {
 
 # find::nextOK --
 #
-#	Determine if data has been initialized so that 
+#	Determine if data has been initialized so that
 #	find next will execute.
 #
 # Arguments:
@@ -301,9 +300,9 @@ proc find::nextOK {} {
 
 proc find::next {} {
     variable findText
-    variable dirVar   
+    variable dirVar
     variable searchVar
-    variable blkList 
+    variable blkList
     variable blkIndex
     variable nextBlk
     variable startBlk
@@ -329,8 +328,8 @@ proc find::next {} {
     # We are searching multiple documents, loop through the open
     # documents and try to find a match.  When the while loop is
     # entered, a new block may be loaded into the text widget so
-    # we can perform text-based seraches.  If no match is found 
-    # we want to restore the code display to its original state. 
+    # we can perform text-based seraches.  If no match is found
+    # we want to restore the code display to its original state.
     # Store this state.
 
     set thisBlk      [gui::getCurrentBlock]
@@ -349,7 +348,7 @@ proc find::next {} {
 	# (determined in find::init) then unset any found
 	# data and continue.
 
-	incr nextBlk 
+	incr nextBlk
 	if {$nextBlk >= [llength $blkList]} {
 	    set nextBlk 0
 	}
@@ -365,14 +364,14 @@ proc find::next {} {
 
 	# If we have a valid new block, bring that block into the
 	# Code Window's text widget so we can perform text based
-	# searches.  
+	# searches.
 
 	set thisBlk [lindex $blkList $nextBlk]
 	if {$thisBlk != [gui::getCurrentBlock]} {
 	    set loc [loc::makeLocation $thisBlk {}]
 	    gui::showCode $loc
 	}
-	
+
 	# Reset the starting search index and search the new block.
 	if {$dirVar} {
 	    set blkIndex 1.0
@@ -396,11 +395,11 @@ proc find::next {} {
 	} else {
 	    # Searching Backwards
 	    set blkIndex [$findText index "$start - 1c"]
-	}	
+	}
 
-	# Add the selection tag to the matched string, move the 
+	# Add the selection tag to the matched string, move the
 	# insertion cursor to this location and call the code:see
-	# routine that lines up all of the code text widgets to 
+	# routine that lines up all of the code text widgets to
 	# the same view region.
 
 	$findText tag remove sel  0.0 end
@@ -430,7 +429,7 @@ proc find::next {} {
 #	None.
 #
 # Results:
-#	A range into the text widget with the start and 
+#	A range into the text widget with the start and
 #	end index of the match, or empty string if no
 #	match was found.
 
@@ -440,7 +439,7 @@ proc find::search {} {
     variable wordVar
     variable caseVar
     variable regexpVar
-    variable dirVar   
+    variable dirVar
     variable blkIndex
 
     if {$caseVar} {
@@ -460,9 +459,9 @@ proc find::search {} {
     }
 
     # Try to find the next match in this block.  The value of
-    # index is the first char that matches the pattern or 
+    # index is the first char that matches the pattern or
     # empty string if no match was found.  If a match was
-    # found, then the var "numChars" will be set with the 
+    # found, then the var "numChars" will be set with the
     # number of chars that matched.
 
     set index [eval "$findText search $dir $match $nocase \
@@ -499,7 +498,7 @@ proc find::wholeWordMatch {start end} {
     # end of the word is greater than the end index of
     # the search result, then the match failed.  Call
     # find::next to search further.
-    
+
     if {$wordVar} {
 	set wordEnd "$start wordend"
 	if {[$findText compare $wordEnd > $end]} {
@@ -560,7 +559,7 @@ proc goto::showWindow {} {
 #	None.
 
 proc goto::createWindow {} {
-    variable gotoOptions 
+    variable gotoOptions
     variable choiceVar
     variable choiceBox
     variable lineEnt
@@ -617,16 +616,16 @@ proc goto::createWindow {} {
     bind gotoDbgWin <Escape> "$closeBut invoke; break"
 
     bind gotoDbgWin <Up> {
-	goto::changeCombo -1 
+	goto::changeCombo -1
     }
     bind gotoDbgWin <Down> {
-	goto::changeCombo 1 
+	goto::changeCombo 1
     }
 }
 
 # goto::updateLabels --
 #
-#	Make the button label and line label consistent 
+#	Make the button label and line label consistent
 #	with the current goto option.
 #
 # Arguments:
@@ -645,12 +644,12 @@ proc goto::updateLabels {} {
     switch $option {
 	0 {
 	    # Move up lines.
-	    $gotoBut configure -text "Move Up"	    
+	    $gotoBut configure -text "Move Up"
 	    set lineVar "Number of lines"
 	}
 	1 {
 	    # Move down lines.
-	    $gotoBut configure -text "Move Down"	    
+	    $gotoBut configure -text "Move Down"
 	    set lineVar "Number of lines"
 	}
 	2 {

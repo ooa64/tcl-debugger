@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
 
 package require parser
 package provide gui 1.0
@@ -229,7 +228,7 @@ proc gui::showMainWindow {} {
     bind::addBindTags $mainDbgWin mainDbgWin
 
     # Initialize the coverage gui.
-    
+
     coverage::init
 
     # Invoke the appropriate menu times to ensure that the display
@@ -502,7 +501,7 @@ proc gui::userbreakHandler {args} {
     }
 
     tk_messageBox -type ok -title "User Break" -message $msg -icon warning \
-	    -parent $::gui::gui(mainDbgWin) 
+	    -parent $::gui::gui(mainDbgWin)
     return
 }
 
@@ -560,7 +559,7 @@ proc gui::exitHandler {} {
 
 	# HACK:  This is a big hairy work around due to the fact that
 	# Windows does not recycle it's ports immediately.  If this
-	# is not done, it will appear as though another app is using 
+	# is not done, it will appear as though another app is using
 	# our port.
 
 	if {$::tcl_platform(platform) == "windows"} {
@@ -771,13 +770,13 @@ proc gui::start {cmd} {
 	# Make the starting directory relative to the path of the project
 	# file. If the script path is absolute, then the join does nothing.
 	# Otherwise, the starting dir is relative from the project directory.
-	
+
 	if {![proj::projectNeverSaved]} {
 	    set dir [file join [file dirname [proj::getProjectPath]] $dir]
 	}
 
-	# Make sure the script path is absolute so we can source 
-	# relative paths.  File joining the dir with the script 
+	# Make sure the script path is absolute so we can source
+	# relative paths.  File joining the dir with the script
 	# will give us an abs path.
 
 	set script [file join $dir $script]
@@ -2570,10 +2569,10 @@ proc gui::showConnectStatus {{update {}}} {
 
 	toplevel $w
 	wm title $w "Connection Status"
-	::guiUtil::positionWindow $w 
+	::guiUtil::positionWindow $w
 	wm minsize  $w 100 100
 	wm transient $w $::gui::gui(mainDbgWin)
-	
+
 	set m [frame $w.mainFrm -bd 2 -relief raised]
 	pack $m -fill both -expand true -padx 6 -pady 6
 

@@ -102,7 +102,7 @@ proc debugger_eval {args} {
 
 # debugger_break --
 #
-#	This command may be inserted in user code to cause a break 
+#	This command may be inserted in user code to cause a break
 #	to occur at the location of this command.  If the application
 #	is not connected to the debugger this command is a no-op.
 #

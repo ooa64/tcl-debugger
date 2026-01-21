@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval bp {
     # The text window that displays the breakpoints.
@@ -49,7 +48,7 @@ proc bp::showWindow {} {
 	bp::updateWindow
 	focus $::bp::breakText
 	return $::gui::gui(breakDbgWin)
-    }    
+    }
 }
 
 # bp::createWindow --
@@ -77,9 +76,9 @@ proc bp::createWindow {} {
 
     set pad 3
     array set bar [system::getBar]
- 
+
     # Create the table that lists the existing breakpoints.
-    # This is a live, editable list that shows the current 
+    # This is a live, editable list that shows the current
     # breakpoints and the state of each breakpoint.  Add
     # buttons to the right for editing the table.
 
@@ -170,7 +169,7 @@ proc bp::createWindow {} {
 #	Update the list of breakpoints so it shows the most
 # 	current reprsentation of all breakpoints.  This proc
 #	should be called after the bp::showWindow, after
-#	any LBP events in the CodeBar, or any VBP events in 
+#	any LBP events in the CodeBar, or any VBP events in
 #	the Var/Watch Windows.
 #
 # Arguments:
@@ -184,14 +183,14 @@ proc bp::updateWindow {} {
     variable breakBar
     variable breakpoint
 
-    # If the window is not current mapped, then there is no need to 
+    # If the window is not current mapped, then there is no need to
     # update the display.
 
     if {![winfo exists $::gui::gui(breakDbgWin)]} {
 	return
     }
 
-    # Clear out the display and remove any breakpoint locs 
+    # Clear out the display and remove any breakpoint locs
     # that may have been cached in previous displays.
 
     $breakText delete 0.0 end
@@ -202,13 +201,13 @@ proc bp::updateWindow {} {
 
     # This is used when inserting LBPs and VBPs.  The breakpoint
     # handles are stored in the "bp::breakpoint" array and are
-    # accessed according to the line number of the bp in the 
+    # accessed according to the line number of the bp in the
     # text widget.
 
     set currentLine 1
 
     # The breakpoints are in an unordered list.  Create an array
-    # so the breakpoints can be sorted in order of file name, 
+    # so the breakpoints can be sorted in order of file name,
     # line number and the test.
 
     set first 1
@@ -251,7 +250,7 @@ proc bp::updateWindow {} {
 	    } else {
 		icon::drawLBP $breakBar end disabledBreak
 	    }
-	    $breakBar insert end "\n" 
+	    $breakBar insert end "\n"
 
 	    # Cache the <loc> object based on the line number of the
 	    # description in the breakText widget.
@@ -303,14 +302,14 @@ proc bp::updateWindow {} {
 	    } else {
 		icon::drawVBP $breakBar end disabledBreak
 	    }
-	    $breakBar insert end "\n" 
+	    $breakBar insert end "\n"
 
 	    set breakpoint($currentLine) $bp
 	    incr currentLine
-	}    
+	}
 	unset unsorted
     }
-    set index [sel::getCursor $breakText].0 
+    set index [sel::getCursor $breakText].0
     if {[sel::indexPastEnd $breakText $index]} {
 	sel::selectLine $breakText "end - 1l"
     } else {
@@ -360,14 +359,14 @@ proc bp::showCode {} {
     }
     if {[break::getType $breakpoint($line)] == "line"} {
 	set loc  [break::getLocation $breakpoint($line)]
-	
-	# The BPs are preserved between sessions.  The 
+
+	# The BPs are preserved between sessions.  The
 	# file associated with the breakpoint may or may
-	# not still exist.  To verify this, get the Block 
+	# not still exist.  To verify this, get the Block
 	# source.  If there is an error, set the loc to {}.
 	# This way the BP dosent cause an error, but gives
 	# feedback that the file cannot be found.
-	
+
 	if {[catch {blk::getSource [loc::getBlock $loc]}]} {
 	    set loc {}
 	}
@@ -400,7 +399,7 @@ proc bp::removeAll {} {
 	dbg::removeBreakpoint $bp
     }
 
-    # Based on the type of breakpoints we removed, update 
+    # Based on the type of breakpoints we removed, update
     # related windows.
 
     if {$updateCodeBar} {
@@ -435,7 +434,7 @@ proc bp::removeSelected {} {
     set updateCodeBar  0
     set updateVarWatch 0
     set cursor [sel::getCursor $breakText]
-    set selectedLines [sel::getSelectedLines $breakText] 
+    set selectedLines [sel::getSelectedLines $breakText]
     foreach line $selectedLines {
 	if {[break::getType $breakpoint($line)] == "line"} {
 	    set updateCodeBar  1
@@ -462,7 +461,7 @@ proc bp::removeSelected {} {
 #
 #	Check the state of the Breakpoint Window.  Enable the
 #	"Remove All" button if there are entries in the window.
-#	Enable the "Show Code" and "Remove" buttons if there 
+#	Enable the "Show Code" and "Remove" buttons if there
 #	are one or more selected lines.  Remove the first two
 #	chars where the BP icons are located.
 #
@@ -479,8 +478,8 @@ proc bp::checkState {} {
     variable showBut
     variable remBut
     variable allBut
-    
-    # If the window is not current mapped, then there is no need to 
+
+    # If the window is not current mapped, then there is no need to
     # update the display.
 
     if {![winfo exists $::gui::gui(breakDbgWin)]} {
@@ -540,10 +539,10 @@ proc bp::toggleBreakState {index} {
     variable breakText
     variable breakBar
     variable breakpoint
-    
+
     set selLine [lindex [split [$breakBar index $index] .] 0]
 
-    # If there is no info for the selected line, then 
+    # If there is no info for the selected line, then
     # the user has selected a line in the text widget that
     # does not contain a BP.  Return w/o doing anything.
 
@@ -591,8 +590,8 @@ proc bp::toggleBreakState {index} {
 		set updateVarWatch 1
 	    }
 	}
-    } 
-    
+    }
+
     # If one or more VBPs were toggled we need to update the Var
     # and Watch Windows.
 
@@ -601,7 +600,7 @@ proc bp::toggleBreakState {index} {
 	watch::updateWindow
     }
 
-    # If one or more LBPs were toggled we need to update the 
+    # If one or more LBPs were toggled we need to update the
     # CodeBar to display the current LBPs.
 
     code::updateCodeBar
@@ -648,7 +647,7 @@ proc bp::toggleVBP {text line breakState} {
 
 # bp::setProjectBreakpoints --
 #
-#	Remove any existing breakpoints and restore 
+#	Remove any existing breakpoints and restore
 #	the projects LBP from the bps list.
 #
 # Arguments:

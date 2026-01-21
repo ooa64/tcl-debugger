@@ -5,8 +5,6 @@
 # Copyright (c) 1996 Dartmouth College
 # Copyright (c) 1998 Scriptics Corporation
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
-# RCS: @(#) $Id: hiqGUI.tcl,v 1.2 2000/10/31 23:31:09 welch Exp $
 
 # pop-up_main_window --
 #
@@ -15,7 +13,7 @@ proc pop_up_main_window {} {
 
     frame .hiq -borderwidth 10 -bg $color(bg) \
 	-highlightbackground $color(bg) -highlightcolor $color(bg) ;
-  
+
     set w .hiq.board
 
     # create hiq board
@@ -25,7 +23,7 @@ proc pop_up_main_window {} {
     # create a button frame
     frame .hiq.butt_frame -borderwidth 5 -bg $color(bg) \
 	-highlightbackground $color(bg) -highlightcolor $color(bg) ;
-  
+
     # create a restart button
     button .hiq.butt_frame.restart -text "Restart" -command "start_game $w 1" \
 	-fg $color(button-fg) -activeforeground $color(button-fg) \
@@ -38,7 +36,7 @@ proc pop_up_main_window {} {
 	-bg $color(button-bg) -activebackground $color(button-bg) \
 	-disabledforeground $color(button-fg) -state disabled \
 	-highlightthickness 0
-    
+
     pack $w
     focus $w
     pack .hiq.butt_frame.restart -side left -padx 5
@@ -48,10 +46,10 @@ proc pop_up_main_window {} {
 
     # draw the triangle
     $w create polygon 0 360 250 0 500 360 -fill $color(canvas-fg)
-    
+
     # create a message object
     $w create text 250 385 -fill $color(fg) -tags message
-    
+
     return $w
 }
 
@@ -60,13 +58,13 @@ proc pop_up_main_window {} {
 
 proc CanvasMark {w x y tag} {
     global current_peg
-    
+
     new_message $w ""
     $w raise $tag
 
     set current_peg(oldx) $x
     set current_peg(oldy) $y
-    
+
     set current_peg(x) $x
     set current_peg(y) $y
 }
@@ -89,11 +87,11 @@ proc CanvasDrop {w x y row column} {
     global current_peg list_of_moves
 
     set hole_was_found 0
-  
+
     foreach num [$w find enclosed \
 		     [expr {$x - 30}] [expr {$y - 30}] \
 		     [expr {$x + 30}] [expr {$y + 30}]] {
-	
+
 	set taglist [$w gettags $num]
 
 	if {[lsearch $taglist "hole"] >= 0} {
@@ -106,7 +104,7 @@ proc CanvasDrop {w x y row column} {
 	    break
 	}
     }
-  
+
     # if no hole was found, then error
     if {!$hole_was_found} {
 	new_message $w "peg is not over a hole"
@@ -120,24 +118,24 @@ proc CanvasDrop {w x y row column} {
 	new_message $w "illegal move"
 	replace_peg $w peg($row,$column) $x $y
 	return
-    }  
-    
+    }
+
     # center the peg over the new hole
     eval "$w coords peg($row,$column) $hole_coords"
-    
+
     # change the peg's tag to reflect the move
     $w addtag peg($newrow,$newcolumn) withtag peg($row,$column)
     $w dtag peg($newrow,$newcolumn) peg($row,$column)
-    
+
     # remove the peg that was jumped over
     set midrow [lindex $answer 0]
     set midcolumn [lindex $answer 1]
     $w delete peg($midrow,$midcolumn)
-    
+
     # add this move to the list of moves
     lappend list_of_moves \
 	[list $row $column $newrow $newcolumn $midrow $midcolumn]
-    
+
     # if game is over, unbind all pegs
     if {[lindex $answer 2]} {
 	unbind_all_pegs $w
@@ -160,14 +158,14 @@ proc replace_peg {w tag x y} {
     $w move $tag [expr {$current_peg(oldx) - $x}] \
 	[expr {$current_peg(oldy) - $y}]
 }
-		    
+
 # bind_peg --
 #
 proc bind_peg {w row column tag} {
     global color
 
     .hiq.butt_frame.undo configure -state normal -bg $color(button-bg)
-    
+
     $w bind $tag <ButtonPress-1> "CanvasMark $w %x %y $tag"
     $w bind $tag <B1-Motion> "CanvasDrag $w %x %y $tag"
     $w bind $tag <ButtonRelease-1> "CanvasDrop $w %x %y $row $column"
@@ -179,7 +177,7 @@ proc unbind_all_pegs {w} {
     global color
 
     .hiq.butt_frame.undo configure -state disabled -bg $color(button-mute)
-    
+
     foreach num [$w find withtag "peg"] {
 
 	set tag [lindex [$w gettags $num] 1]

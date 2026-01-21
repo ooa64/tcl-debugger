@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval result {
     variable text  {}
@@ -15,7 +14,7 @@ namespace eval result {
 # result::createWindow --
 #
 #	Create the window for displaying command results inside the specified
-#	master. 
+#	master.
 #
 # Arguments:
 #	mainDbgWin	The toplevel window for the main debugger.

@@ -49,7 +49,7 @@ proc ::TclProAboutBox {aboutImage logoImage} {
     pack $f1 -fill both
 
     # Create the images
-    
+
     image create photo about -file $aboutImage
     image create photo logo -file $logoImage
 

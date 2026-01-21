@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval tool {
     # Array used to store handles to all of the toolbar buttons.
@@ -25,7 +24,7 @@ namespace eval tool {
 #	mainDbgWin	The toplevel window for the main debugger.
 #
 # Results:
-#	The handle to the frame that contains all of the toolbar buttons. 
+#	The handle to the frame that contains all of the toolbar buttons.
 
 proc tool::createWindow {mainDbgWin} {
     variable tool
@@ -109,7 +108,7 @@ proc tool::createWindow {mainDbgWin} {
 proc tool::addButton {name img txt cmd} {
     variable tool
     variable toolbarFrm
-    
+
     set tool($name) [tool::createButton $toolbarFrm.$name $img \
 	    $txt $cmd]
     return $tool($name)
@@ -148,7 +147,7 @@ proc tool::createButton {but img txt cmd {side left}} {
 #
 #	Add <Enter> and <Leave> bindings to the buttons so they raise and
 #	lower as the mouse goes in and out of the button.  This routine
-#	should be called after the gui::registerStatusMessage to assure 
+#	should be called after the gui::registerStatusMessage to assure
 #	the bindings are added in order.
 #
 # Arguments:
@@ -288,7 +287,7 @@ proc tool::changeButtonState {but state} {
 	$tool($but) configure -image $::image::image(${but}_disable)
     } else {
 	$tool($but) configure -image $::image::image($but)
-    }		    
+    }
 }
 
 

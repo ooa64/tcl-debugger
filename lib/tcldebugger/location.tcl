@@ -6,7 +6,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 package provide loc 1.0
 namespace eval loc {
@@ -43,7 +42,7 @@ proc loc::getBlock {location} {
 # loc::getLine --
 #
 #	Returns the line number for the start of the location as an
-#	offset from the beginning of the block.  If no such location 
+#	offset from the beginning of the block.  If no such location
 #	exists, an error is generated.
 #
 # Arguments:
@@ -60,7 +59,7 @@ proc loc::getLine {location} {
 # loc::getRange --
 #
 #	Returns the range for the given location in a form suitable
-#	for use with the parser interface.  If no such location 
+#	for use with the parser interface.  If no such location
 #	exists, an error is generated.
 #
 # Arguments:

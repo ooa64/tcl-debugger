@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 if {$::tcl_platform(platform) == "windows"} {
     # package require dbgext
@@ -24,7 +23,7 @@ namespace eval system {
     #  		dialogs.
     # exeString	Specifies the string to use for executable files.
     #  		Empty string for unix, ".exe" for Windows.
-    # dbgSuffix Suffix to use when loading an executable that is 
+    # dbgSuffix Suffix to use when loading an executable that is
     #		built with symbols.
     # fontList	Specifies list of fonts to display in the font
     #  		combobox in the Preferences window.
@@ -36,11 +35,11 @@ namespace eval system {
     variable exeString
     variable dbgSuffix
 
-    # The browser array is used by the system specific browser windows 
+    # The browser array is used by the system specific browser windows
     # used in the BrowserWindow functions.
 
     variable browser
-    set browser(start)     "::start" 
+    set browser(start)     "::start"
     set browser(iexplorer) "iexplorer -nohome"
     set browser(netscape)  "netscape -no-about-splash -dont-save-geometry-prefs"
 }
@@ -82,14 +81,14 @@ proc system::init {} {
 
     # Source an rc file if one is defined before we continue with the
     # intialization process.
-    
+
 #    if {[pref::prefExists rcfile]} {
 #	if {[catch {source [pref::prefGet rcfile]} {} msg]} {
 #	    puts stderr $msg
 #	}
 #    }
     return
-}    
+}
 
 # system::resetEnv --
 #
@@ -103,7 +102,7 @@ proc system::init {} {
 
 proc system::resetEnv {} {
     global env
-    
+
     if {[info exists env(TCLPRO_SHLIB_PATH)]} {
 	set env(SHLIB_PATH) $env(TCLPRO_SHLIB_PATH)
 	unset env(TCLPRO_SHLIB_PATH)
@@ -115,13 +114,13 @@ proc system::resetEnv {} {
 	unset env(TCLPRO_LD_LIBRARY_PATH)
     } elseif {[info exists env(LD_LIBRARY_PATH)]} {
 	unset env(LD_LIBRARY_PATH)
-    }   
+    }
     return
 }
 
 # system::initGroups --
 #
-#	Initialize the group search order, set factory preferences and 
+#	Initialize the group search order, set factory preferences and
 #	load the users preferences for the debugger.
 #
 # Arguments:
@@ -129,15 +128,15 @@ proc system::resetEnv {} {
 #
 # Results:
 #	Return the group that contains the default user setting.  This
-#	group should be used to insert new preferences after the 
+#	group should be used to insert new preferences after the
 #	Factory has been initialized.
 
 proc system::initGroups {} {
     # Set the group search order used when attempting to resolve
     # the location of a preference within multiple groups.
-    
+
     pref::setGroupOrder {
-	TempProj TempPref Project ProjectDefault GlobalDefault 
+	TempProj TempPref Project ProjectDefault GlobalDefault
 	ProjectFactory GlobalFactory
     }
 
@@ -205,8 +204,8 @@ proc system::initGroups {} {
 	pref::groupNew GlobalDefault system::unixSaveCmd system::unixRestoreCmd
     }
 
-    # Copy the factory preferences into the default preferences.  This is 
-    # to verify that every preference in the GlobalFactory preferences 
+    # Copy the factory preferences into the default preferences.  This is
+    # to verify that every preference in the GlobalFactory preferences
     # also appear in the GlobalDefault preferences.  Then restore the project,
     # clobbering the existing value with the user preference.
 
@@ -223,8 +222,8 @@ proc system::initGroups {} {
 		system::unixRestoreCmd
     }
 
-    # Copy the factory preferences into the default preferences.  This is 
-    # to verify that every preference in the ProjectFactory preferences 
+    # Copy the factory preferences into the default preferences.  This is
+    # to verify that every preference in the ProjectFactory preferences
     # also appear in the ProjectDefault preferences.  Then restore the project,
     # clobbering the existing value with the user preference.
 
@@ -234,7 +233,7 @@ proc system::initGroups {} {
     # TODO: Versioning?
 
     return GlobalDefault
-}    
+}
 
 # system::saveDefaultPrefs --
 #
@@ -249,7 +248,7 @@ proc system::initGroups {} {
 #	Return 1 if there was an error saving the project file.
 
 proc system::saveDefaultPrefs {close} {
-    # Determine if the user wants to save the project.  If the user 
+    # Determine if the user wants to save the project.  If the user
     # cancels the interaction, then return immediately.
 
     if {$close} {
@@ -282,9 +281,9 @@ proc system::saveDefaultPrefs {close} {
     } else {
 	pref::prefSet GlobalDefault projectPrev {}
     }
-    
-    # Save implicit preference before closing the project because the 
-    # act of closing the project changes the implicit prefs to an 
+
+    # Save implicit preference before closing the project because the
+    # act of closing the project changes the implicit prefs to an
     # undesirable state before closing.
 
     pref::groupSave GlobalDefault
@@ -304,7 +303,7 @@ proc system::saveDefaultPrefs {close} {
 #	group	The name of the group to restore preferences into.
 #
 # Results:
-#	Return a boolean, 1 means that the save did not succeed, 
+#	Return a boolean, 1 means that the save did not succeed,
 #	0 means it succeeded.
 
 proc system::winRestoreCmd {group} {
@@ -317,7 +316,7 @@ proc system::winRestoreCmd {group} {
 		lappend prefList $valueName [registry get $key $valueName]
 	    }
 	}]
-	    
+
 	if {$noKey} {
 	    # See if an older version of preferences are available on disk.
 
@@ -355,7 +354,7 @@ proc system::winRestoreCmd {group} {
 #	group	The name of the group to Save preferences into.
 #
 # Results:
-#	Return a boolean, 1 means that the save did not succeed, 
+#	Return a boolean, 1 means that the save did not succeed,
 #	0 means it succeeded.
 
 proc system::winSaveCmd {group} {
@@ -383,7 +382,7 @@ proc system::winSaveCmd {group} {
 #	group	The name of the group to restore preferences into.
 #
 # Results:
-#	Return a boolean, 1 means that the save did not succeed, 
+#	Return a boolean, 1 means that the save did not succeed,
 #	0 means it succeeded.
 
 proc system::unixRestoreCmd {group} {
@@ -413,7 +412,7 @@ proc system::unixRestoreCmd {group} {
 	    close $id
 	}
     } msg]
-	
+
     pref::SetRestoreMsg $msg
     return $result
 }
@@ -426,7 +425,7 @@ proc system::unixRestoreCmd {group} {
 #	group	The name of the group to Save preferences into.
 #
 # Results:
-#	Return a boolean, 1 means that the save did not succeed, 
+#	Return a boolean, 1 means that the save did not succeed,
 #	0 means it succeeded.
 
 proc system::unixSaveCmd {group} {
@@ -450,9 +449,9 @@ proc system::unixSaveCmd {group} {
 # system::updatePreferences --
 #
 #	Update the implicit preferences.  There are many preferences
-#	about the current running environment that are used between 
-#	sessions (e.g., window geometry.)  Update all implicit 
-#	preferences here, before a save, so the latest information 
+#	about the current running environment that are used between
+#	sessions (e.g., window geometry.)  Update all implicit
+#	preferences here, before a save, so the latest information
 #	is preserved.
 #
 # Arguments:
@@ -475,7 +474,7 @@ proc system::updatePreferences {} {
 	guiUtil::saveGeometry $x
     }
     return
-}    
+}
 
 # system::getInterps --
 #
@@ -514,7 +513,7 @@ proc system::getInterps {} {
 	set ver [info tclversion]
 	lappend result [auto_execok tclsh] [auto_execok wish] [auto_execok tclsh$ver] [auto_execok wish$ver]
 	set result [concat {*}$result]
-	
+
     # Look for other Tcl shells on user's path (not available on Windows)
     
     if {$::tcl_platform(platform) != "windows"} {
@@ -534,7 +533,7 @@ proc system::getInterps {} {
 # system::getFontList --
 #
 #	Get the list of default fonts to be displayed in the option
-#	box of the preference window.  This is done to reduce the 
+#	box of the preference window.  This is done to reduce the
 #	amount of work done on UNIX.
 #
 # Arguments:
@@ -607,7 +606,7 @@ proc system::getDefBrowser {} {
 #
 # Results:
 #	Virtual key bindings are added to the system.  Return a list
-#	in "array get" order that maps the virtual key bindings to 
+#	in "array get" order that maps the virtual key bindings to
 #	the system specific key mapping.
 
 proc system::getKeyBindings {} {
@@ -662,14 +661,14 @@ proc system::getKeyBindings {} {
 	event add $ev $key
     }
 
-    # Now, modify the keyList turning the key bindings into strings 
+    # Now, modify the keyList turning the key bindings into strings
     # used in the menus display.
 
     regsub -all {[Cc]ontrol} $keyList Ctrl keyList
     regsub -all {[Kk]ey-}    $keyList {}   keyList
     regsub -all {<}          $keyList {}   keyList
     regsub -all {>}          $keyList {}   keyList
-    
+
     set newList {}
     foreach {ev key} $keyList {
 	if {[regexp -- {-([A-Z])} $key dummy letter]} {
@@ -763,7 +762,7 @@ proc system::setWidgetAttributes {} {
 	    height [expr {[image height $::image::image(var_enable)]}]]
 
 	set arrow left_ptr
-	set exeFiles  [list {{All Files} *}]	
+	set exeFiles  [list {{All Files} *}]
 	set exeString ""
 	set dbgSuffix g
     }
@@ -830,7 +829,7 @@ proc system::getExeFiles {} {
 # system::getExeString --
 #
 #	Return the system specific file suffix for executable files.
-#	If this is an executable with symbols, then return the string 
+#	If this is an executable with symbols, then return the string
 #	with the debug suffix included.
 #
 # Arguments:
@@ -983,11 +982,11 @@ proc system::openURL {url} {
 		set url [file nativename $url]
 	    }
 
-	    # If the default browser is being used, just call the 
+	    # If the default browser is being used, just call the
 	    # start command and exit, Windows will do the rest.
 	    # Otherwise generate the appropriate browserCmd to be
 	    # execed.
-	    
+
 	    if {[pref::prefGet browserDefault]} {
 		$browserCmd $url {} {}
 		return
@@ -996,9 +995,9 @@ proc system::openURL {url} {
 	    if {![regsub -all {\"%1\"} $browserCmd "\"$url\"" browserCmd]} {
 		lappend browserCmd $url
 	    }
-	    
+
 	} else {
-	    # If the browserCmd is "netscape" then try two possible 
+	    # If the browserCmd is "netscape" then try two possible
 	    # methods to exec Netscape on Unix.  Otherwise append
 	    # the URL and exec the browser command.
 	    
@@ -1007,7 +1006,7 @@ proc system::openURL {url} {
 		lappend browserCmd -remote openURL($url)
 		if {[catch {set result [eval exec $browserCmd]}]} {
 		    lappend browserCmdCopy $url
-		    
+
 		    set result [eval exec $browserCmdCopy &]
 		}
 		return $result
@@ -1015,7 +1014,7 @@ proc system::openURL {url} {
 		lappend browserCmd $url
 	    }
 	}
-	
+
 	# The Windows default or Unix Netscape are not the current browser
 	# commands.  Attempt to exec the command the user entered.
 
@@ -1062,7 +1061,7 @@ proc system::openURL {url} {
 
     return 0
 }
-    
+
 # system::createBrowserWindow --
 #
 #	Create the Browser Window for the Preferences Window.
@@ -1092,7 +1091,7 @@ proc system::createBrowserWindow {mainFrm} {
 		-text "Choose an alternative browser." \
 		-variable [pref::prefVar browserDefault] \
 		-command "system::checkBrowserWindowState $otherLbl $otherEnt"]
-	
+
 	grid $defaultRad -row 0 -column 0 -sticky w  -padx $pad -columnspan 2
 	grid $otherRad   -row 1 -column 0 -sticky w  -padx $pad -columnspan 2
 	grid $otherLbl   -row 2 -column 1 -sticky w  -padx $pad  
@@ -1135,11 +1134,11 @@ proc system::createBrowserWindow {mainFrm} {
 #
 # Arguments:
 #	args	Args depend on platform.
-#		  Windows: 
+#		  Windows:
 #			lbl	The label to enable or disable.
 #			ent	The entry to enable or disable.
-#		  UNIX: 
-#			???	
+#		  UNIX:
+#			???
 #
 # Results:
 #	None

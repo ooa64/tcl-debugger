@@ -1,12 +1,11 @@
 # startup.tcl --
 #
-#	This file is the primary entry point for the 
+#	This file is the primary entry point for the
 #       TclPro Debugger.
 #
 # Copyright (c) 1999 by Scriptics Corporation.
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 # ::TclProAboutBox --
 #
@@ -37,7 +36,7 @@ proc ::TclProAboutBox {aboutImage logoImage} {
     pack $f1 -fill both
 
     # Create the images
-    
+
     image create photo about -file $aboutImage
     image create photo logo -file $logoImage
 

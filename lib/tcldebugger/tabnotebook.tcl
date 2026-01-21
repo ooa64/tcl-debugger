@@ -602,7 +602,7 @@ widget create Tabnotebook
 
 proc Tabnotebook_top { w } {
     upvar \#0 $w data
-    
+
     set id $data(curtab)
     if {[string compare $id {}]} {
 	set tab [Tabnotebook:verify $w $id]

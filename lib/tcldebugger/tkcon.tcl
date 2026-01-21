@@ -84,7 +84,7 @@ proc tkCon::InitUI {w title} {
     set root $TKCON(root)
     set TKCON(base) $w
 
-    # Update history and buffer info that may have been 
+    # Update history and buffer info that may have been
     # changed in the prefs window.
     tkCon::update
 
@@ -113,7 +113,7 @@ proc tkCon::InitUI {w title} {
     $con tag configure var -background $TKCON(color,var)
     $con tag configure blink -background $TKCON(color,blink)
     $con tag configure disable -background gray25 -borderwidth 0 \
-	-bgstipple gray12 
+	-bgstipple gray12
 
 
     return $TKCON(console)
@@ -145,7 +145,7 @@ proc tkCon::update {} {
 ## uncompleted command will not be eval'ed.
 # ARGS:	w	- console text widget
 # Calls:	tkCon::CmdGet, tkCon::CmdSep, tkCon::EvalCmd
-## 
+##
 proc tkCon::Eval {w} {
     set incomplete [tkCon::CmdSep [tkCon::CmdGet $w] cmds last]
     $w mark set insert end-1c
@@ -170,7 +170,7 @@ proc tkCon::Eval {w} {
 # Calls:	tkCon::Prompt
 # Outputs:	result of command to stdout (or stderr if error occured)
 # Returns:	next event number
-## 
+##
 proc tkCon::EvalCmd {w cmd} {
     variable TKCON
     $w mark set output end
@@ -227,7 +227,7 @@ proc tkCon::EvalSlave {args} {
 
 proc tkCon::EvalResult {id code result errInfo errCode} {
     variable TKCON
-    
+
     if {![winfo exists $TKCON(console)]} {
 	return
     }
@@ -237,7 +237,7 @@ proc tkCon::EvalResult {id code result errInfo errCode} {
     # buffer was cleared and the marks have been altered.
     # Update the index to be the current "output" mark and
     # insert the newline before the result string.  Otherwise
-    # the current result mark is valid, just insert the 
+    # the current result mark is valid, just insert the
     # newine after the result.
 
     set index [$w index result$id]
@@ -260,7 +260,7 @@ proc tkCon::EvalResult {id code result errInfo errCode} {
 ## tkCon::CmdGet - gets the current command from the console widget
 # ARGS:	w	- console text widget
 # Returns:	text which compromises current command line
-## 
+##
 proc tkCon::CmdGet w {
     if {[string match {} [$w tag nextrange prompt limit end]]} {
 	$w tag add stdin limit end-1c
@@ -274,7 +274,7 @@ proc tkCon::CmdGet w {
 #	last	- varname of any remainder (like an incomplete final command).
 #		If there is only one command, it's placed in this var.
 # Returns:	constituent command info in varnames specified by list & rmd.
-## 
+##
 proc tkCon::CmdSep {cmd list last} {
     upvar 1 $list cmds $last inc
     set inc {}
@@ -301,7 +301,7 @@ proc tkCon::CmdSep {cmd list last} {
 ## tkCon::CmdSplit - splits multiple commands into a list
 # ARGS:	cmd	- (possible) multiple command to separate
 # Returns:	constituent commands in a list
-## 
+##
 proc tkCon::CmdSplit {cmd} {
     set inc {}
     set cmds {}
@@ -324,7 +324,7 @@ proc tkCon::CmdSplit {cmd} {
 ## tkCon::Prompt - displays the prompt in the console widget
 # ARGS:	w	- console text widget
 # Outputs:	prompt (specified in TKCON(prompt1)) to console
-## 
+##
 proc tkCon::Prompt {{pre {}} {post {}} {prompt {}}} {
     variable TKCON
     if {![winfo exists $TKCON(console)]} {
@@ -407,7 +407,7 @@ proc tkCon::Event {int {str {}}} {
 		    break
 		}
 	    }
-	} 
+	}
     } else {
 	## String is empty, just get next/prev event
 	if {$int > 0} {
@@ -443,7 +443,7 @@ proc tkCon::Event {int {str {}}} {
 
 ## clear - clears the buffer of the console (not the history though)
 ## This is executed in the parent interpreter
-## 
+##
 proc tkCon::clear {{pcnt 100}} {
     variable TKCON
     if {![winfo exists $TKCON(console)]} {
@@ -493,7 +493,7 @@ proc tkCon::Bindings {} {
     ## Get all Text bindings into TkConsole
     foreach ev [bind Text] {
 	bind TkConsole $ev [bind Text $ev]
-    }	
+    }
     ## We really didn't want the newline insertion
     bind TkConsole <Control-Key-o> {}
 
@@ -609,17 +609,17 @@ proc tkCon::Bindings {} {
 	    tkCon::Event 1
 	}
     }
-    bind TkConsole <<TkCon_NextImmediate>>  { 
+    bind TkConsole <<TkCon_NextImmediate>> {
 	tkCon::Event 1
     }
     bind TkConsole <<TkCon_PreviousImmediate>> {
-	tkCon::Event -1 
+	tkCon::Event -1
     }
-    bind TkConsole <<TkCon_PreviousSearch>> { 
-	tkCon::Event -1 [tkCon::CmdGet %W] 
+    bind TkConsole <<TkCon_PreviousSearch>> {
+	tkCon::Event -1 [tkCon::CmdGet %W]
     }
-    bind TkConsole <<TkCon_NextSearch>>	{ 
-	tkCon::Event 1 [tkCon::CmdGet %W] 
+    bind TkConsole <<TkCon_NextSearch>>	{
+	tkCon::Event 1 [tkCon::CmdGet %W]
     }
     bind TkConsole <<TkCon_Transpose>>	{
 	## Transpose current and previous chars
@@ -780,7 +780,7 @@ proc tkCon::Paste w {
 # 	c1	- first char of pair
 # 	c2	- second char of pair
 # Calls:	tkCon::Blink
-## 
+##
 proc tkCon::MatchPair {w c1 c2 {lim 1.0}} {
     if {[string compare {} [set ix [$w search -back $c1 insert $lim]]]} {
 	while {
@@ -819,7 +819,7 @@ proc tkCon::MatchPair {w c1 c2 {lim 1.0}} {
 ## The quote to match is assumed to be at the text index 'insert'.
 # ARGS:	w	- console text widget
 # Calls:	tkCon::Blink
-## 
+##
 proc tkCon::MatchQuote {w {lim 1.0}} {
     set i insert-1c
     set j 0
@@ -846,7 +846,7 @@ proc tkCon::MatchQuote {w {lim 1.0}} {
 # 	i2	- end index of blink region
 # 	dur	- duration in usecs to blink for
 # Outputs:	blinks selected characters in $w
-## 
+##
 proc tkCon::Blink {w args} {
     variable TKCON
     eval $w tag add blink $args
@@ -862,7 +862,7 @@ proc tkCon::Blink {w args} {
 # ARGS:	w	- text window in which to insert the string
 # 	s	- string to insert (usually just a single char)
 # Outputs:	$s to text widget
-## 
+##
 proc tkCon::Insert {w s} {
     if {[string match {} $s] || [string match disabled [$w cget -state]]} {
 	return

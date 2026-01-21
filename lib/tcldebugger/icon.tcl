@@ -1,13 +1,12 @@
 # icon.tcl --
 #
-#	This file manages all of the icon drawing as well as 
+#	This file manages all of the icon drawing as well as
 #	setting the correct state in the nub based on the type
 #	of icon drawn.
 #
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval icon {
     # Do Nothing...
@@ -40,14 +39,14 @@ proc icon::getState {text line} {
 # icon::getLBPState --
 #
 #	Return the state of the breakpoint for a <loc> type.
-#	The CodeBar only displays one icon per line, so the 
+#	The CodeBar only displays one icon per line, so the
 #	breakpoint state is a combination of all breakpoints
-#	that exist on this line.  A breakpoint's state is 
+#	that exist on this line.  A breakpoint's state is
 #	"mixed" if there are one or more enabled AND disabled
 #	breakpoints for the same line.
 #
 # Arguments:
-#	loc	A <loc> opaque type that contains the location 
+#	loc	A <loc> opaque type that contains the location
 #		of the breakpoint in a script.
 #
 # Results:
@@ -61,12 +60,12 @@ proc icon::getLBPState {loc} {
 	if {[break::getState $bp] == "enabled"} {
 	    if {$state == "disabled"} {
 		return mixedBreak
-	    } 
+	    }
 	    set state enabledBreak
 	} else {
 	    if {$state == "enabled"} {
 		return mixedBreak
-	    } 
+	    }
 	    set state disabledBreak
 	}
     }
@@ -108,7 +107,7 @@ proc icon::toggleLBPOnOff {text index loc breakState {pcType {}}} {
 	    # Delete "enabled" icon and set the state to "no break".
 	    $text delete $index
 
-	    icon::setLBP noBreak $loc 
+	    icon::setLBP noBreak $loc
 	    icon::drawLBP $text $index noBreak $pcType
 	}
 	disabledBreak -
@@ -116,7 +115,7 @@ proc icon::toggleLBPOnOff {text index loc breakState {pcType {}}} {
 	    # Delete the icon and set the state back to "enabled".
 	    $text delete $index
 
-	    icon::setLBP enabledBreak $loc 
+	    icon::setLBP enabledBreak $loc
 	    icon::drawLBP $text $index enabledBreak $pcType
 	}
 	default {
@@ -127,9 +126,9 @@ proc icon::toggleLBPOnOff {text index loc breakState {pcType {}}} {
 
 # icon::toggleLBPEnableDisable --
 #
-#	Toggle the breakpoint to enabled and disabled.  Based on the 
-#	current state of the breakpoint, determine the next valid 
-#	state, delete any existing icon, and draw a new icon if 
+#	Toggle the breakpoint to enabled and disabled.  Based on the
+#	current state of the breakpoint, determine the next valid
+#	state, delete any existing icon, and draw a new icon if
 # 	necessary.
 #
 # Arguments:
@@ -154,14 +153,14 @@ proc icon::toggleLBPEnableDisable {text index loc breakState {pcType {}}} {
 	    # Delete the icon and set the state to "disabled".
 	    $text delete $index
 
-	    icon::setLBP disabledBreak $loc 
+	    icon::setLBP disabledBreak $loc
 	    icon::drawLBP $text $index disabledBreak $pcType
 	}
 	disabledBreak {
 	    # Delete the disabled icon and set the state back to "enabled".
 	    $text delete $index
 
-	    icon::setLBP enabledBreak $loc 
+	    icon::setLBP enabledBreak $loc
 	    icon::drawLBP $text $index enabledBreak $pcType
 	}
 	default {
@@ -209,7 +208,7 @@ proc icon::setLBP {state loc} {
 # icon::drawLBP --
 #
 #	Draw a new breakpoint icon into the text widget.
-#	It is assumed that any out-datted icon on this line 
+#	It is assumed that any out-datted icon on this line
 #	have already been deleted.
 #
 #	Icons are embedded into the text widget with two tags
@@ -306,7 +305,7 @@ proc icon::getVBPState {level name} {
 
 # icon::toggleVBPOnOff --
 #
-#	Toggle the VBP state between on and off and redraw 
+#	Toggle the VBP state between on and off and redraw
 #	the icon in the text widget.
 #
 # Arguments:
@@ -331,14 +330,14 @@ proc icon::toggleVBPOnOff {text index level name breakState {pcType {}}} {
 	}
 	enabledBreak {
 	    # Delete "enabled" icon and set the state to "no break".
-	    $text delete $index 
-	    
+	    $text delete $index
+
 	    icon::setVBP noBreak $level $name
 	    icon::drawVBP $text $index noBreak $pcType
 	}
 	disabledBreak {
 	    # Delete the icon and set the state back to "enabled".
-	    $text delete $index 
+	    $text delete $index
 
 	    icon::setVBP enabledBreak $level $name
 	    icon::drawVBP $text $index enabledBreak $pcType
@@ -438,13 +437,13 @@ proc icon::setVBP {state level name} {
 	default {
 	    error "unknown state in icon::setVBP: $state"
 	}
-    }    
+    }
 }
 
 # icon::drawVBP --
 #
 #	Draw a new breakpoint icon into the text widget.
-#	It is assumed that any out-datted icon on this line 
+#	It is assumed that any out-datted icon on this line
 #	have already been deleted.
 #
 #	Icons are embedded into the text widget with two tags
@@ -464,9 +463,9 @@ proc icon::setVBP {state level name} {
 #	None.
 
 proc icon::drawVBP {text index breakState {pcType {}}} {
-    
+
     # Var break points are only drawn where they occur.  If the
-    # pcType is "history" then we should treat this as a line break 
+    # pcType is "history" then we should treat this as a line break
     # point instead.
 
     if {$pcType == "history"} {
@@ -595,7 +594,7 @@ proc icon::isCurrentIconAtLine {text index} {
 # icon::setCurrentIcon --
 #
 #	Draw the "current" icon at index.  If an icon is
-#	already on this line, delete it, and draw the 
+#	already on this line, delete it, and draw the
 #	overlapped icon.
 #
 # Arguments:
@@ -616,7 +615,7 @@ proc icon::setCurrentIcon {text index breakType pcType} {
 	    $text delete $index
 	}
 	icon::drawLBP $text $index $breakState $pcType
-    }	
+    }
 }
 
 # icon::unsetCurrentIcon --
@@ -632,7 +631,7 @@ proc icon::setCurrentIcon {text index breakType pcType} {
 #	None.
 
 proc icon::unsetCurrentIcon {text iconIndex} {
-    # Test to see if the index passed in was valid.  It might be 
+    # Test to see if the index passed in was valid.  It might be
     # "currentImage" which may or may not exist.  If it does set
     # "index" to the numeric index.
 

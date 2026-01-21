@@ -20,7 +20,7 @@ namespace eval inspector {
     variable nameCache  {}
     variable valueCache {}
     variable viewCache  {}
-    
+
     variable dontLoop 0
 
     variable showResult 0
@@ -28,7 +28,7 @@ namespace eval inspector {
 
 # inspector::showVariable --
 #
-#	Popup an Inspector window to display info on the selected 
+#	Popup an Inspector window to display info on the selected
 #	variable.
 #
 # Arguments:
@@ -68,7 +68,7 @@ proc inspector::showVariable {name level} {
 
 # inspector::updateVarFromEntry --
 #
-#	Update the Data Display to show the variable named in the 
+#	Update the Data Display to show the variable named in the
 #	entry widget.
 #
 # Arguments:
@@ -136,7 +136,7 @@ proc inspector::showResult {} {
 # inspector::createWindow --
 #
 #	Create an Inspector window that displays info on
-#	a particular variable and allows the variables 
+#	a particular variable and allows the variables
 #	value to be changed and variable breakpoints to
 #	be set and unset.
 #
@@ -162,7 +162,7 @@ proc inspector::createWindow {} {
 
     # Create the info frame that displays the level and name.
 
-    set mainFrm [frame $top.mainFrm -bd $bd -relief raised] 
+    set mainFrm [frame $top.mainFrm -bd $bd -relief raised]
 
     # Create the entry for adding new Watch variables.
 
@@ -193,7 +193,7 @@ proc inspector::createWindow {} {
     pack $levelTitleLbl -pady 3 -side left
     pack $levelLbl -padx 3 -pady 3 -side left
 
-    # Place a separating line between the var info and the 
+    # Place a separating line between the var info and the
     # value of the var.
 
     set sep1Frm [frame $dataFrm.sep1 -bd $bd -relief $relief -height $bd]
@@ -211,12 +211,12 @@ proc inspector::createWindow {} {
     pack $choiceLbl -pady 3 -side left
     pack $choiceBox -padx 3 -pady 3 -side left
 
-    # Place a separating line between the var info and the 
+    # Place a separating line between the var info and the
     # value of the var.
 
     set sep2Frm [frame $dataFrm.sep2 -bd $bd -relief $relief -height $bd]
-    
-    # Create an empty frame that will be populated in the updateWindow 
+
+    # Create an empty frame that will be populated in the updateWindow
     # routine.
 
     set varFrm  [frame $dataFrm.varFrm]
@@ -258,13 +258,13 @@ proc inspector::createWindow {} {
 # inspector::updateWindow --
 #
 #	Update the display of the Inspector.  A Tcl variable
-# 	may be aliased with different names at different 
-#	levels, so update the name and level as well as the 
+# 	may be aliased with different names at different
+#	levels, so update the name and level as well as the
 #	value.
 #
 # Arguments:
 #	name		The variable name.
-#	valu		The variable valu.  If the variable is an 
+#	valu		The variable valu.  If the variable is an
 #			array, this is an ordered list of array
 #			index and array value.
 #	type		Variable type ('a' == array, 's' == scalar)
@@ -318,7 +318,7 @@ proc inspector::updateWindow {{setChoice 0}} {
     } else {
 	set data [code::binaryClean $value]
     }
-    
+
     if {$setChoice} {
 	if {$type == "a"} {
 	    set ::inspector::viewVar "Array"
@@ -334,7 +334,7 @@ proc inspector::updateWindow {{setChoice 0}} {
 	    return
 	}
     }
-    
+
     $varText delete 0.0 end
     switch $view {
 	"Raw Data" {
@@ -357,8 +357,8 @@ proc inspector::updateWindow {{setChoice 0}} {
 		    $varText insert end "$index\n"
 		}
 	    }
-	} 
-	"Array" { 
+	}
+	"Array" {
 	    if {[catch {set len [llength $value]}] || ($len % 2)} {
 		# If we get an error in llength or we don't have
 		# an even number of elements then we can't
@@ -367,7 +367,7 @@ proc inspector::updateWindow {{setChoice 0}} {
 		$varText insert end "<Can't display as an array>"
 	    } else {
 		$varText configure -wrap none
-	    
+
 		set line 1
 		set max 0
 		set maxLine 1
@@ -397,7 +397,7 @@ proc inspector::updateWindow {{setChoice 0}} {
 	    error "Unexpected view type \"$view\" in inspector::updateWindow"
 	}
     }
-    
+
     set nameCache  $nameVar
     set levelCache $levelVar
     set valueCache $value

@@ -6,20 +6,19 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
-# The preference module is a generic system used to store preferences for an 
+# The preference module is a generic system used to store preferences for an
 # application.  Each preference is contained in a group.  A group contains one
 # or more preferences and knows how to save and restore the preferences.  A
 # group knows when one of its preferences has been changed and the user can
 # query the group for this information.
-# 
+#
 # Groups are created using the groupNew or groupInit APIs.  The groupNew
 # routine creates a dynamic group that can save and restore the set of groups.
 # Groups created using the groupInit routine are considered "primordial"
 # groups, that is, they are hard coded defaults meant to initalize groups
 # created with the groupNew routine.  Therefore, groups created by the
-# groupInit routine do not need to save and restore preferences.  
+# groupInit routine do not need to save and restore preferences.
 #
 # In any application one or more groups of preferences can exist at the same
 # time, and the groups can contain identical preferences.  To retrieve the
@@ -30,7 +29,7 @@
 
 package provide pref 1.0
 namespace eval pref {
-    # The list of groups in order with the first element being the 
+    # The list of groups in order with the first element being the
     # first group to be searched for a preference.
 
     variable groupOrder {}
@@ -42,12 +41,12 @@ namespace eval pref {
 
     variable groups
 
-    # The dirty array stores which groups have preferences 
+    # The dirty array stores which groups have preferences
     # that have been changed.
 
     variable dirty
 
-    # The following variables store the error message reported when 
+    # The following variables store the error message reported when
     # groups are saved or restored and an error occurs.
 
     variable groupSaveMsg    {}
@@ -56,18 +55,18 @@ namespace eval pref {
 
 # pref::groupNew
 #
-#	Create a new group and register how to restore and save 
-#	the group preferences.  The save and restore commands 
-#	need to return a boolean value.  1 means that the command 
+#	Create a new group and register how to restore and save
+#	the group preferences.  The save and restore commands
+#	need to return a boolean value.  1 means that the command
 #	had an error while executing, 0 means it succeeded.
 #
 # Arguments:
-#	group		The name of the group to create.  Use this name 
+#	group		The name of the group to create.  Use this name
 #			when saving or restoring this group.
 #	saveCmd		The command to call to save the group preferences.
 #	restoreCmd	The command to call to restore the group preferences.
 #
-# Results: 
+# Results:
 #	None.
 
 proc pref::groupNew {group {saveCmd {}} {restoreCmd {}}} {
@@ -78,7 +77,7 @@ proc pref::groupNew {group {saveCmd {}} {restoreCmd {}}} {
 	pref::groupDelete $group
     }
 
-    # Initialize entries for the save command, the restore command 
+    # Initialize entries for the save command, the restore command
     # and the arrays for preferences in this group.
 
     set ::pref::groups($group,saveCmd)    $saveCmd
@@ -101,7 +100,7 @@ proc pref::groupNew {group {saveCmd {}} {restoreCmd {}}} {
 # Arguments:
 #	group	The name of the group to save.
 #
-# Results: 
+# Results:
 #	Returns 0 if the groups preferences were preserved, or
 #	1 if all of the state could not be stored.
 
@@ -125,8 +124,8 @@ proc pref::groupSave {group} {
 
 # pref::groupRestore
 #
-#	Call the restoreCmd registered for this group.  All of the 
-#	preferences in this group will be reinitialized, but the 
+#	Call the restoreCmd registered for this group.  All of the
+#	preferences in this group will be reinitialized, but the
 #	update commands for each prefernece will not be called.  Call
 #	the groupApply to set all of the values and call approrpriate
 #	update commands.
@@ -134,7 +133,7 @@ proc pref::groupSave {group} {
 # Arguments:
 #	group	The name of the group to restore.
 #
-# Results: 
+# Results:
 #	Returns 0 if the groups preferences were restored, or
 #	1 if all of the state could not be restored.
 
@@ -142,9 +141,9 @@ proc pref::groupRestore {group} {
     variable groups
 
     # The restore command should register all preference groups
-    # inside of group and initialize all preference values.  The 
-    # preferences should be registered as a requested value, (using 
-    # the pref::prefSet API) so the values can be set with or without 
+    # inside of group and initialize all preference values.  The
+    # preferences should be registered as a requested value, (using
+    # the pref::prefSet API) so the values can be set with or without
     # calling the update commands (see the pref::groupApply command.)
 
     if {([pref::groupExists $group]) && ($groups($group,restoreCmd) != {})} {
@@ -171,7 +170,7 @@ proc pref::groupUpdate {group} {
     }
 
     # Get the update commands for each preference in this group.
-    # Cache the values so update commands, which may be mapped to 
+    # Cache the values so update commands, which may be mapped to
     # multiple preferences, are called only once.
 
     set updateCmds {}
@@ -184,14 +183,14 @@ proc pref::groupUpdate {group} {
 
     # Now call each update command.  Make sure to catch any errors
     # generated by the update calls.
-    
+
     set result 1
     foreach uCmd $updateCmds {
 	if {[catch {eval $uCmd}]} {
 	    set result 0
 	}
     }
-    return $result    
+    return $result
 }
 
 # pref::groupInit --
@@ -204,8 +203,8 @@ proc pref::groupUpdate {group} {
 #	prefSettings	An ordered list of preference settings:
 #			 pref	The name of the preference.
 #			 value	The default value for the preference.
-#			 update	The command too call when the pref 
-#				is changed.	
+#			 update	The command too call when the pref
+#				is changed.
 #
 # Results:
 #	None.
@@ -220,7 +219,7 @@ proc pref::groupInit {group prefSettings} {
 
 	# Set the group dirty bit to false indicating that no
 	# preferences have been changed and need saving.
-	
+
 	pref::groupSetDirty $group 0
 
 	# Initialize the arrays to be empty.
@@ -263,7 +262,7 @@ proc pref::groupCopy {group1 group2} {
 
 # pref::groupApply
 #
-#	Move all of the requested values from group1 into group2, then 
+#	Move all of the requested values from group1 into group2, then
 #	call the update commands for each preference whose state has
 #	changed.  The preferences in group1 must be a subset of group2.
 #
@@ -271,7 +270,7 @@ proc pref::groupCopy {group1 group2} {
 #	group1		The name of the group to move from.
 #	group2		The name of the group to move into.
 #
-# Results: 
+# Results:
 #	Returns 1 if the the prefs were copied and all the update commands
 #	passed, or 0 if any of the update commands failed.
 
@@ -300,7 +299,7 @@ proc pref::groupApply {group1 group2} {
 	    pref::groupSetDirty $group2 1
 
 	    # Add this update command to the update list.  Only add the
-	    # command if it is not already in the list, so duplicate 
+	    # command if it is not already in the list, so duplicate
 	    # commands are not called multiple times.
 
 	    set uCmd [pref::PrefGetUpdateCmd $group1 $pref]
@@ -312,7 +311,7 @@ proc pref::groupApply {group1 group2} {
 
     # Now call each update command.  Make sure to catch any errors
     # generated by the update calls.
-    
+
     set result 1
     foreach uCmd $updateCmds {
 	if {[catch {eval $uCmd}]} {
@@ -395,7 +394,7 @@ proc pref::groupSetDirty {group dirty} {
 # Arguments:
 #	group	The name of the group.
 #
-# Results: 
+# Results:
 #	Returns 1 if the group exists.
 
 proc pref::groupExists {group} {
@@ -435,7 +434,7 @@ proc pref::groupPrint {group} {
 #	value	The new value for the preference.
 #	update	The new value for the update command.
 #
-# Results: 
+# Results:
 #	None.
 
 proc pref::prefNew {group pref value update} {
@@ -444,7 +443,7 @@ proc pref::prefNew {group pref value update} {
     }
 
     # Replace the old value with the new value.
-    
+
     set ::pref::value${group}($pref)  $value
     set ::pref::update${group}($pref) $update
 
@@ -459,7 +458,7 @@ proc pref::prefNew {group pref value update} {
 #	pref	The name of the preference.
 #	group	Explicitly specify which group to get from.
 #
-# Results: 
+# Results:
 #	Return the actual value for the preference.  If the preference
 #	does not exist, then an error is generated.
 
@@ -481,7 +480,7 @@ proc pref::prefGet {pref {group {}}} {
 #	pref		The name of the preference.
 #	value		The new value for the preference.
 #
-# Results: 
+# Results:
 #	None.
 
 proc pref::prefSet {group pref value} {
@@ -493,7 +492,7 @@ proc pref::prefSet {group pref value} {
     }
 
     # Replace the old value with the new value.
-    
+
     set ::pref::value${group}($pref) $value
     pref::groupSetDirty $group 1
     return
@@ -507,12 +506,12 @@ proc pref::prefSet {group pref value} {
 #	pref	The name of the preference.
 #	group	Explicitly specify which group(s) to look at.
 #
-# Results: 
+# Results:
 #	Return 1 if the preference exists.
 
 proc pref::prefExists {pref {group {}}} {
     # If the preferences cannot be located in any groups, then it does
-    # not exist.  The list of groups is set by the pref::setGroupOrder 
+    # not exist.  The list of groups is set by the pref::setGroupOrder
     # API.
 
     return [expr {[pref::PrefLocateGroup $pref $group] != {}}]
@@ -527,9 +526,9 @@ proc pref::prefExists {pref {group {}}} {
 #	pref	The name of the preference.
 #	group	Specify which group to get from.
 #
-# Results: 
+# Results:
 #	Return the name of the variable to trace on for setting
-# 	requested values in a preference.  An error is generated 
+# 	requested values in a preference.  An error is generated
 # 	if the preference does not exist.
 
 proc pref::prefVar {pref {group {}}} {
@@ -550,7 +549,7 @@ proc pref::prefVar {pref {group {}}} {
 #	groups		The list of groups with the first element being
 #			the first group to be searched.
 #
-# Results: 
+# Results:
 #	None.
 
 proc pref::setGroupOrder {groups} {
@@ -565,7 +564,7 @@ proc pref::setGroupOrder {groups} {
 # Arguments:
 #	None.
 #
-# Results: 
+# Results:
 #	The group order list.
 
 proc pref::getGroupOrder {} {
@@ -611,11 +610,11 @@ proc pref::GroupGetPrefs {group} {
 #
 # Arguments:
 #	pref		The name of the preference.
-#	groupOrder	Explicitly specify which groups to look into.  If 
+#	groupOrder	Explicitly specify which groups to look into.  If
 #			an empty string is passed, then all the registered
 #			groups are looked at.
 #
-# Results: 
+# Results:
 #	Returns the group name, or {} if one does not exist.
 
 proc pref::PrefLocateGroup {pref {groupOrder {}}} {
@@ -638,7 +637,7 @@ proc pref::PrefLocateGroup {pref {groupOrder {}}} {
 #	group	The name of the group containing the preference.
 #	pref	The name of the preference.
 #
-# Results: 
+# Results:
 #	Returns the update command.
 
 proc pref::PrefGetUpdateCmd {group pref} {

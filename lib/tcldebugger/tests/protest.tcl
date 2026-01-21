@@ -8,7 +8,6 @@
 # Copyright (c) 1998-2000 by Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 if {[string compare test [info procs test]] == 1} {
     lappend auto_path [info library]
@@ -44,7 +43,7 @@ namespace eval ::protest {
     foreach {pmatch plat} $platformList {
 	if {[regexp -nocase $pmatch $::tcl_platform(os)]} {
 	    variable platform $plat
-	}   
+	}
     }
 
     array set platformArray $platformList
@@ -56,28 +55,28 @@ namespace eval ::protest {
     }
 
     # Match defaults to all directories and skip patterns default to the empty
-    # list 
+    # list
     variable matchDirectories {*}
     variable skipDirectories {}
 
     # by default, put any interpreters this package creates into an interpreter
     # subdirectory of the temporaryDirectory; this is set in the
-    # processCmdLineHooks proc since the temporaryDirectory can be redefined 
+    # processCmdLineHooks proc since the temporaryDirectory can be redefined
     variable interpreterDirectory {}
-    
+
     # Default is to not specify an installation directory
     variable installationDirectory {}
 
     # Preset executableDirectory and sourceDirectory to {}; these variables
     # will be set to their actual values the command line arguments are
-    # processed. 
+    # processed.
     variable executableDirectory {}
     variable sourceDirectory {}
 
     # The workspace directory defaults to 2 levels up from the 'tests'
     # directory; since the default tests directory is different for pro than
     # for tcl, it's set in the processCmdLineArgsHook to ensure that it's been
-    # reset. 
+    # reset.
     variable workspaceDirectory {}
 
     # buildType defaults to Debug
@@ -175,7 +174,7 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
     }
 
     # Set the ::protest::installationDirectory the arg of -install, if
-    # given; otherwise "". 
+    # given; otherwise "".
     #
     # If the path is relative, make it absolute.  If the file is not an
     # existing dir, then return an error.
@@ -186,7 +185,7 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 	    ::tcltest::PrintError "bad argument \
 		    \"$::protest::installationDirectory\" to -install: \
 		    \"$::protest::installationDirectory\" is not an \
-		    existing directory" 
+		    existing directory"
 	    exit 1
 	}
 	if {[string equal \
@@ -195,7 +194,7 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 	    set ::protest::installationDirectory \
 		    [file join [pwd] $::protest::installationDirectory]
 	}
-    } 
+    }
 
     # Set the ::protest::workspaceDirectory the arg of -ws, if given.
     #
@@ -208,14 +207,14 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 	    ::tcltest::PrintError "bad argument \
 		    \"$::protest::workspaceDirectory\" to -ws: \
 		    \"$::protest::workspaceDirectory\" is not an existing \
-		    directory" 
+		    directory"
 	    exit 1
 	}
 	if {[string compare \
 		[file pathtype $::protest::workspaceDirectory] \
-		"absolute"] != 0} { 
+		"absolute"] != 0} {
 	    set ::protest::workspaceDirectory [file join [pwd] \
-		    $::protest::workspaceDirectory] 
+		    $::protest::workspaceDirectory]
 	}
     } else {
 	set oDir [pwd]
@@ -225,8 +224,8 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
     }
 
     # Set the ::protest::sourceDirectory to the arg of -srcsdir, if
-    # given, or <::protest::workspaceDirectory>/pro/srcs 
-    # 
+    # given, or <::protest::workspaceDirectory>/pro/srcs
+    #
     # If the path is relative, make it absolute.  If the file is not an
     # existing dir, then return an error.
 
@@ -234,14 +233,14 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 	set ::protest::sourceDirectory $flag(-srcsdir)
 	if {[string compare \
 		[file pathtype $::protest::sourceDirectory] \
-		"absolute"] != 0} { 
+		"absolute"] != 0} {
 	    set ::protest::sourceDirectory [file join [pwd] \
-		    $::protest::sourceDirectory] 
+		    $::protest::sourceDirectory]
 	}
 	if {![file isdir $::protest::sourceDirectory]} {
 	    ::tcltest::PrintError "bad argument \"$flag(-srcsdir)\" to \
 		    -srcsdir: \"$::protest::sourceDirectory\" is not \
-		    an existing directory" 
+		    an existing directory"
 	    exit 1
 	}
     } else {
@@ -252,11 +251,11 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 	cd $oDir
     }
 
-    # Set the ::protest::executableDirectory the arg of -exedir, if given; 
+    # Set the ::protest::executableDirectory the arg of -exedir, if given;
     # otherwise, if -install is specified, use
-    # ::protest::installationDirectory/::protest::platform/bin 
+    # ::protest::installationDirectory/::protest::platform/bin
     # else use
-    # ::protest::workspaceDirectory/pro/out/<-build>/::protest::platform/bin  
+    # ::protest::workspaceDirectory/pro/out/<-build>/::protest::platform/bin
     # -build arg defaults to "Debug"
     #
     # If the path is relative, make it absolute.  If the file is not an
@@ -267,7 +266,7 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 	if {![file isdir $::protest::executableDirectory]} {
 	    ::tcltest::PrintError "bad argument \"$flag(-exedir)\" to \
 		    -exedir: \"$::protest::executableDirectory\" is \
-		    not an existing directory" 
+		    not an existing directory"
 	    exit 1
 	}
     } else {
@@ -277,15 +276,15 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 
     if {[string compare \
 	    [file pathtype $::protest::executableDirectory] \
-	    "absolute"] != 0} { 
+	    "absolute"] != 0} {
 	set ::protest::executableDirectory [file join [pwd] \
-		$::protest::executableDirectory] 
+		$::protest::executableDirectory]
     }
 
-    # Set the ::protest::toolsDirectory to 
-    #   //pop/tools/<currentVersion(Tools)>/<::protest::platform>/<bin>  
+    # Set the ::protest::toolsDirectory to
+    #   //pop/tools/<currentVersion(Tools)>/<::protest::platform>/<bin>
     # or
-    #   /tools/<::protest::currentVersion(Tools)>/<::protest::platform>/<bin> 
+    #   /tools/<::protest::currentVersion(Tools)>/<::protest::platform>/<bin>
     # depending on whether ::protest::platform is windows of unix
 
     if {[info exists flag(-toolsdir)]} {
@@ -301,10 +300,10 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
     } else {
 	if {$::tcl_platform(platform) == "windows"} {
 	    set ::protest::toolsDirectory \
-		    //pop/tools/$::protest::currentVersion(Tools)/${::protest::platform}/bin 
+		    //pop/tools/$::protest::currentVersion(Tools)/${::protest::platform}/bin
 	} else {
 	    set ::protest::toolsDirectory \
-		    /tools/$::protest::currentVersion(Tools)/${::protest::platform}/bin 
+		    /tools/$::protest::currentVersion(Tools)/${::protest::platform}/bin
 	}
     }
 
@@ -319,17 +318,17 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 	set ::tcltest::temporaryDirectory [file join \
 		$::tcltest::workingDirectory testOutputDir]
 	if {[file exists $::tcltest::temporaryDirectory]} {
-	    if {![file isdir $::tcltest::temporaryDirectory]} { 
+	    if {![file isdir $::tcltest::temporaryDirectory]} {
 		::tcltest::PrintError "$tmpDirError \"$::tcltest::temporaryDirectory\" \
 			is not a directory"
 		exit 1
 	    } elseif {![file writable $::tcltest::temporaryDirectory]} {
 		::tcltest::PrintError "$tmpDirError \"$::tcltest::temporaryDirectory\" \
-			is not writeable" 
+			is not writeable"
 		exit 1
 	    } elseif {![file readable $::tcltest::temporaryDirectory]} {
 		::tcltest::PrintError "$tmpDirError \"$::tcltest::temporaryDirectory\" \
-			is not readable" 
+			is not readable"
 		exit 1
 	    }
 	} else {
@@ -341,7 +340,7 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 
     # Create an unwrapped executable in ::tcltest::temporaryDirectory for
     # this tool.  The unwrapped executable file will source the
-    # appropriate sources in ::protest::sourceDirectory. 
+    # appropriate sources in ::protest::sourceDirectory.
 
     set interp [info nameofexecutable]
     regsub tclsh $interp wish interp
@@ -381,7 +380,7 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
     return
 }
 
-proc ::tcltest::cleanupTestsHook {} {    
+proc ::tcltest::cleanupTestsHook {} {
     return
 }
 
@@ -411,7 +410,7 @@ proc ::protest::testAllFiles {tool interp} {
     # the command line) down into the sub-interpreters. We need to reconstruct
     # the argument list because variable values could have been reset without
     # using command line flags.
-    
+
     set flags [list -tmpdir $::tcltest::temporaryDirectory \
 	    -ws $::protest::workspaceDirectory]
 
@@ -433,8 +432,8 @@ proc ::protest::testAllFiles {tool interp} {
 	puts $::tcltest::outputChannel $tail
 
 	set logfile [file join $::tcltest::temporaryDirectory \
-		"${tool}Log.txt"] 
-    
+		"${tool}Log.txt"]
+
 	# Run each *.test file in the selected Tk shell.
 	# This is used for parser and debugger tests on Windows...
 
@@ -443,7 +442,7 @@ proc ::protest::testAllFiles {tool interp} {
 	# argv can have spaces in individual elements.
 
 	set cmd [concat [list | $shell $file] $argv [list -outfile \
-		$logfile] $flags] 
+		$logfile] $flags]
 
 	if {$::tcltest::debug > 2} {
 	    puts "Command to be executed: $cmd"
@@ -461,7 +460,7 @@ proc ::protest::testAllFiles {tool interp} {
 	}
 
 	# Now concatenate the temporary log file to
-	# ::tcltest::outputChannel 
+	# ::tcltest::outputChannel
 
 	if {[catch {
 	    set fd [open $logfile "r"]
@@ -516,7 +515,7 @@ proc ::protest::findExeFile {tool {wrapped 0}} {
     }
 
     # look for fileTail (and then fileDebugTail) in
-    # ::protest::executableDirectory 
+    # ::protest::executableDirectory
 
     foreach tail [list $fileTail $fileDebugTail] {
 	set file [file join $::protest::executableDirectory $tail]
@@ -527,7 +526,7 @@ proc ::protest::findExeFile {tool {wrapped 0}} {
 	    return "$file"
 	}
     }
-    
+
     # Use the unwrapped stuff built in the interp directory if it exists
 
     set file [file join $::protest::interpreterDirectory $fileTail]
@@ -540,14 +539,14 @@ proc ::protest::findExeFile {tool {wrapped 0}} {
 	}
 	return "$file"
     }
-	
+
     ::tcltest::PrintError "Cannot find executable files \"$fileTail\" (or \
 	    \"$fileDebugTail\") in $::protest::executableDirectory\
 	    \nor in $::protest::interpreterDirectory."
 }
 
 proc ::protest::findSoFile {ext index} {
-    global tcl_platform 
+    global tcl_platform
 
     if {$tcl_platform(platform) == "windows"} {
 	regsub -all {\.} $::protest::currentVersion($index) "" vers
@@ -561,7 +560,7 @@ proc ::protest::findSoFile {ext index} {
 	set vers $::protest::currentVersion($index)
 	return [file join \
 		[file dirname $::protest::executableDirectory] \
-		lib lib$ext$vers.$tail] 
+		lib lib$ext$vers.$tail]
     }
 }
 
@@ -633,10 +632,10 @@ proc ::protest::resetTestsDirectory {dir} {
 	set ::protest::executableDirectory [file join \
 		$::protest::workspaceDirectory pro out \
 		$::protest::buildType $::protest::platform \
-		bin] 
+		bin]
 	if {![file isdir $::protest::executableDirectory]} {
 	    ::tcltest::PrintError "bad argument \
-		    \"$::protest::buildType\" to -build: \ 
+		    \"$::protest::buildType\" to -build: \
 	    \"$::protest::executableDirectory\" is not an existing \
 		    directory"
 	    exit 1
@@ -644,7 +643,7 @@ proc ::protest::resetTestsDirectory {dir} {
     }
 }
 
-# Initialize the constraints and set up command line arguments 
+# Initialize the constraints and set up command line arguments
 namespace eval protest {
     ::tcltest::InitConstraints
     ::tcltest::ProcessCmdLineArgs

@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 
 package require parser
@@ -16,7 +15,7 @@ namespace eval instrument {
     namespace export addExtension addCommand
 
     # Stores the array of extensions that the instrumentor is using.
-    
+
     variable extensions
     array set extensions {
 	incrTcl 0
@@ -25,13 +24,13 @@ namespace eval instrument {
     }
 
     # Stores the block currently being instrumented.
-    
+
     variable block {}
 
     # Stores the script currently being instrumented.
 
     variable script {}
-    
+
     # List of line numbers in current script that contain the
     # start of an instrumented line of code.
 
@@ -49,12 +48,12 @@ namespace eval instrument {
     # The anchorStart indicates the byte offset of the first character in the
     # range.  The anchorEnd is a range whose last character is the end of
     # the anchor range.
-    
+
     variable anchorStart 0
     variable anchorEnd [list 0 0]
 
     # Stores the location associated with the current command being
-    # instrumented. 
+    # instrumented.
 
     variable location {}
 
@@ -619,7 +618,7 @@ proc instrument::endCommand {cmdRange} {
     # Restore the command info
     lassign [lindex $cmdInfoStack end] cmdLocation suppress result isSubCommand
     set cmdInfoStack [lreplace $cmdInfoStack end end]
-    
+
     if {!$cmdSuppress} {
 	lappend lines [loc::getLine $cmdLocation]
 	lappend ranges [loc::getRange $cmdLocation]
@@ -671,7 +670,7 @@ proc instrument::correctForExpandOp {} {
 #	otherwise returns 0.
 
 proc instrument::isLiteral {word} {
-    variable script 
+    variable script
 
     if {[lindex $word 0] != "simple"} {
 	foreach token [lindex $word 2] {
@@ -740,7 +739,7 @@ proc instrument::getLiteral {word resultVar} {
 #	script failed to be instrumented.
 
 proc instrument::Instrument {block} {
-    # Instrumenting a new script. 
+    # Instrumenting a new script.
     if {$::instrument::busy} {
 	error "The instrumenter is being called while in use!"
     }
@@ -769,7 +768,7 @@ proc instrument::Instrument {block} {
 	set ::instrument::busy 0
 	return $::instrument::result
     }
-    
+
 }
 
 # instrument::parseScript --
@@ -814,7 +813,7 @@ proc instrument::parseScript {{scriptRange {}}} {
 		if {[$::instrument::errorHandler $location]} {
 		    # Ignore the error and wrap the rest of the script
 		    # as a single statement.
-		    
+
 		    if {!$first} {
 			appendString \n
 		    }
@@ -887,7 +886,7 @@ proc instrument::parseCommand {tokens index} {
 
 # instrument::parseWord --
 #
-#	Examine a token for subcommands. 
+#	Examine a token for subcommands.
 #
 # Arguments:
 #	tokens		The list of word tokens for the current command.
@@ -977,7 +976,7 @@ proc instrument::parseBody {args} {
 	    set closeChar "\}"
 	    set addBrace 1
 	}
-	    
+
 	setCursor [list [lindex $range 0] 0]
 	if {$addBrace} {
 	    appendString \{
@@ -1017,12 +1016,12 @@ proc instrument::parseOption {optionTable default tokens index} {
     if {($index == [llength $tokens]) && ($default == "")} {
 	return $index
     }
-    
+
     set word [lindex $tokens $index]
     if {![getLiteral $word value]} {
 	return [parseCommand $tokens $index]
     }
-    
+
     set keywords {}
     foreach keyword $optionTable {
 	lappend keywords [lindex $keyword 0]
@@ -1171,7 +1170,7 @@ proc instrument::parseTail {min argCmds tokens index} {
 #
 # Arguments:
 #	exact		Boolean value.  If true, then switches have to match
-#			exactly. 
+#			exactly.
 #	switches	A list of switch/action pairs.  The action may be
 #			omitted if the switch does not take an argument.
 #			If "--" is included, it acts as a terminator.
@@ -1207,7 +1206,7 @@ proc instrument::parseSwitches {exact switches chainCmd tokens index} {
 		if {$index >= $argc} {
 		    return $argc
 		}
-		
+
 		set index [eval $script {$tokens $index}]
 	    }
 	}
@@ -1226,7 +1225,7 @@ proc instrument::parseSwitches {exact switches chainCmd tokens index} {
 # Arguments:
 #	newName		The new command string.
 #	numArgs		Only wrap the command if the number of arguments
-#			matches the specified number (or range of numbers). 
+#			matches the specified number (or range of numbers).
 #	argList		A list of scripts that should be called for
 #			the corresponding argument.
 #	tokens		The list of word tokens for the current command.
@@ -1279,7 +1278,7 @@ proc instrument::parseExpr {tokens index} {
 
     #  Don't attempt to parse as an expression if the text contains
     #  substitutions.
-    
+
     if {![isLiteral $word]} {
 	return [parseWord $tokens $index]
     }
@@ -1358,7 +1357,7 @@ proc instrument::parseIncr22Class {range} {
 		popContext
 		if {[$::instrument::errorHandler $location]} {
 		    # Ignore the error and skip to the end of the statement.
-		    
+
 		    if {!$first} {
 			appendString \n
 		    }
@@ -1729,7 +1728,7 @@ proc instrument::parseItclClass {tokens index} {
 	{protected	itclProtection}
 	{public		itclProtection}
     }]
-	
+
     # Now parse the body of the class
 
     if {[llength $tokens] == 3} {
@@ -1761,14 +1760,14 @@ proc instrument::parseReturnCmd {tokens index} {
 
     # We only need to wrap the return command if it uses the -code
     # option.  If we have 2 or fewer arguments then they couldn't
-    # be using the -code option and we don't need to treat this 
+    # be using the -code option and we don't need to treat this
     # command specially.
 
     if {($argc - $index) < 2} {
 	return [parseCommand $tokens $index]
     }
-    
-    # We replace the call to "return" with a call to "DbgNub_Return" 
+
+    # We replace the call to "return" with a call to "DbgNub_Return"
     # so we can handle the weird case of -code being used.
 
     appendString "DbgNub_Return "
@@ -1798,7 +1797,7 @@ proc instrument::parseIfCmd {tokens index} {
     set text {}
 
     # Look ahead to determine if this is a well formed if statement
-    # The control flow is a little complicated here so we use a catch to 
+    # The control flow is a little complicated here so we use a catch to
     # implement a nonlocal jump to the end.  If the body of the catch
     # calls "error", the command didn't parse correctly, so we just call the
     # generic parseCommand routine.  Otherwise if the body of the catch calls
@@ -1887,7 +1886,7 @@ proc instrument::parseSwitchCmd {tokens index} {
     set failed 0
 
     # Look ahead to determine if this is an instrumentable switch statement.
-    # The control flow is a little complicated here so we use a catch to 
+    # The control flow is a little complicated here so we use a catch to
     # implement a nonlocal jump to the end.  If the body of the catch
     # calls "error", the command didn't parse correctly, so we just call the
     # generic parseCommand routine.  Otherwise if the body of the catch calls
@@ -1942,12 +1941,12 @@ proc instrument::parseSwitchCmd {tokens index} {
 		# We can't descend here so we jump to the end
 		return
 	    }
-	    
+
 	    # If the body token contains backslash sequences, there will
 	    # be more than one subtoken, so we take the range for the whole
 	    # body and subtract the braces.  Otherwise it's a "simple" word
 	    # with only one part and we can get the range from the text
-	    # subtoken. 
+	    # subtoken.
 
 	    if {[llength [lindex $bodyToken 2]] > 1} {
 		set range [lindex $bodyToken 1]
@@ -2005,7 +2004,7 @@ proc instrument::parseSwitchCmd {tokens index} {
 #			been parsed correctly.
 #	tokens		The list of word tokens after the initial
 #			command and subcommand names
-#	index		The index into the token tree where the 
+#	index		The index into the token tree where the
 #			parser should start.
 #
 # Results:
@@ -2021,14 +2020,14 @@ proc instrument::parseExpect {chainCmd tokens index} {
 	return $end
     }
 
-    # Determine which command to execute.  We have four possible cases: 
+    # Determine which command to execute.  We have four possible cases:
     # 1. One argument which should be split into words.
     # 2. One argument which should NOT be split into words.
-    # 3. Two arguments where the first is "-brace" and the second  
+    # 3. Two arguments where the first is "-brace" and the second
     #    is the body that needs to be split into words.
     # 4. A bunch of pattern/action pairs.
 
-    if {$argc == 1} {	
+    if {$argc == 1} {
 	set word [lindex $tokens $index]
 	if {![getLiteral $word body]} {
 	    return [parseWord $tokens $index]
@@ -2072,10 +2071,10 @@ proc instrument::parseExpect {chainCmd tokens index} {
 #
 #	This function reparses the current token as a list of additional
 #	arguments to the expect command.
-#	
+#
 #	tokens		The list of word tokens after the initial
 #			command and subcommand names
-#	index		The index into the token tree where the 
+#	index		The index into the token tree where the
 #			parser should start.
 #
 # Results:
@@ -2091,7 +2090,7 @@ proc instrument::parseExpRange {tokens index} {
 	set range [list [expr {[lindex $range 0] + 1}] \
 		[expr {[lindex $range 1] - 2}]]
     }
-    
+
     set result {}
 
     for {} {[parse charlength $script $range] > 0} \
@@ -2165,7 +2164,7 @@ proc instrument::expMatch {keywords str minlen} {
 # Arguments:
 #	tokens		The list of word tokens after the initial
 #			command and subcommand names
-#	index		The index into the token tree where the 
+#	index		The index into the token tree where the
 #			parser should start.
 #
 # Results:
@@ -2197,7 +2196,7 @@ proc instrument::parseExpectTokens {tokens index} {
 		set arg [string range $arg 1 end]
 		if {($arg == "-") || [expMatch {glob regexp exact} $arg 2]} {
 		    # The next word is a pattern followed by a command.
-		    
+
 		    incr index
 		    set index [parseWord $tokens $index]
 		} elseif {[expMatch {timestamp iread iwrite indices} $arg 2]} {
@@ -2214,7 +2213,7 @@ proc instrument::parseExpectTokens {tokens index} {
 		    continue
 		} elseif {$arg == "i" || [expMatch "timeout" $arg 2]} {
 		    # The next token is a switch argument.
-		    
+
 		    incr index
 		    set index [parseWord $tokens $index]
 		    continue
@@ -2226,13 +2225,13 @@ proc instrument::parseExpectTokens {tokens index} {
 	    }
 	    default {
 		# This is a pattern.  Check the pattern for subcommands.
-		
+
 		set index [parseWord $tokens $index]
 	    }
 	}
 
 	# The next argument is a body.
-	
+
 	if {$index < $argc} {
 	    set index [parseBody $tokens $index]
 	}
@@ -2247,7 +2246,7 @@ proc instrument::parseExpectTokens {tokens index} {
 # Arguments:
 #	tokens		The list of word tokens after the initial
 #			command and subcommand names
-#	index		The index into the token tree where the 
+#	index		The index into the token tree where the
 #			parser should start.
 #
 # Results:
@@ -2315,13 +2314,13 @@ proc instrument::parseInteractTokens {tokens index} {
 	    }
 	    default {
 		# This is a pattern.  Check the pattern for subcommands.
-		
+
 		set index [parseWord $tokens $index]
-	    }	
+	    }
 	}
 
 	# The next argument is a body.
-	
+
 	if {$index < $argc} {
 	    set index [parseBody $tokens $index]
 	}
@@ -2335,7 +2334,7 @@ proc instrument::parseInteractTokens {tokens index} {
 #
 # Arguments:
 #	tokens		The list of word tokens.
-#	index		The index into the token tree where the 
+#	index		The index into the token tree where the
 #			parser should start.
 #
 # Results:
@@ -2348,7 +2347,7 @@ proc instrument::parseExpTrapCmd {tokens index} {
 	if {![getLiteral [lindex $tokens $i] arg]} {
 	    break
 	}
-	switch -- $arg {	    
+	switch -- $arg {
 	    -code {
 		# No-Op
 	    }
@@ -2356,13 +2355,13 @@ proc instrument::parseExpTrapCmd {tokens index} {
 	    -name -
 	    -number {
 		set show 1
-	    } 
+	    }
 	    default {
 		break
 	    }
 	}
     }
-    
+
     set remaining [expr {$argc - $i}]
     if {!$show && ($remaining == 2)} {
 	return [parseSimpleArgs 2 2 {parseBody parseWord} $tokens $i]

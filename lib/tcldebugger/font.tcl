@@ -1,12 +1,11 @@
 # font.tcl --
 #
-#	This file implements the font system that is used by 
+#	This file implements the font system that is used by
 #	all debugger text widgets that require a fixed font.
 #
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval font {
     variable fontList {}
@@ -83,7 +82,7 @@ proc font::getFonts {} {
 
 proc font::configure {font size} {
     variable metrics
-    
+
     set family [font actual [list $font] -family]
     if {[lsearch [font names] dbgFixedFont] < 0} {
 	font create dbgFixedFont -family $family -size $size
@@ -100,7 +99,7 @@ proc font::configure {font size} {
 
     # Store as much info about the font as possible.  Including:
     # the actual family and size, font metrics, the same family
-    # only with italics and bold, and the width of a single 
+    # only with italics and bold, and the width of a single
     # fixed character.
 
     if {[info exists metrics]} {

@@ -9,7 +9,6 @@
 #
 # See the file "license.terms" for information on usage and redistribution
 # of this file, and for a DISCLAIMER OF ALL WARRANTIES.
-#
 
 if {[string compare test [info procs test]] == 1} {
     lappend auto_path [file join [file dirname [info script]] ..]
@@ -1192,7 +1191,7 @@ test instrument-25.3 {instrument::parseExpect, one arg, simple pattern} {
     instrument::extension expect 1
     instrument::initialize 8.0
     blk::Instrument $b {expect {[foo bar]}}
-} "DbgNub_Do 0 {$b 1 {0 18}} {expect {\[foo bar\]}}" 
+} "DbgNub_Do 0 {$b 1 {0 18}} {expect {\[foo bar\]}}"
 test instrument-25.4 {instrument::parseExpect, one arg, pattern/body} {
     resetExtensions
     instrument::extension expect 1
@@ -1759,7 +1758,7 @@ test instrument-37.1 {BLACKBOX, fcopy} {
 	fcopy file1 file2 -command
 	fcopy file1 file2 -command body
 	fcopy file1 file2 -size 10 -command body
-	fcopy file1 file2 -command body -size 10 
+	fcopy file1 file2 -command body -size 10
     }
 } "DbgNub_Do 0 {$b 2 {2 6}} fcopy
 DbgNub_Do 0 {$b 3 {9 18}} {fcopy file1 file2}

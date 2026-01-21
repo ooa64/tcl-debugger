@@ -5,8 +5,6 @@
 #
 # Copyright (c) 1998 Scriptics Corporation
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
-# RCS: @(#) $Id: uplevel.tcl,v 1.2 2000/10/31 23:31:13 welch Exp $
 
 # factorial --
 #
@@ -34,7 +32,7 @@ proc populate_fact_array {} {
 
     uplevel \#0 {
 
-	# 
+	#
 	# Call the factorial procedure for each integer from 1 to max.
 	# Store each result in the global fact array.
 	#
@@ -51,7 +49,7 @@ proc populate_fact_array {} {
 set max 5
 populate_fact_array
 
-# 
+#
 # Print the index and value of each entry in the fact array.
 #
 

@@ -5,8 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
-# SCCS: @(#) codeWin.tcl 1.16 98/05/02 14:01:16
 
 
 package require parser
@@ -109,10 +107,10 @@ proc code::createWindow {masterFrm} {
     }
     bind $codeWin <FocusIn> {
 	code::changeFocus in
-    } 
+    }
     bind $codeWin <FocusOut> {
 	code::changeFocus out
-    } 
+    }
 
     bind setBreakpoint <Button-1> {
 	code::toggleLBP $::code::codeBar @0,%y onoff
@@ -137,9 +135,9 @@ proc code::createWindow {masterFrm} {
 
 # code::updateWindow --
 #
-#	Update the display of the Code Window and CodeBar 
-#	after (1) a file is loaded (2) a breakpoint is hit 
-#	or (3) a new stack frame was selected from the 
+#	Update the display of the Code Window and CodeBar
+#	after (1) a file is loaded (2) a breakpoint is hit
+#	or (3) a new stack frame was selected from the
 #	stack window.
 #
 # Arguments:
@@ -182,7 +180,7 @@ proc code::updateWindow {loc} {
     # delete contents of the Code Window, insert the new
     # data, and update the LineBar.  Otherwise, it's the
     # same block, just remove the highlighting from the Code
-    # Window so we don't have multiple lines highlighted. 
+    # Window so we don't have multiple lines highlighted.
 
     if {($blk != [gui::getCurrentBlock]) || ($ver != [gui::getCurrentVer])} {
 	$codeWin delete 0.0 end
@@ -226,11 +224,11 @@ proc code::updateWindow {loc} {
 	coverage::highlightRanges $blk
     }
 
-    # Calculate the beginning and ending indicies to be 
-    # highlighted for the next statement.  If the line 
-    # in the <loc> is empty, highlight nothing.  If the 
-    # range in the <loc> is empty, highlight the entire 
-    # line.  Otherwise, determine if the range spans 
+    # Calculate the beginning and ending indicies to be
+    # highlighted for the next statement.  If the line
+    # in the <loc> is empty, highlight nothing.  If the
+    # range in the <loc> is empty, highlight the entire
+    # line.  Otherwise, determine if the range spans
     # multiple lines.  If it does, only highlight the
     # first line.  If it does not, then highlight the
     # entire range.
@@ -247,7 +245,7 @@ proc code::updateWindow {loc} {
 	set cmdStart [$codeWin index "0.0 + $start chars"]
 	set cmdMid   [$codeWin index "$cmdStart lineend"]
 	set cmdEnd   [$codeWin index "0.0 + $end chars"]
-	
+
 	# If cmdEnd is > cmdMid, the range spans multiple lines.
 	if {[$codeWin compare $cmdEnd > $cmdMid]} {
 	    set cmdEnd $cmdMid
@@ -272,7 +270,7 @@ proc code::updateWindow {loc} {
 
     $codeWin mark set insert $cmdStart
 
-    # Move the CodeBar and LineBar to the same viewable region as 
+    # Move the CodeBar and LineBar to the same viewable region as
     # the Code Window.
 
     $codeBar yview moveto [lindex [$codeWin yview] 0]
@@ -309,7 +307,7 @@ proc code::updateCodeBar {} {
     }
 
     # A newline has to be inserted into the CodeBar for every
-    # line of text in the Code Window, otherwise the images in 
+    # line of text in the Code Window, otherwise the images in
     # the CodeBar will not line up with the Code Window.
 
     set validLines [blk::getLines $blk]
@@ -349,10 +347,10 @@ proc code::updateCodeBar {} {
 
     $codeBar insert 0.0 $str codeBarText
     $codeBar tag configure codeBarText -foreground blue
-    
+
     # Insert icons for each breakpoint.  Since breakpoints can
     # share the same location, only compute the type of icon to
-    # draw for each unique location. 
+    # draw for each unique location.
 
     set bpLoc [loc::makeLocation $blk {}]
     set bpList [dbg::getLineBreakpoints $bpLoc]
@@ -433,7 +431,7 @@ proc code::updateStatusLine {} {
 
 # code::resetWindow --
 #
-#	Clear the contents of the CodeBar, LineBar and Code Window.  
+#	Clear the contents of the CodeBar, LineBar and Code Window.
 # 	If msg is not null, display this message in the Code window.
 #
 # Arguments:
@@ -536,7 +534,7 @@ proc code::moveScrollbar {sb args} {
     eval {gui::scrollDbgText $::code::codeWin $sb \
 	    [list grid $sb -row 0 -column 3 -sticky nse]} $args
     $::code::lineBar yview moveto [lindex [$::code::codeWin yview] 0]
-    $::code::codeBar yview moveto [lindex [$::code::codeWin yview] 0]    
+    $::code::codeBar yview moveto [lindex [$::code::codeWin yview] 0]
 }
 
 # code::moveScrollbarX --
@@ -599,7 +597,7 @@ proc code::tkTextAutoScan {w} {
 #	index	The position in the CodeBar text widget to toggle
 #		breakpoint state.
 #	type	How to toggle ("onoff" or "enabledisable")
-#	
+#
 #
 # Results:
 #	None.
@@ -633,13 +631,13 @@ proc code::toggleLBP {text index type} {
     switch $type {
 	onoff {
 	    code::ToggleLBPOnOff $text $index
-	} 
+	}
 	enabledisable {
 	    code::ToggleLBPEnableDisable $text $index
 	}
     }
 
-    # Update the Breakpoint window to display the latest 
+    # Update the Breakpoint window to display the latest
     # breakpoint setting.
 
     bp::updateWindow
@@ -648,7 +646,7 @@ proc code::toggleLBP {text index type} {
 
 # code::ToggleLBPOnOff --
 #
-#	Toggle the breakpoint at index to On or Off, 
+#	Toggle the breakpoint at index to On or Off,
 #	adding or removing the breakpoint in the nub.
 #
 # Arguments:
@@ -674,7 +672,7 @@ proc code::ToggleLBPOnOff {text index} {
 
 # code::ToggleLBPEnableDisable --
 #
-#	Toggle the breakpoint at index to Enabled or Disabled, 
+#	Toggle the breakpoint at index to Enabled or Disabled,
 #	enabling or disabling the breakpoint in the nub.
 #
 # Arguments:
@@ -699,7 +697,7 @@ proc code::ToggleLBPEnableDisable {text index} {
 
 # code::makeCodeLocation --
 #
-#	Helper routine for making <loc> objects based on the 
+#	Helper routine for making <loc> objects based on the
 #	line number of index, and the currently displayed block.
 #
 # Arguments:
@@ -744,7 +742,7 @@ proc code::see {index} {
 proc code::yview {args} {
     eval {$::code::codeWin yview} $args
     $::code::codeBar yview moveto [lindex [$::code::codeWin yview] 0]
-    $::code::lineBar yview moveto [lindex [$::code::codeWin yview] 0]    
+    $::code::lineBar yview moveto [lindex [$::code::codeWin yview] 0]
 }
 
 # code::getCodeSize --
@@ -764,7 +762,7 @@ proc code::getCodeSize {} {
 
 # code::getInsertLine --
 #
-#	Return the line number of the insertion cursor or 1 if the 
+#	Return the line number of the insertion cursor or 1 if the
 #	window does not yet exist.
 #
 # Arguments:

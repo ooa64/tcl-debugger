@@ -15,7 +15,7 @@ if {"starkit" ni [package names]} {
 if {"starkit" in [package names]} {
 	package require starkit
 
-	# unset existing state vars in case this is a nested starkit and 
+	# unset existing state vars in case this is a nested starkit and
 	# startup has been done before:
 	unset -nocomplain ::starkit::mode ::starkit::topdir
 

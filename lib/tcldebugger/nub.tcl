@@ -39,7 +39,7 @@ if {![info exists DbgNub(logFile)]} {
 }
 
 # error action flag --
-#   
+#
 #   This flag controls the action taken when an error result code is detected.
 #   If this flag is set to 0, errors will be allowed to propagate normally.  If
 #   the flag is 1, errors that would cause the program to exit will be caught
@@ -64,11 +64,11 @@ set DbgNub(catch) 1
 set DbgNub(errorHandled) 0
 
 # exclude commands list --
-# 
+#
 # This is a list of all commands, used in the nub, that will cause
 # the debugger to crash if they are renamed.  In the wrapped rename
 # procedure, the command being renamed is compared to this list.  If
-# the command is on this list, then an error is generated stating 
+# the command is on this list, then an error is generated stating
 # that renaming the command will crash the debugger.
 
 set DbgNub(excludeRename) [list append array break cd close concat continue \
@@ -102,7 +102,7 @@ set DbgNub(nestCount) 0
 #   is used to determine where step-over operations should break.  The
 #   currentCmdLevel records the nesting level of the currently executing
 #   statement.  The stepCmdLevel records the nesting level of the last step
-#   command. 
+#   command.
 
 set DbgNub(currentCmdLevel) 0
 set DbgNub(stepCmdLevel) 0
@@ -328,7 +328,7 @@ proc DbgNub_SendMessage {args} {
     }
     puts $DbgNub(socket) [string length $args]
     puts -nonewline $DbgNub(socket) $args
-    
+
     if {$DbgNub(debug) & 2} {
 	DbgNub_Log "sending [string length $args] bytes: '$args'"
     }
@@ -343,11 +343,11 @@ proc DbgNub_SendMessage {args} {
 
 # DbgNub_GetMessage --
 #
-#	Get the next message from the debugger. 
+#	Get the next message from the debugger.
 #
 # Arguments:
-#	blocking	If 1, wait until a message is detected (or eof), 
-#			otherwise check without blocking, 
+#	blocking	If 1, wait until a message is detected (or eof),
+#			otherwise check without blocking,
 #
 # Results:
 #	Returns the message that was received, or {} no message was
@@ -390,7 +390,7 @@ proc DbgNub_GetMessage {blocking} {
 
 proc DbgNub_SocketEvent {} {
     global DbgNub
-    
+
     DbgNub_ProcessMessages 0
     if {$DbgNub(breakNext)} {
 	DbgNub_Break 0 linebreak
@@ -421,8 +421,8 @@ proc DbgNub_Do {subcommand location cmd} {
 	set code [DbgNub_catchCmd {DbgNub_uplevelCmd 1 $cmd} result options]
     array set optsArray $options
     array unset optsArray -code
-    array unset optsArray -errorcode 
-    array unset optsArray -errorinfo 
+    array unset optsArray -errorcode
+    array unset optsArray -errorinfo
     array unset optsArray -level
 	return -code $code -errorcode $errorCode -errorinfo $errorInfo -options [array get optsArray] $result
     }
@@ -430,7 +430,7 @@ proc DbgNub_Do {subcommand location cmd} {
     set level [expr {[DbgNub_infoCmd level] - 1}]
 
     # Push a new virtual stack frame so we know where we are
-    
+
     lappend DbgNub(locations) $location
     incr DbgNub(nestCount)
 
@@ -444,7 +444,7 @@ proc DbgNub_Do {subcommand location cmd} {
     if {$DbgNub(debug) & 1} {
 	DbgNub_Log "[list DbgNub_Do $subcommand $location $cmd]"
     }
-    
+
     # Process any queued messages without blocking
 
     DbgNub_ProcessMessages 0
@@ -469,13 +469,13 @@ proc DbgNub_Do {subcommand location cmd} {
 	    DbgNub(lastResult) options]
     array set optsArray $options
     array unset optsArray -code
-    array unset optsArray -errorcode 
-    array unset optsArray -errorinfo 
+    array unset optsArray -errorcode
+    array unset optsArray -errorinfo
     array unset optsArray -level
 
     # Store the current location in DbgNub array, so we can calculate which
     # locations have not yet been covered.
-    
+
     if {$DbgNub(cover)} {
 	set index "cover:$location"
 	if {[info exists DbgNub($index)]} {
@@ -809,7 +809,7 @@ proc DbgNub_ProcessMessages {blocking} {
 	    SEND {
 		# Evaluate a Send.  Return any result
 		# including error information.
-		
+
 		set code [DbgNub_catchCmd {eval [lindex $msg 2]} result]
 		if {$code != 0} {
 		    global errorInfo errorCode
@@ -1042,7 +1042,7 @@ proc DbgNub_GetVariables {level vars} {
 # Results:
 #	Returns a list containing information about each of the
 #	variables specified in varList.  The returned list consists of
-#	elements of the form {<name> <type> <value>}. 
+#	elements of the form {<name> <type> <value>}.
 
 proc DbgNub_GetVar {level maxlen varList} {
     global DbgNub
@@ -1057,7 +1057,7 @@ proc DbgNub_GetVar {level maxlen varList} {
 	# Remove all traces before getting the value so we don't enter
 	# instrumented code or cause other undesired side effects.  Note
 	# that we must do this before calling info exists, since that will
-	# also trigger a read trace.  
+	# also trigger a read trace.
 	#
 	# There are two types of traces to look out for: scalar and array.
 	# Array elements trigger both scalar and array traces.  The current
@@ -1086,11 +1086,11 @@ proc DbgNub_GetVar {level maxlen varList} {
 	}
 
 	# Now it is safe to check for existence before we attempt to fetch the
-	# value. 
-	
+	# value.
+
 	if {[DbgNub_uplevelCmd #$level \
 		[list DbgNub_infoCmd exists $var]]} {
-	    
+
 	    # Fetch the current value.  Note that we have to be careful
 	    # when truncating the value.  If we call string range directly
 	    # the object will be converted to a string object, losing any
@@ -1187,7 +1187,7 @@ proc DbgNub_SetVar {level var value} {
 #	Gets the last reported return code and result value.
 #
 # Arguments:
-#	maxlen		The maximum length of data to return for the 
+#	maxlen		The maximum length of data to return for the
 #			result.  If this value is -1, the entire string
 #			is returned, otherwise long values are truncated
 #			after maxlen bytes.
@@ -1197,7 +1197,7 @@ proc DbgNub_SetVar {level var value} {
 
 proc DbgNub_GetResult {maxlen} {
     global DbgNub
-    
+
     if {$maxlen == -1} {
 	set maxlen end
     } else {
@@ -1337,7 +1337,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 		    [list $DbgNub(scope)info commands $name]] == ""} {
 		lappend DbgNub(stack) [list $level proc $name (deleted)]
 		continue
-	    }		
+	    }
 
 	    # Now determine the fully qualified name.
 
@@ -1511,7 +1511,7 @@ proc DbgNub_CollateStacks {} {
 		    [lrange $sframe 0 1]] == 0)} {
 		break
 	    }
-		
+
 	    set result [linsert $result 0 [linsert $sframe 1 {}]]
 	}
 	set result [concat $iframes $result]
@@ -1546,7 +1546,7 @@ proc DbgNub_CollateStacks {} {
 
 proc DbgNub_Proc {location name argList body} {
     global DbgNub
-    
+
     set ns $DbgNub(scope)
     if {$DbgNub(namespace)} {
 	# Create an empty procedure first so we can determine the correct
@@ -1567,7 +1567,7 @@ proc DbgNub_Proc {location name argList body} {
     # Two variables are substituted into the following string.  The
     # fullName variable contains the full name of the procedure at
     # the time the procedure was created.  The body variable contains
-    # the actual "user-specified" code for the procedure. 
+    # the actual "user-specified" code for the procedure.
     # NOTE: There is some very tricky code at the end relating to unsetting
     # some local variables.  We need to unset local variables that have
     # traces before the procedure context goes away so things look
@@ -1611,13 +1611,13 @@ proc DbgNub_Proc {location name argList body} {
 
 proc DbgNub_PushProcContext {level} {
     global DbgNub
-    
+
     set name [lindex [DbgNub_infoCmd level $level] 0]
 
     # If we are using namespaces, transform the name to fully qualified
     # form before trying to get the arglist.  Determine whether the
     # name refers to a proc or a command.
-    
+
     if {$DbgNub(namespace)} {
 	set qualName [DbgNub_uplevelCmd \#[expr {$level - 1}] \
 		[list $DbgNub(scope)namespace origin $name]]
@@ -1627,7 +1627,7 @@ proc DbgNub_PushProcContext {level} {
 	} else {
 	    set name $qualName
 	}
-    
+
 
 	# Because of Tcl's namespace design, "info procs" does not
 	# work on qualified names.  The workaround is to invoke the
@@ -2013,7 +2013,7 @@ proc DbgNub_catchWrapper {args} {
 proc DbgNub_Return {args} {
     global DbgNub errorCode errorInfo
 
-    # Get the value of the -code option if given.  (If it isn't given 
+    # Get the value of the -code option if given.  (If it isn't given
     # then Tcl assumes it is -code OK; we assume the same.
 
     set realCode "ok"
@@ -2032,7 +2032,7 @@ proc DbgNub_Return {args} {
     if {[info exists realLevel]} {
         error "argument -level not supported"
     }
-    
+
 
     # Invoke the return command so we can see what the result would have been.
     # We need to check to see if the call to return failed so we can clean up
@@ -2088,7 +2088,7 @@ proc DbgNub_UpdateReturnInfo {code} {
 	set DbgNub(stepOutLevel) {}
 	set DbgNub(breakNext) 1
     }
-	
+
     return $code
 }
 
@@ -2112,7 +2112,7 @@ proc DbgNub_procWrapper {args} {
     set unset 0
     if {($length == 3) && ($DbgNub(socket) != -1)} {
 
-	# Don't allow redefining of builtin commands that the 
+	# Don't allow redefining of builtin commands that the
 	# debugger relies on.
 
 	set searchName [lindex $args 0]
@@ -2155,13 +2155,13 @@ proc DbgNub_procWrapper {args} {
 	set code [DbgNub_catchCmd {DbgNub_uplevelCmd 1 $icode} result]
     } else {
 	# This isn't a well formed call to proc, or we aren't connected
-	# to the debugger any longer, so let it execute without interference. 
+	# to the debugger any longer, so let it execute without interference.
 
 	set icode [linsert $args 0 DbgNub_procCmd]
 	set unset 1
     }
     set code [DbgNub_catchCmd {DbgNub_uplevelCmd 1 $icode} result]
-    
+
     if {$unset} {
 	# We need to check if we are replacing an already
 	# instrumented procedure with an uninstrumented body.
@@ -2303,8 +2303,8 @@ proc DbgNub_sourceWrapper {args} {
 	return -code $code -errorcode $errorCode -errorinfo $errorInfo \
 		-options $options $result
     }
-	
-    # If the users preferences indicate that autoloaded scripts 
+
+    # If the users preferences indicate that autoloaded scripts
     # are not to be instrumented, then check to see if this file
     # is being autoloaded.  The test is to look up the stack, if
     # the "auto_load" or "auto_import" procs are on the stack, then we are
@@ -2342,7 +2342,7 @@ proc DbgNub_sourceWrapper {args} {
 		set dontInstrument 0
 		break
 	    }
-	}	
+	}
 	if {$dontInstrument} {
 	    set DbgNub(inExclude) 1
 	} else {
@@ -2360,24 +2360,24 @@ proc DbgNub_sourceWrapper {args} {
 	}
     }
 
-    # If the "dontInstrument" flag is true, just source the file 
+    # If the "dontInstrument" flag is true, just source the file
     # normally, taking care to propagate the error result.
     # NOTE: this will not work on the Macintosh because of its additional
     # arguments.
 
     if {$dontInstrument} {
-	# Set the global value DbgNub(dynProc) to false so procs 
-	# defined in the uninstrumented file will not become 
-	# instrumented even if the dynProcs flag was true.  
+	# Set the global value DbgNub(dynProc) to false so procs
+	# defined in the uninstrumented file will not become
+	# instrumented even if the dynProcs flag was true.
 	# Restore the value to the value when done with the
 	# read-only copy of the original dynProc variable.
-	
+
 	lappend DbgNub(script) $file
 
 	set code [DbgNub_catchCmd {
 	    DbgNub_uplevelCmd [list DbgNub_sourceCmd $file]
 	} result options]
-	
+
 	set DbgNub(script) [lreplace $DbgNub(script) end end]
 	set DbgNub(inExclude) $oldExclude
 
@@ -2424,7 +2424,7 @@ proc DbgNub_sourceWrapper {args} {
     if {$icode == ""} {
 	set icode $source
     }
-    
+
     # Evaluate the instrumented code, propagating
     # errors that might occur during the eval.
 
@@ -2453,7 +2453,7 @@ proc DbgNub_sourceWrapper {args} {
 # DbgNub_vwaitWrapper --
 #
 #	Called whenever the program enters the event loop. Records a
-#	discontinuity in the Tcl stack. 
+#	discontinuity in the Tcl stack.
 #
 # Arguments:
 #	args	Arguments passed to original vwait call.
@@ -2486,7 +2486,7 @@ proc DbgNub_vwaitWrapper {args} {
 # DbgNub_updateWrapper --
 #
 #	Called whenever the program enters the event loop. Records a
-#	discontinuity in the Tcl stack. 
+#	discontinuity in the Tcl stack.
 #
 # Arguments:
 #	args	Arguments passed to original update call.
@@ -2519,7 +2519,7 @@ proc DbgNub_updateWrapper {args} {
 # DbgNub_uplevelWrapper --
 #
 #	Called whenever the program calls uplevel. Records a
-#	discontinuity in the Tcl stack. 
+#	discontinuity in the Tcl stack.
 #
 # Arguments:
 #	args	Arguments passed to original uplevel call.
@@ -2559,7 +2559,7 @@ proc DbgNub_uplevelWrapper {args} {
 # DbgNub_packageWrapper --
 #
 #	Called whenever the program calls package. Records a
-#	discontinuity in the Tcl stack. 
+#	discontinuity in the Tcl stack.
 #
 # Arguments:
 #	args	Arguments passed to original package call.
@@ -2607,7 +2607,7 @@ proc DbgNub_packageWrapper {args} {
 
 proc DbgNub_renameWrapper {args} {
     global DbgNub errorCode errorInfo
-    
+
     # Check to see if the name we are about to rename is in a namespace.
     # We need to get the full name for this command before and after
     # it is renamed.
@@ -2835,7 +2835,7 @@ proc DbgNub_RemoveVarTrace {handle} {
 #			should be generated when the trace triggers.  This
 #			script is evaluated at the scope where the trace
 #			triggered.  If the script returns 1, a break is
-#			generated. 
+#			generated.
 #
 # Results:
 #	None.
@@ -2942,7 +2942,7 @@ proc DbgNub_RemoveBreakpoint {type where test} {
 
 proc DbgNub_TraceVar {handle type name1 name2 op} {
     global DbgNub
-    
+
     if {$DbgNub(socket) == -1} {
 	return
     }
@@ -2969,7 +2969,7 @@ proc DbgNub_TraceVar {handle type name1 name2 op} {
     }
 
     # Clean up the trace state if the handle is dead.
-    
+
     if {! [DbgNub_infoCmd exists DbgNub(var:$handle)]} {
 	trace remove variable $name wu "DbgNub_TraceVar $handle $type"
 	return
@@ -2990,7 +2990,7 @@ proc DbgNub_TraceVar {handle type name1 name2 op} {
 	    }
 	}
 	if {$varBreak} {
-	    DbgNub_Break $level varbreak $name $op 
+	    DbgNub_Break $level varbreak $name $op
 	}
     } else {
 	unset DbgNub(var:$handle)
@@ -3018,7 +3018,7 @@ proc DbgNub_Evaluate {id level script} {
     # Save the debugger state so we can restore it after the evaluate
     # completes.  Reset the error handling flags so we don't notify the
     # debugger of errors generated by the script until we complete the
-    # evaluation.  
+    # evaluation.
 
     set saveState {}
     foreach element {state catch errorHandled nestCount breakNext} {
@@ -3152,7 +3152,7 @@ proc DbgNub_GetProcDef {name} {
 proc DbgNub_Interrupt {} {
     global DbgNub
     set DbgNub(breakNext) 1
-    return 
+    return
 }
 
 # DbgNub_IgnoreError --
@@ -3215,8 +3215,8 @@ proc DbgNub_cleanErrorInfo {{result {}} {wrapCmd {}} {actualCmd {}}} {
     }
 
     set pat "\n    \\(\"uplevel\" body line \[^\n\]*\\)\n    invoked from within\n\"DbgNub_uplevelCmd 1 \[^\n\]*\""
-    regsub -all -- $pat $errorInfo {} errorInfo 
-    
+    regsub -all -- $pat $errorInfo {} errorInfo
+
     return $result
 }
 
@@ -3327,7 +3327,7 @@ DbgNub_procCmd debugger_eval {args} {
 		if {$i < $length} {
 		    set blockName [lindex $args $i]
 		} else {
-		    return -code error "missing argument for -name switch" 
+		    return -code error "missing argument for -name switch"
 		}
 	    }
 	    -- {
@@ -3345,9 +3345,9 @@ DbgNub_procCmd debugger_eval {args} {
     if {$i != $length-1} {
 	return -code error "wrong # args: should be \"debugger_eval ?options? script\""
     }
-    
+
     set script [lindex $args $i]
-    
+
     if {$DbgNub(socket) != -1} {
 	set icode [DbgNub_Instrument $blockName $script]
 

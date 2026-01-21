@@ -6,7 +6,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval watch {
     # Handles to the text windows that display variable
@@ -23,7 +22,7 @@ namespace eval watch {
 
     variable varList {}
 
-    # The output message when the variable is undefined or 
+    # The output message when the variable is undefined or
     # out of scope.
 
     variable noValue {<No Value>}
@@ -86,7 +85,7 @@ proc watch::showWindow {} {
 	watch::updateWindow
 	focus $::watch::valuText
 	return $::gui::gui(watchDbgWin)
-    }    
+    }
 }
 
 # watch::createWindow --
@@ -130,11 +129,11 @@ proc watch::createWindow {} {
     pack $addLbl -side left
     pack $addEnt -side left -fill x -expand true -padx 3
 
-    # Place a separating line between the var info and the 
+    # Place a separating line between the var info and the
     # value of the var.
 
     set sepFrm [frame $mainFrm.sep1 -bd $bd -relief groove -height $bd]
-    
+
     # Create the table for displaying var names and values.
 
     set midFrm [frame $mainFrm.midFrm]
@@ -212,9 +211,9 @@ proc watch::createWindow {} {
     bind::addBindTags $remBut     watchDbgWin
     bind::addBindTags $allBut     watchDbgWin
     watch::internalBindings $nameText $valuText $vbpText $sb
-    
+
     # Define the command to be called after each selection event.
-    
+
     sel::setWidgetCmd $valuText all {
 	watch::cleanupSelection $::watch::valuText
 	watch::checkState
@@ -236,12 +235,12 @@ proc watch::createWindow {} {
 
 # watch::updateWindow --
 #
-#	Update the display of the Watch Window.  
+#	Update the display of the Watch Window.
 #
 # Arguments:
 #	None.
 #
-# Results: 
+# Results:
 #	None.
 
 proc watch::updateWindow {} {
@@ -276,7 +275,7 @@ proc watch::updateWindow {} {
 	# Foreach var in varList, generate a dbg::getVar result
 	# that indicates the var does not exist.
 	# {mname oname type exist}
-	
+
 	foreach var $varList {
 	    lappend varInfo [list [code::mangle $var] $var n 0]
 	}
@@ -289,7 +288,7 @@ proc watch::updateWindow {} {
     if {$state == "running"} {
 	set afterID [after $::gui::afterTime [list
 		watch::updateInternal $nameText $valuText $vbpText \
-		\{$varInfo\} $level; watch::checkState 
+		\{$varInfo\} $level; watch::checkState
 	]]
 
     } else {
@@ -302,11 +301,11 @@ proc watch::updateWindow {} {
 #
 #	Clear the contents of the window and display a
 #	message in its place, or set all of the values
-#	to <No Value> for the case that the Var Frame is 
+#	to <No Value> for the case that the Var Frame is
 #	hidden.
 #
 # Arguments:
-#	msg		If not null, then display the contents 
+#	msg		If not null, then display the contents
 #			of the message in the window.
 #
 # Results:
@@ -335,7 +334,7 @@ proc watch::resetWindow {msg} {
 
 	# Call the internal routine that populates the var name and
 	# var value windows.
-	
+
 	watch::updateInternal $nameText $valuText $vbpText $varInfo \
 		[gui::getCurrentLevel]
     } else {
@@ -414,7 +413,7 @@ proc watch::removeSelected {} {
     variable nameText
     variable valuText
     variable varList
-    
+
     set yview [lindex [$nameText yview] 0]
 
     set selectedLines [sel::getSelectedLines $nameText]
@@ -424,7 +423,7 @@ proc watch::removeSelected {} {
 	# Create a new varList containing only the unselected 
 	# variables.  Then call updateWindow to display the
 	# updated varList.
-	
+
 	set tempList {}
 	for {set i 0; set j 0} {$i < [llength $varList]} {incr i} {
 	    if {($i + 1) == [lindex $selectedLines $j]} {
@@ -439,7 +438,7 @@ proc watch::removeSelected {} {
 	watch::selectLine $nameText "$selectCursor.0"
     }
     watch::checkState
-    
+
     $valuText yview moveto $yview
     $nameText yview moveto $yview
 }
@@ -487,7 +486,7 @@ proc watch::checkState {} {
 
 # watch::getVarList --
 #
-#	Return the current list variables being displayed 
+#	Return the current list variables being displayed
 #	in the Watch Window.
 #
 # Arguments:
@@ -506,7 +505,7 @@ proc watch::getVarList {} {
 #
 # Arguments:
 #	vars	The list of vars to watch.
-#	dirty	Boolean, indicating if the dirty bit should be set.  
+#	dirty	Boolean, indicating if the dirty bit should be set.
 #		Can be null.
 #
 # Results:
@@ -527,7 +526,7 @@ proc watch::setVarList {vars {dirty 1}} {
 }
 
 #-----------------------------------------------------------------------------
-# The routines below are written so that both the Var Window and the 
+# The routines below are written so that both the Var Window and the
 # Watch Window can use them.
 #-----------------------------------------------------------------------------
 
@@ -560,7 +559,7 @@ proc watch::internalBindings {nameText valuText vbpText sb} {
 
     $valuText configure -yscroll [list gui::scrollDbgText $valuText $sb \
 	    [list grid $sb -sticky nse -row 0 -column 1]]
-    
+
     # Special bindings on the nameText widget; toggling
     # VBPs on/off/enabled/disabled.
 
@@ -597,7 +596,7 @@ proc watch::internalBindings {nameText valuText vbpText sb} {
 
 # watch::varDataGet --
 #
-#	Get the value for the key associated to an index 
+#	Get the value for the key associated to an index
 #	in a text widget.
 #
 # Arguments:
@@ -606,7 +605,7 @@ proc watch::internalBindings {nameText valuText vbpText sb} {
 #	key	The key to get.
 #
 # Results:
-#	Return the value of the key, or {} if the key does 
+#	Return the value of the key, or {} if the key does
 #	not exist.
 
 proc watch::varDataGet {text index key} {
@@ -626,7 +625,7 @@ proc watch::varDataGet {text index key} {
 
 # watch::varDataSet --
 #
-#	Set the value for the key associated to an index 
+#	Set the value for the key associated to an index
 #	in a text widget.
 #
 # Arguments:
@@ -681,7 +680,7 @@ proc watch::varDataGetValue {oname level type} {
 # Arguments:
 #	oname		The original, unmangled, variable name.
 #	level		The level to get variables from.
-#	existVar	Optional var name that will contain a 
+#	existVar	Optional var name that will contain a
 #			boolean indicating if the var exists.
 #
 # Results:
@@ -705,8 +704,8 @@ proc watch::VarDataGetScalarValue {oname level {existVar {}}} {
 # watch::VarDataGetArrayValue --
 #
 #	Get an array element/value ordered list for an array.
-#	May need to fetch the value if this is the first 
-#	time an array is expanded.  Note: The array must 
+#	May need to fetch the value if this is the first
+#	time an array is expanded.  Note: The array must
 #	exist!  Otherwise watch::varDataFetched wont work.
 #
 # Arguments:
@@ -831,7 +830,7 @@ proc watch::varDataAddVars {text level {vars {}}} {
 
     # Foreach var in the vars, compute the list {mname oname type exist}
     # and set the value in the database.
-    
+
     set infoVars  {}
     set foundVars {}
     set foundList {}
@@ -861,7 +860,7 @@ proc watch::varDataAddVars {text level {vars {}}} {
     }
 
     # Next, fetch the values for the variables in the infoVars
-    # list, add the list to the result and set the database.  
+    # list, add the list to the result and set the database.
 
     if {$infoVars != ""} {
 	foreach info [dbg::getVar $level [font::get -maxchars] $infoVars] {
@@ -880,7 +879,7 @@ proc watch::varDataAddVars {text level {vars {}}} {
 	}
     }
 
-    # Finally, determine which varaibles do not exist.  If the 
+    # Finally, determine which varaibles do not exist.  If the
     # variable is in the realVars list and is not in the foundVars
     # list, then the variable does not exist.  Create the list, but
     # do not set the value in the database.
@@ -908,7 +907,7 @@ proc watch::varDataAddVars {text level {vars {}}} {
 #	nameText	The nameText window for the Var or Watch Window.
 #	valuText	The valuText window for the Var or Watch Window.
 #	vbpText		The vbpText window for the Var or Watch Window.
-#	varList		The list of vars to add to the window.  The 
+#	varList		The list of vars to add to the window.  The
 #			insertion is done in order, so this list needs
 #			to have been pre-sorted.  Any variables that
 #			do not exist in this scope are assumed to have
@@ -926,7 +925,7 @@ proc watch::updateInternal {nameText valuText vbpText varList level} {
 
     dbg::Log timing {updateInternal $nameText}
 
-    # Cleanup the previous state and start fresh.  Cache the 
+    # Cleanup the previous state and start fresh.  Cache the
     # yview of the scrollbar so it can be "seemlessly" restored.
 
     set yview [lindex [$valuText yview] 0]
@@ -945,12 +944,12 @@ proc watch::updateInternal {nameText valuText vbpText varList level} {
 	set exist [lindex $var 3]
 
 	# Insert the variable name and value.  If the variable
-	# is an array,  display "..." to indicate this can be 
+	# is an array,  display "..." to indicate this can be
 	# expanded.
 	#
 	# Add the tag "leftIndent" to all on the entries in nameText.
-	# This will cause the left side of the text box to indent a few 
-	# pixels.  This is done instead of configuring w/ "padx" so 
+	# This will cause the left side of the text box to indent a few
+	# pixels.  This is done instead of configuring w/ "padx" so
 	# the highlight bar will connect entirely between the nameText
 	# and valuText windows.
 
@@ -962,7 +961,7 @@ proc watch::updateInternal {nameText valuText vbpText varList level} {
 	switch -- $type {
 	    "s" {
 		# Replace the newlines in the value with a char representation
-		# so the value fits on one line. 
+		# so the value fits on one line.
 
 		set mvalue [code::mangle \
 			[watch::varDataGetValue $oname $level $type]]
@@ -982,7 +981,7 @@ proc watch::updateInternal {nameText valuText vbpText varList level} {
 	$vbpText  insert end " \n"
 
 	# Insert the keys AFTER the newlines have been added.  This will
-	# insure there is at least one char on the line to add the tags 
+	# insure there is at least one char on the line to add the tags
 	# to.  Otherwise, if the string is null, no tag will be added.
 
 	watch::varDataSet $valuText $line.0 \
@@ -1053,14 +1052,14 @@ proc watch::scrollWindow {text args} {
     set vbpText  $::watch::text(vbp,$text)
 
     eval {$text yview} $args
-    set yview [lindex [$text yview] 0] 
-    $nameText yview moveto $yview 
-    $valuText yview moveto $yview 
-    $vbpText  yview moveto $yview 
- 
-    # Make sure all of the visible lines are formatted correctly. 
+    set yview [lindex [$text yview] 0]
+    $nameText yview moveto $yview
+    $valuText yview moveto $yview
+    $vbpText  yview moveto $yview
+
+    # Make sure all of the visible lines are formatted correctly.
     gui::formatText $valuText right
-    gui::formatText $nameText right 
+    gui::formatText $nameText right
 }
 
 # watch::tkTextAutoScan --
@@ -1112,7 +1111,7 @@ proc watch::tkTextAutoScan {text} {
 
 # watch::tkCancelRepeat --
 #
-#	Override the default cancel event so it correctly 
+#	Override the default cancel event so it correctly
 #	cancels the after event.
 #
 # Arguments:
@@ -1146,7 +1145,7 @@ proc watch::showInspector {text} {
     set line  [sel::getCursor $valuText]
     set oname [watch::varDataGet $valuText $line.0 "oname"]
     inspector::showVariable $oname [gui::getCurrentLevel]
-    
+
     return
 }
 
@@ -1207,7 +1206,7 @@ proc watch::toggleVBP {text index toggleType} {
     if {[gui::getCurrentState] != "stopped"} {
 	return
     }
-    
+
     # Don't allow user to toggle in the Var/Watch Window
     # if the var frame is hidden.
 
@@ -1220,7 +1219,7 @@ proc watch::toggleVBP {text index toggleType} {
     set oname [watch::varDataGet $valuText $line.0 "oname"]
     set state [icon::getVBPState $level $oname]
 
-    # If the current line is not highlighted, only toggle the 
+    # If the current line is not highlighted, only toggle the
     # VBP at the current line.  Otherwise, toggle all of the
     # selected variables to the new state of the current line.
 
@@ -1304,8 +1303,8 @@ proc watch::expandOrFlattenArray {text index {type {}}} {
 
 # watch::ExpandArray --
 #
-#	Expand the array entry to show all of the elements 
-#	in the array.  Re-bind the array indicator to 
+#	Expand the array entry to show all of the elements
+#	in the array.  Re-bind the array indicator to
 #	flatten the array if selected again.
 #
 # Arguments:
@@ -1329,7 +1328,7 @@ proc watch::ExpandArray {text index} {
 
     gui::unformatText $valuText
     gui::unformatText $nameText
-     
+
     set level [gui::getCurrentLevel]
     set line  [expr {[lindex [split [$valuText index $index] .] 0] + 1}]
     set arrayName [watch::varDataGet $valuText "$index linestart" "oname"]
@@ -1357,7 +1356,7 @@ proc watch::ExpandArray {text index} {
 
 	# Add varData to the text widget and add the array values
 	# to the database as scalar entries.
-	
+
 	watch::varDataSet $valuText $line.0 \
 		[list oname $scalarName type "a" exist 1 \
 		arrayName $arrayName element $element]
@@ -1380,8 +1379,8 @@ proc watch::ExpandArray {text index} {
 
 # watch::FlattenArray --
 #
-#	Flatten the array entry to hide all of the elements 
-#	in the array.  Re-bind the array indicator to 
+#	Flatten the array entry to hide all of the elements
+#	in the array.  Re-bind the array indicator to
 #	expand the array is selected again.
 #
 # Arguments:
@@ -1405,7 +1404,7 @@ proc watch::FlattenArray {text index} {
     gui::unformatText $valuText
     gui::unformatText $nameText
 
-    # For every index/entry pair there is a line displayed 
+    # For every index/entry pair there is a line displayed
     # in the text widgets that needs to be removed.  Set
     # the start and stop indicies to point at the first lin
     # containing array info and keep deleting this line until
@@ -1504,7 +1503,7 @@ proc watch::selectAllLines {text} {
 # watch::selectLine --
 #
 #	Select a new line in the nametext and valuText Windows,
-#	removing any prevuious selected lines. 
+#	removing any prevuious selected lines.
 #
 # Arguments:
 #	text		The text widget recieving the action.
@@ -1531,7 +1530,7 @@ proc watch::selectLine {text index} {
 
 # watch::selectMultiLine --
 #
-#	Select or deselect a new line in the nametext and valuText 
+#	Select or deselect a new line in the nametext and valuText
 #	Windows, without removing existing highlights.
 #
 # Arguments:
@@ -1582,8 +1581,8 @@ proc watch::selectLineRange {text index} {
 
 # watch::moveSelection --
 #
-#	Move the selection of the nameText and valuText 
-#	windows up or down, removing any previous 
+#	Move the selection of the nameText and valuText
+#	windows up or down, removing any previous
 #	selection.
 #
 # Arguments:
@@ -1701,7 +1700,7 @@ proc watch::selectCursorRange {text} {
 
 # watch::toggleCursor --
 #
-#	Toggle the selection of the line indicated by the 
+#	Toggle the selection of the line indicated by the
 #	selectCursor without deleting the previous selection.
 #
 # Arguments:
@@ -1744,7 +1743,7 @@ proc watch::copy {text} {
     for {set i 0} {$i < [llength $nameCopy]} {incr i} {
 	set name [lindex $nameCopy $i]
 	set valu [lindex $valuCopy $i]
-	
+
 	set name [string range $name 0 [expr {[string length $name] - 2}]]
 	lappend result "$name $valu"
     }
@@ -1757,7 +1756,7 @@ proc watch::copy {text} {
 # watch::cleanupSelection --
 #
 #	Remove the first char if highlighting from each selected
-#	line in the nameText widget, so the VBP icon is not 
+#	line in the nameText widget, so the VBP icon is not
 #	included in the selection.
 #
 # Arguments:
@@ -1775,18 +1774,18 @@ proc watch::cleanupSelection {text} {
 	if {![sel::isTagInLine $nameText $line.0 varEntry]} {
 	    $nameText tag remove highlight $line.0 "$line.0 lineend + 1 chars"
 	    $valuText tag remove highlight $line.0 "$line.0 lineend + 1 chars"
-	}	    
+	}
     }
 
     set yview [lindex [$text yview] 0]
     $nameText yview moveto $yview
     $valuText yview moveto $yview
     $vbpText  yview moveto $yview
-    
-    # Make sure all of the visible lines are formatted correctly. 
+
+    # Make sure all of the visible lines are formatted correctly.
     gui::formatText $valuText right
-    gui::formatText $nameText right 
-    
+    gui::formatText $nameText right
+
     return
 }
 
@@ -1810,7 +1809,7 @@ proc watch::seeCallback {text index} {
     $nameText see $index
     $valuText see $index
     $vbpText  see $index
-    
+
     return
 }
 

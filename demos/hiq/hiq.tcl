@@ -6,8 +6,6 @@
 # Copyright (c) 1996 Dartmouth College
 # Copyright (c) 1998 Scriptics Corporation
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
-# RCS: @(#) $Id: hiq.tcl,v 1.2 2000/10/31 23:31:09 welch Exp $
 
 
 # "color" is an associative array which we use to abstract away the font

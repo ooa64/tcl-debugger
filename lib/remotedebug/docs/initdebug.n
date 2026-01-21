@@ -2,8 +2,6 @@
 '\" Copyright (c) 1998-1999 by Scriptics Corp.
 '\" All rights reserved.
 '\"
-'\" RCS: @(#) $Id: initdebug.n,v 1.1 2000/08/31 18:03:39 hershey Exp $
-'\"
 .so man.macros
 .TH debugger_init n "1.4" Ajuba "Ajuba Debugger"
 .BS
@@ -72,7 +70,7 @@ a file of the given \fIname\fR.  This feature can be useful in remote
 debugger situations, or when evaluating blocks of dynamically
 generated code that are used multiple times.  By creating a unique
 \fIname\fR for each block, the user can set breakpoints in the block
-that persist across invocations. 
+that persist across invocations.
 .TP
 \fB\-\|\-\fR
 Marks the end of switches.  The argument following this one will
@@ -83,7 +81,7 @@ be treated as \fIscript\fR even if it starts with a \fB\-\fR.
 .TP
 \fBdebugger_attached\fR
 The \fBdebugger_attached\fR returns 1 if the script is currently
-connected to the debugger.  Otherwise it returns 0.  
+connected to the debugger.  Otherwise it returns 0.
 .VE 1.4
 .TP
 \fBdebugger_break\fR ?\fIstr\fR?
@@ -107,7 +105,7 @@ User's Guide or online help system for more information on how
 to specify the port that the debugger listens on.  The file \fBmain.tcl\fR
 is then sourced, which will cause the contents of the file, and any
 subsequent sourced files, to become instrumented (unless the
-preferences set in the debugger indicate otherwise.) 
+preferences set in the debugger indicate otherwise.)
 .PP
 .CS
 source initdebug.tcl

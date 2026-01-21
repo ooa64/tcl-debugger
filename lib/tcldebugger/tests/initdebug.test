@@ -9,7 +9,6 @@
 #
 # See the file "license.terms" for information on usage and redistribution
 # of this file, and for a DISCLAIMER OF ALL WARRANTIES.
-#
 
 if {[string compare test [info procs test]] == 1} {
     lappend auto_path [file join [file dirname [info script]] ..]
@@ -91,7 +90,7 @@ test initdebug-1.2 {debugger_init} {
 	exit
     }] 1
     set result [waitForApp]	;# Attach
-    dbg::step run	
+    dbg::step run
     lappend result [waitForApp]	;# Exit
     set f [open $outputFile r]
     lappend result [read $f]
@@ -164,7 +163,7 @@ test initdebug-3.2 {debugger_attached} {
 	close $f
 	exit
     }] 1
-	
+
     waitForApp
     dbg::step run
     after 500
@@ -192,7 +191,7 @@ test initdebug-3.3 {debugger_attached} {
 	close $f
 	exit
     }] 1
-    
+
     waitForApp
     dbg::step any
     waitForApp
@@ -223,7 +222,7 @@ test initdebug-4.1 {sentinel, multiple sourcing of initdebug.tcl} {
 	exit
     }] 1
     set result [waitForApp]	;# Attach
-    dbg::step run	
+    dbg::step run
     lappend result [waitForApp]	;# Exit
     set f [open $outputFile r]
     lappend result [read $f]

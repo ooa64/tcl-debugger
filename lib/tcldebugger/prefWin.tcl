@@ -6,13 +6,12 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval prefWin {
     # The focusOrder variable is an array with one entry for
     # each tabbed window.  The value is a list of widget handles,
-    # which is the order for the tab focus traversial of the 
-    # window. 
+    # which is the order for the tab focus traversial of the
+    # window.
 
     variable focusOrder
 
@@ -23,7 +22,7 @@ namespace eval prefWin {
     variable appBut
 
     # Widget handles and data for the Font selection window.
-    # 
+    #
     # typeBox	 The combobox that lists available fixed fonts.
     # sizeBox	 The combobox that lists sizes for available fixed fonts.
     # fontSizes	 The default font sizes to choose from.
@@ -67,7 +66,7 @@ proc prefWin::showWindow {} {
 	prefWin::createWindow
 	focus $::gui::gui(prefDbgWin)
 	return $::gui::gui(prefDbgWin)
-    }    
+    }
 }
 
 # prefWin::createWindow --
@@ -89,7 +88,7 @@ proc prefWin::createWindow {} {
     set bd   0
     set pad  6
     set pad2 2
-    
+
     if {[info exists focusOrder]} {
 	unset focusOrder
     }
@@ -116,17 +115,17 @@ proc prefWin::createWindow {} {
     $tabWin add "Windows" 	  -window $winFrm
     $tabWin add "Startup & Exit"  -window $errFrm
     $tabWin add "Other"		  -window $otherFrm
-    
+
     # Appearance
     set fontWin  [prefWin::createFontWindow  $appFrm]
     set colorWin [prefWin::createColorWindow $appFrm]
-    pack $fontWin  -fill x -anchor n -padx $pad -pady $pad2 
-    pack $colorWin -fill x -anchor n -padx $pad    
+    pack $fontWin  -fill x -anchor n -padx $pad -pady $pad2
+    pack $colorWin -fill x -anchor n -padx $pad
 
     # Window
     set evalWin  [prefWin::createEvalWindow $winFrm]
     set codeWin  [prefWin::createCodeWindow $winFrm]
-    pack $evalWin -fill x -anchor n -padx $pad -pady $pad2 
+    pack $evalWin -fill x -anchor n -padx $pad -pady $pad2
     pack $codeWin -fill x -anchor n -padx $pad
 
     # Startup & Exit
@@ -157,21 +156,21 @@ proc prefWin::createWindow {} {
     pack $canBut -side right -pady $pad
     pack $okBut  -side right -padx $pad -pady $pad
 
-    pack $butFrm -side bottom -fill x 
+    pack $butFrm -side bottom -fill x
     pack $tabWin -side bottom -fill both -expand true -padx $pad -pady $pad
 
     # Add default bindings.
-    prefWin::SetBindings $appFrm  Appearance  
-    prefWin::SetBindings $winFrm  Windows  
+    prefWin::SetBindings $appFrm  Appearance
+    prefWin::SetBindings $winFrm  Windows
     prefWin::SetBindings $errFrm  Startup
-    prefWin::SetBindings $otherFrm Other  
+    prefWin::SetBindings $otherFrm Other
 
     $tabWin activate 1
 }
 
 # prefWin::SetBindings --
 #
-#	Set the tab order and default bindings on the 
+#	Set the tab order and default bindings on the
 #	active children of all sub windows.
 #
 # Arguments:
@@ -202,7 +201,7 @@ proc prefWin::SetBindings {mainFrm name} {
 
 # prefWin::NewFocus --
 #
-#	Re-bind the modal buttons so the correct tab order 
+#	Re-bind the modal buttons so the correct tab order
 #	is maintained.
 #
 # Arguments:
@@ -215,8 +214,8 @@ proc prefWin::NewFocus {old new} {
     variable okBut
     variable canBut
     variable appBut
- 
-    # The implementation of the tab window gives us the name of the 
+
+    # The implementation of the tab window gives us the name of the
     # tab window displayed.  The name is used for tag bindings.  Having
     # complex list is complicated, so use the first simple index of the
     # tab window name.
@@ -242,7 +241,7 @@ proc prefWin::NewFocus {old new} {
 #	Map the local data to the persistent data.
 #
 # Arguments:
-#	destroy	  Boolean, if true then destroy the 
+#	destroy	  Boolean, if true then destroy the
 #		  toplevel window.
 #
 # Results:
@@ -414,7 +413,7 @@ proc prefWin::chooseColor {but pref} {
     set color [tk_chooseColor -title "Choose a color" -parent $w \
 	-initialcolor $initialColor]
 
-    # If the color is not an empty string, then set the preference value 
+    # If the color is not an empty string, then set the preference value
     # to the newly selected color.
 
     if {$color != ""} {
@@ -534,7 +533,7 @@ proc prefWin::createExitWindow {mainFrm} {
     set warnChk [checkbutton $subFrm.warnChk \
 		     -text "Warn before killing the application." \
 		     -variable [pref::prefVar warnOnKill TempPref]]
-    
+
     grid $askRad  -row 0 -column 0 -sticky w -padx $pad
     grid $killRad -row 1 -column 0 -sticky w -padx $pad
     grid $runRad  -row 2 -column 0 -sticky w -padx $pad

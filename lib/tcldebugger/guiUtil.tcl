@@ -5,15 +5,14 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 package provide guiUtil 1.0
 namespace eval guiUtil {
     # This array is used by the Pane and Table commands
     # to preserve and restore the geometry of the pane
-    # or table between sessions.  The procs: 
+    # or table between sessions.  The procs:
     # guiUtil::savePaneGeometry and guiUtil::restorePaneGeometry
-    # preserve the data in the prefs Default group between 
+    # preserve the data in the prefs Default group between
     # sessions.
 
     variable paneGeom
@@ -38,7 +37,7 @@ namespace eval guiUtil {
 #		-percent  Split between the two frames.
 #		-in       The parent window to pack the frames into.
 #
-# Results: 
+# Results:
 #	None.
 
 proc guiUtil::paneCreate {frm1 frm2 args} {
@@ -67,7 +66,7 @@ proc guiUtil::paneCreate {frm1 frm2 args} {
     set pane(2) $frm2
     if {[string match vert* $pane(-orient)]} {
 	# Adjust boundary in Y direction (split top & bottom)
-	set pane(D) Y		
+	set pane(D) Y
 	place $pane(1) -in $master -x 0 -rely 0.0 -anchor nw \
 		-relwidth 1.0 -height -2
 	place $pane(2) -in $master -x 0 -rely 1.0 -anchor sw \
@@ -77,7 +76,7 @@ proc guiUtil::paneCreate {frm1 frm2 args} {
 	set pane(bg) [$pane(grip) cget -bg]
     } else {
 	# Adjust boundary in X direction (split left & right)
-	set pane(D) X 		
+	set pane(D) X
 	place $pane(1) -in $master -relx 0.0 -y 0 -anchor nw \
 		-relheight 1.0 -width -2
 	place $pane(2) -in $master -relx 1.0 -y 0 -anchor ne \
@@ -87,7 +86,7 @@ proc guiUtil::paneCreate {frm1 frm2 args} {
 	set pane(bg) [$pane(grip) cget -bg]
     }
 
-    # Set up bindings for resize, <Configure>, and 
+    # Set up bindings for resize, <Configure>, and
     # for dragging the grip.
 
     bind $master <Configure> [list guiUtil::paneGeometry $master]
@@ -111,7 +110,7 @@ proc guiUtil::paneCreate {frm1 frm2 args} {
 #	master	The parent window that contains both the sub frames.
 #	D	???
 #
-# Results: 
+# Results:
 #	None.
 
 proc guiUtil::paneDrag {master D} {
@@ -153,7 +152,7 @@ proc guiUtil::paneDrag {master D} {
 # Arguments:
 #	master	The parent window that contains both the sub frames.
 #
-# Results: 
+# Results:
 #	None.
 
 proc guiUtil::paneStop {master} {
@@ -175,14 +174,14 @@ proc guiUtil::paneStop {master} {
 # Arguments:
 #	master	The parent window that contains both the sub frames.
 #
-# Results: 
+# Results:
 #	None.
 
 proc guiUtil::paneGeometry {master} {
     upvar #0 Pane$master pane
     if {$pane(D) == "X"} {
 	place $pane(1)    -relwidth $pane(-percent)
-	place $pane(grip) -relx $pane(-percent) -relheight 1.0 -x -1 
+	place $pane(grip) -relx $pane(-percent) -relheight 1.0 -x -1
 	place $pane(2)    -relwidth [expr {1.0 - $pane(-percent)}] -x 2
 	set pane(size) [winfo width $master]
     } else {
@@ -212,7 +211,7 @@ proc guiUtil::paneGeometry {master} {
 #		-percent  Split between the two frames.
 #		-in       The parent window to pack the frames into.
 #
-# Results: 
+# Results:
 #	None.
 
 proc guiUtil::tableCreate {master frm1 frm2 args} {
@@ -230,14 +229,14 @@ proc guiUtil::tableCreate {master frm1 frm2 args} {
     # Keep state in an array associated with the master frame.
     upvar #0 Pane$master pane
     array set pane [array get t]
-    
+
     $master configure -bd 2 -relief sunken
     # Create sub frames that contain the title bars and  windows.
-    set title [frame $master.title] 
+    set title [frame $master.title]
     set wins  [frame $master.wins]
 
-    # Create the first pane with a title bar and the embedded 
-    # window.  
+    # Create the first pane with a title bar and the embedded
+    # window.
 
     set pane(1) $frm1
     set pane(t1) [label $title.title0  -relief raised -bd 2 \
@@ -255,7 +254,7 @@ proc guiUtil::tableCreate {master frm1 frm2 args} {
 	    -height $lblHeight -relwidth 1.0
     place $pane(1) -in $wins -relx 0.0 -y 0 -anchor nw \
 	    -relheight 1.0 -relwidth 1.0
-    raise $pane(1) 
+    raise $pane(1)
 
 
     # If there are two sub windows, create the grip to slide
@@ -265,7 +264,7 @@ proc guiUtil::tableCreate {master frm1 frm2 args} {
 	set pane(2) $frm2
 	set pane(t2) [label $title.title1  -relief raised -bd 2 \
 		-text $pane(-title2) -justify $pane(-justify) \
-		-anchor w -padx 6]	
+		-anchor w -padx 6]
 	set pane(grip) [frame $title.grip -bg gray50 \
 		-bd 0 -cursor sb_h_double_arrow -width 2]
 	place $pane(t2) -in $title -relx 1.0 -y 0 -anchor ne \
@@ -273,10 +272,10 @@ proc guiUtil::tableCreate {master frm1 frm2 args} {
 	place $pane(2) -in $wins -relx 1.0 -y 0 -anchor ne \
 		-relheight 1.0 -relwidth 0.5
 	raise $pane(2)
-	
-	# Set up bindings for resize, <Configure>, and 
+
+	# Set up bindings for resize, <Configure>, and
 	# for dragging the grip.
-	
+
 	bind $pane(grip) <ButtonPress-1> \
 		[list guiUtil::tableDrag $master %X]
 	bind $pane(grip) <B1-Motion> \
@@ -284,14 +283,14 @@ proc guiUtil::tableCreate {master frm1 frm2 args} {
 	bind $pane(grip) <ButtonRelease-1> \
 		[list guiUtil::tableStop $master]
 	bind $master <Configure> [list guiUtil::tableGeometry $master]
-	
+
 	guiUtil::tableGeometry $master
     }
 
     pack $master  -fill both -expand true -padx 2
     pack $title -fill x
     pack $wins  -fill both -expand true
-    
+
     pack propagate $master off
     pack propagate $title off
     pack propagate $wins off
@@ -305,7 +304,7 @@ proc guiUtil::tableCreate {master frm1 frm2 args} {
 #	master	The parent window that contains both the sub frames.
 #	D	???
 #
-# Results: 
+# Results:
 #	None.
 
 proc guiUtil::tableDrag {master x} {
@@ -342,7 +341,7 @@ proc guiUtil::tableDrag {master x} {
 # Arguments:
 #	master	The parent window that contains both the sub frames.
 #
-# Results: 
+# Results:
 #	None.
 
 proc guiUtil::tableStop {master} {
@@ -359,7 +358,7 @@ proc guiUtil::tableStop {master} {
 # Arguments:
 #	master	The parent window that contains both the sub frames.
 #
-# Results: 
+# Results:
 #	None.
 
 proc guiUtil::tableGeometry {master} {
@@ -368,7 +367,7 @@ proc guiUtil::tableGeometry {master} {
     # Prevent loosing the grip if the percent is virtually
     # zero.  Otherwise place the grip off by two pixels for
     # aesthetics.
- 
+
     place $pane(t1)   -width -2 -relwidth $pane(-percent)
     place $pane(1)    -relwidth $pane(-percent)
     if {$pane(-percent) < 0.01} {
@@ -396,7 +395,7 @@ proc guiUtil::ComboBox {ComboBox args} {
 	# HACK: Listboxes should be the same color as Text
 	# boxes, but they are not.  Set the default Listbox
 	# color to be the same as the Text widget's color.
-	
+
 	set temp [text .temoraryTextToConfigureListBoxes]
 	set bg [$temp cget -bg]
 	option add *Listbox.background $bg
@@ -404,7 +403,7 @@ proc guiUtil::ComboBox {ComboBox args} {
 	variable ComboBoxInitListBoxes 1
     }
 
-    # We shall always call our toplevel $ComboBox_tl 
+    # We shall always call our toplevel $ComboBox_tl
     set w [format "%s_tl" $ComboBox]
     catch {destroy $w}
     toplevel $w
@@ -443,7 +442,7 @@ proc guiUtil::ComboBox {ComboBox args} {
     bind $entry <Return>  "
 	if {\$::guiUtil::comboCommand($ComboBox) != {}} {
 	    uplevel #0 \$::guiUtil::comboCommand($ComboBox)
-	}   
+	}
     "
     bind $entry <Up> "guiUtil::ComboBox_popup $ComboBox $w"
     bind $entry <Down> "guiUtil::ComboBox_popup $ComboBox $w"
@@ -456,7 +455,7 @@ proc guiUtil::ComboBox {ComboBox args} {
     if { [string length $args] } {
 	eval {guiUtil::ComboBox_configure $ComboBox} $args
     }
-    
+
     return $ComboBox
 }
 
@@ -473,7 +472,7 @@ proc guiUtil::ComboBox_call {this op args} {
     } else {
 	return "$errmsg"
     }
-	
+
 }
 
 # Proc to return the value of the ComboBox's entry field
@@ -565,7 +564,7 @@ proc guiUtil::ComboBox_add {ComboBox args} {
 	    set height 5
 	}
 	$w.frm.list configure -height $height
-	
+
 	$w.frm.list delete 0 end
 	foreach value $newList {
 	    $w.frm.list insert end $value
@@ -574,18 +573,18 @@ proc guiUtil::ComboBox_add {ComboBox args} {
     return [$w.frm.list get 0 end]
 }
 
-# Proc to emulate the cget command. 
+# Proc to emulate the cget command.
 proc guiUtil::ComboBox_cget { ComboBox args } {
     # The toplevel is
     set w [format "%s_tl" $ComboBox]
 
-    # We shall ignore any arguments beyond the first one, rather than 
+    # We shall ignore any arguments beyond the first one, rather than
     # throwing up an error message.
     set option [lindex $args 0]
 
     if { [regexp {^-e} $option] } {
 	return [$ComboBox.e cget [format "-%s" [string range $option 2 end]]]
-    }  
+    }
     if { [regexp {^-list} $option] } {
 	return [$w.frm.list cget [format "-%s" [string range $option 5 end]]]
     }
@@ -632,23 +631,23 @@ proc guiUtil::ComboBox_configure { ComboBox args} {
 		"-listfg" -
 		"-listbg" -
 		"-listbd" -
-		"-listrelief" { 
+		"-listrelief" {
 		    set realOption [string range $tag 5 end]
-		    $w.frm.list configure -$realOption $option 
+		    $w.frm.list configure -$realOption $option
 		}
 		"-command" {
 		    set ::guiUtil::comboCommand($ComboBox) $option
 		}
-		"-cursor" { 
+		"-cursor" {
 		    $ComboBox.e configure -cursor $option
 		    $w.frm.list configure -cursor $option
-		    $ComboBox.arrow configure -cursor $option 
+		    $ComboBox.arrow configure -cursor $option
 		}
-		"-strict" { 
+		"-strict" {
 		    if {$option == 1} {
-			$ComboBox.e configure -state disabled 
+			$ComboBox.e configure -state disabled
 			$ComboBox.e configure -cursor [system::getArrow]
-		    } else { 
+		    } else {
 			$ComboBox.e configure -state normal
 			$ComboBox.e configure -cursor xterm
 		    }
@@ -656,7 +655,7 @@ proc guiUtil::ComboBox_configure { ComboBox args} {
 		"-textvariable" {
 		    $ComboBox.e configure -textvariable $option
 		}
-		default { 
+		default {
 		    tk_dialog ${ComboBox}_d Error \
 			    "ERROR: Bad combobox configure option $tag" \
 			    error 0 OK
@@ -703,8 +702,8 @@ proc guiUtil::ComboBox_popdown { {frame .f} {win .combobox} } {
 # Thanks, Ioi !
 proc guiUtil::ComboBox_popup { {frame .f} {win .combobox} } {
     variable comboPopup
-    variable comboParent 
-    variable comboCursor 
+    variable comboParent
+    variable comboCursor
 
     if { ![string compare [wm state $win] "normal"] } {
 	guiUtil::removeGrab
@@ -728,7 +727,7 @@ proc guiUtil::ComboBox_popup { {frame .f} {win .combobox} } {
     set x1 [winfo rootx $frame]
     set x2 [expr {$x1 + [winfo width $frame]}]
     set width [expr {$x2 - $x1}]
-    
+
     set reqwidth [winfo reqwidth $win]
     if {$reqwidth < $width} {
 	set reqwidth $width
@@ -762,7 +761,7 @@ proc guiUtil::ComboBox_popup { {frame .f} {win .combobox} } {
     if {$bottom > $scrheight} {
 	set y [expr {$y-$height-[winfo height $frame.e]-5}]
     }
- 
+
     # OK , popup the shell
     #
 
@@ -919,7 +918,7 @@ proc guiUtil::positionWindow {win {defaultGeom {}}} {
 	set slop 10
 	set sw [expr {[winfo screenwidth $win]  - $slop}]
 	set sh [expr {[winfo screenheight $win] - $slop}]
-	
+
 	if {($x > $sw) || ($x < 0) || ($y > $sh) || ($y < 0)} {
 	    if {($defaultGeom != "")} {
 		# Perform some sanity checking on the default value.
@@ -947,7 +946,7 @@ proc guiUtil::positionWindow {win {defaultGeom {}}} {
 	    wm geometry $win ${w}x${h}+${x}+${y}
 	}
     }
-    
+
     bind $win <Destroy> {::guiUtil::saveGeometry %W}
 }
 
@@ -969,7 +968,7 @@ proc guiUtil::saveGeometry {win} {
 	return
     }
 
-    # If wins geometry has been saved before, get an index into the list and 
+    # If wins geometry has been saved before, get an index into the list and
     # replace the old value with the new value.  If wins has not been saved
     # before the index value will be -1.
 
@@ -978,7 +977,7 @@ proc guiUtil::saveGeometry {win} {
     set winGeoms [pref::prefGet winGeoms GlobalDefault]
     set index    [lsearch -regexp $winGeoms [list $tag *]]
 
-    # If the window was never saved before, append the tag name and the 
+    # If the window was never saved before, append the tag name and the
     # geometry of the window onto the list.  Otherwise replace the value
     # referred to at index.
 
@@ -990,14 +989,14 @@ proc guiUtil::saveGeometry {win} {
 
     # Update the winGeoms preference value in the GlobalDefault group
 
-    pref::prefSet GlobalDefault winGeoms $winGeoms 
+    pref::prefSet GlobalDefault winGeoms $winGeoms
     return
 }
 
 # guiUtil::restorePaneGeometry --
 #
 #	Restore the pane's -percent value, so the window
-#	can be restored to it's identical percentage of 
+#	can be restored to it's identical percentage of
 #	distribution.
 #
 # Arguments:
@@ -1007,14 +1006,14 @@ proc guiUtil::saveGeometry {win} {
 #	None.
 
 proc guiUtil::restorePaneGeometry {} {
-    array set ::guiUtil::paneGeom [pref::prefGet paneGeom GlobalDefault] 
+    array set ::guiUtil::paneGeom [pref::prefGet paneGeom GlobalDefault]
     return
 }
 
 # guiUtil::preservePaneGeometry --
 #
 #	Save the pane's -percent value, so the window can
-#	be restored to it's identical percentage of 
+#	be restored to it's identical percentage of
 #	distribution.
 #
 # Arguments:
@@ -1025,7 +1024,7 @@ proc guiUtil::restorePaneGeometry {} {
 
 proc guiUtil::preservePaneGeometry {} {
     # Update the winGeoms preference value in the GlobalDefault group
-    
+
     pref::prefSet GlobalDefault paneGeom [array get ::guiUtil::paneGeom]
     return
 }

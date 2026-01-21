@@ -1,6 +1,6 @@
 # varbreak.tcl --
 #
-#    This program increments a variable "x".  It was designed to 
+#    This program increments a variable "x".  It was designed to
 #    illustrate variable breakpoints in TclPro Debugger.
 #
 # Copyright (c) 1999 Scriptics Corporation
@@ -16,8 +16,8 @@ pack .incr -side left -expand yes -padx 4 -pady 4
 button .decr -text "Decrement" -command {Decrement x}
 pack .decr -side left -expand yes -padx 4 -pady 4
 
-# 
-# Increment - Increases the value of the variable whose name is 
+#
+# Increment - Increases the value of the variable whose name is
 #   "varName" by one.
 #
 
@@ -26,7 +26,7 @@ proc Increment {varName} {
     incr $varName
 }
 
-# 
+#
 # Decrement - Reduces the value of the variable "varName" by one.
 #
 

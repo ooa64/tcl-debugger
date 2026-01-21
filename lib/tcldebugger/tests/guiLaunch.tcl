@@ -6,7 +6,6 @@
 # Copyright (c) 1998-2000 by Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
 
 set odir [pwd]
 cd [file dirname [info script]]
@@ -26,7 +25,7 @@ namespace eval debugger {
 	    iconImage [expr {($::tcl_platform(platform) == "windows") \
 	        ? "foo" : [file join $libdir images/debugUnixIcon.gif]}]\
 	    productName "Debugger"]
-    
+
 }
 
 foreach file {

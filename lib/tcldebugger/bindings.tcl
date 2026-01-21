@@ -1,12 +1,11 @@
 # bindings.tcl --
 #
-#	This file implemennts the common APIs for creating
+#	This file implements the common APIs for creating
 #	the bindtags and establishing common bindings.
 #
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval bind {
     # Watch Window - Actions
@@ -336,7 +335,7 @@ namespace eval bind {
 	%W yview scroll [expr - (%D / 120) * 4] units
     }
     bind noEdit <Alt-KeyPress> {
-	# nothing 
+	# nothing
     }
     bind noEdit <Meta-KeyPress> {
 	# nothing
@@ -368,7 +367,7 @@ namespace eval bind {
 	    <<Dbg_Stop>> \
 	    <<Dbg_Kill>> <<Dbg_Restart>> <<Dbg_Break>> <<Dbg_Eval>> \
 	    <<Dbg_Proc>> <<Dbg_Watch>> <<Dbg_DataDisp>>]
-	
+
     } else {
 	# On non-windows, there is no Tcl/Tk Help
 
@@ -394,7 +393,7 @@ namespace eval bind {
 	# No op.
     }
 
-    # To protect against key stokes being entered at 
+    # To protect against key stokes being entered at
     # inappropriate times append this bind tag to the
     # text widget.  Note that we need to pass through any
     # bindings that appear on "all" so system menus continue
@@ -456,7 +455,7 @@ proc bind::addBindTags {w tags {prepend 1}} {
 	set newTags [join [list $tags $curTags] { }]
     } else {
 	set newTags [join [list $curTags $tags] { }]
-    }   
+    }
     bindtags $w $newTags
 }
 
@@ -501,7 +500,7 @@ proc bind::tagExists {w tag} {
 
 # bind::commonBindings --
 #
-#	Add common bindings to the widget and create the 
+#	Add common bindings to the widget and create the
 #	tab order.
 #
 # Arguments:

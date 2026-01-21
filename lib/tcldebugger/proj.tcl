@@ -1,12 +1,11 @@
 # proj.tcl --
 #
-#	This file implements the Project APIs for the file based 
+#	This file implements the Project APIs for the file based
 #	projects system.
 #
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval proj {
     # The path of the currently loaded project file.
@@ -17,7 +16,7 @@ namespace eval proj {
 
     variable projectOpen 0
 
-    # The projectNeverSaved var is true if a project is new and has 
+    # The projectNeverSaved var is true if a project is new and has
     # never been saved to disk.
 
     variable projectNeverSaved 0
@@ -51,7 +50,7 @@ namespace eval proj {
 #	error status of the open call.
 #
 # Arguments:
-#	file	The name of the file to open.  If this is an empty string 
+#	file	The name of the file to open.  If this is an empty string
 #		the user is prompted to select a project file.
 #
 # Results:
@@ -76,14 +75,14 @@ proc proj::openProjCmd {{file {}}} {
 
 # proj::openProjDialog --
 #
-#	Display a file dialog window so users can search the disk for a 
-#	saved project file.  
+#	Display a file dialog window so users can search the disk for a
+#	saved project file.
 #
 # Arguments:
 #	None.
 #
 # Results:
-#	The name of the file.  If the name is an empty string, then 
+#	The name of the file.  If the name is an empty string, then
 #	the user canceled the opening of the project file.
 
 proc proj::openProjDialog {} {
@@ -96,9 +95,9 @@ proc proj::openProjDialog {} {
 
 # proj::checkOpenProjDialog --
 #
-#	Show all necessary dialogs related to opening a project, determine 
+#	Show all necessary dialogs related to opening a project, determine
 #	if a project needs to be closed and saved, browse for a file if the
-#	specified file does not exist.  NOTE: This dialog window has side 
+#	specified file does not exist.  NOTE: This dialog window has side
 #	effects.  If a project file is open it will be closed.  If the file
 #	does not exist it will be removed from the recently used list of
 #	project files.
@@ -107,13 +106,13 @@ proc proj::openProjDialog {} {
 #	file	The name of the file to open.
 #
 # Results:
-#	The name of the file.  If the name is an empty string, then 
+#	The name of the file.  If the name is an empty string, then
 #	the user canceled the opening of the project file.
 
 proc proj::checkOpenProjDialog {file} {
     variable projectOpen
 
-    # Close a project if one is opened.  This will display all of the 
+    # Close a project if one is opened.  This will display all of the
     # necessary dialogs, save the file to disk and reset the state.
 
     if {$projectOpen} {
@@ -131,16 +130,16 @@ proc proj::checkOpenProjDialog {file} {
 
     # Verify the file exists.  If it does not, then show the file
     # missing window and prompt the user to browse for what they want.
-    # If the return value is an empty string, then no valid file was 
+    # If the return value is an empty string, then no valid file was
     # located.
-    
+
     if {![file exists $file]} {
         proj::RemoveRecentProj $file
 	set file [proj::fileMissingWindow "Project file " \
 		$file $::proj::projFileTypes]
     }
 
-    # If the project window is opened, destroy it now, so it does 
+    # If the project window is opened, destroy it now, so it does
     # not perturb the next project that will be opened.
 
     if {[projWin::isOpen]} {
@@ -149,11 +148,11 @@ proc proj::checkOpenProjDialog {file} {
 
     return $file
 }
-    
+
 # proj::openProj --
 #
 #	Open the project and initialize the debugger engine and GUI.
-#	No dialog windows will be displayed prompting the user, use 
+#	No dialog windows will be displayed prompting the user, use
 #	the openProjDialog or checkOpenProjDialog APIs to prompt the
 #	user.
 #
@@ -173,7 +172,7 @@ proc proj::openProj {file} {
     # Create a new Project group and populate it with the preferences
     # from the project file.  If the file is not successfully restored
     # return false, indicating that the open failed.
-    
+
     pref::groupNew Project {proj::SaveProjCmd [proj::getProjectPath]} \
 	    [list proj::RestoreProjCmd $file]
     pref::groupCopy ProjectDefault Project
@@ -188,7 +187,7 @@ proc proj::openProj {file} {
     bp::updateWindow
 
     # Reset the list of watch variables.
-    
+
     watch::setVarList [pref::prefGet watchList] 0
     watch::updateWindow
 
@@ -221,7 +220,7 @@ proc proj::closeProjCmd {{how {}}} {
 	return 0
     }
     # Cancel the project setting window if it is open.
-    
+
     if {[projWin::isOpen]} {
 	projWin::CancelProjSettings
     }
@@ -247,9 +246,9 @@ proc proj::closeProjCmd {{how {}}} {
 
 # proj::closeProjDialog --
 #
-#	Show all necessary dialogs related to closing a project.  Determine 
-#	if the project needs to be saved and verify that the user wants to 
-#	save the file.  However, do not actually modify any state or save 
+#	Show all necessary dialogs related to closing a project.  Determine
+#	if the project needs to be saved and verify that the user wants to
+#	save the file.  However, do not actually modify any state or save
 #	the project.
 #
 # Arguments:
@@ -270,7 +269,7 @@ proc proj::closeProjDialog {} {
     }
     if {[gui::askToKill]} {
 	return CANCEL
-    }    
+    }
     if {!$projectNeverSaved && ![pref::groupIsDirty Project]} {
 	return CLOSE
     }
@@ -306,15 +305,15 @@ proc proj::closeProjDialog {} {
 
 # proj::closeProj --
 #
-#	Close the project and reset the state of the debugger engine and 
+#	Close the project and reset the state of the debugger engine and
 #	GUI.  If specified, save the project to disk.  No dialog windows
-#	will be displayed prompting the user, use the closeProjDialog 
+#	will be displayed prompting the user, use the closeProjDialog
 #	API to prompt the user.
 #
 # Arguments:
-#	how	Indicates what action to take when closing the project.  
+#	how	Indicates what action to take when closing the project.
 #		NONE and CANCEL indicate the project should not be closed.
-#		SAVE means to save the project before closing.  CLOSE 
+#		SAVE means to save the project before closing.  CLOSE
 #		means close the project without saving the project.
 #
 # Results:
@@ -337,9 +336,9 @@ proc proj::closeProj {how} {
     }
 
     if {!$result} {
-        # Set the variable that indicates Debugger does not have an 
+        # Set the variable that indicates Debugger does not have an
         # open project and set the projectPath to null.
-        
+
 	set projectOpen 0
 	set projectNeverSaved 0
         proj::setProjectPath {}
@@ -366,7 +365,7 @@ proc proj::closeProj {how} {
 #	error status of the save call.
 #
 # Arguments:
-#	file	The name of the file to save.  If this is an empty string 
+#	file	The name of the file to save.  If this is an empty string
 #		the user is prompted to select a project file.
 #
 # Results:
@@ -384,14 +383,14 @@ proc proj::saveProjCmd {{file {}}} {
 	return 1
     } else {
 	# Put the new name of the project in the main window.  Trim off
-	# the path and file extension, so only the name of the file is 
+	# the path and file extension, so only the name of the file is
 	# displayed.
-	
+
 	set proj [file tail [proj::getProjectPath]]
 	set proj [string range $proj 0 [expr {[string length $proj] - 5}]]
 	wm title $::gui::gui(mainDbgWin) "$::debugger::parameters(productName): $proj"
 	projWin::updateWindow "Project: $proj"
- 
+
 	return 0
     }
 }
@@ -418,9 +417,9 @@ proc proj::saveAsProjCmd {} {
 	return 1
     } else {
 	# Put the new name of the project in the main window.  Trim off
-	# the path and file extension, so only the name of the file is 
+	# the path and file extension, so only the name of the file is
 	# displayed.
-	
+
 	set proj [file tail [proj::getProjectPath]]
 	set proj [string range $proj 0 [expr {[string length $proj] - 5}]]
 	wm title $::gui::gui(mainDbgWin) "$::debugger::parameters(productName): $proj"
@@ -432,8 +431,8 @@ proc proj::saveAsProjCmd {} {
 
 # proj::saveOnCloseProjDialog --
 #
-#	If the file needs to be saved, ask the user if they want 
-#	to save the file.  This does not modify any state or save 
+#	If the file needs to be saved, ask the user if they want
+#	to save the file.  This does not modify any state or save
 #	the project.
 #
 # Arguments:
@@ -448,7 +447,7 @@ proc proj::saveOnCloseProjDialog {file} {
     variable projectOpen
     variable projectNeverSaved
 
-    # If a project is opened and the project needs to be saved, either 
+    # If a project is opened and the project needs to be saved, either
     # prompt the user to save the file or just set the result to save
     # if there is a preference to always save w/o askling.  Otherwise,
     # nothing needs to be saved, so just return NO.
@@ -472,8 +471,8 @@ proc proj::saveOnCloseProjDialog {file} {
     # If the user choose to save the file (by default or activly selecting to
     # save the file) display any necessary save dialogs.  If the result of
     # the save dialogs is a null file name, then the user canceled the action.
-    # Change the result to CANCEL and return.  Otherwise, make sure the 
-    # projectPath contains the new file name so the saveProj API save the 
+    # Change the result to CANCEL and return.  Otherwise, make sure the
+    # projectPath contains the new file name so the saveProj API save the
     # project to the correct file.
 
     if {$result == "YES"} {
@@ -491,12 +490,12 @@ proc proj::saveOnCloseProjDialog {file} {
 #
 #	Display the saveAs dialog if the file does not exist.
 #	This does not modify any state or save the project.
-#	
+#
 # Arguments:
 #	None.
 #
 # Results:
-#	The name of the file if it exists and needs to be saved.  
+#	The name of the file if it exists and needs to be saved.
 #	Otherwise return an empty string.
 
 proc proj::saveProjDialog {} {
@@ -514,14 +513,14 @@ proc proj::saveProjDialog {} {
 
 # proj::saveAsProjDialog --
 #
-#	Display the saveAs dialog prompting the user to specify a file 
+#	Display the saveAs dialog prompting the user to specify a file
 #	name.  This does not modify any state or save the project.
 #
 # Arguments:
 #	file	The name of the file to save.  Can be empty string.
 #
 # Results:
-#	The name of the file if one was selected or empty string if the 
+#	The name of the file if one was selected or empty string if the
 #	user canceled the action.
 
 proc proj::saveAsProjDialog {file} {
@@ -536,7 +535,7 @@ proc proj::saveAsProjDialog {file} {
 #	If the name of the file is an empty string this routine is a no-op.
 #	No dialog windows will be displayed prompting the user, use the
 #	saveProjDialog or saveOnCloseProjDialog APIs to prompt the user.
-#	
+#
 # Arguments:
 #	file	The name of the file to save.  Can be empty string.
 #
@@ -553,7 +552,7 @@ proc proj::saveProj {file} {
     if {!$projectOpen} {
 	error "error: saveProj called when no projects are open"
     }
-    
+
     # Make sure to set the new projectPath , because the project's save command
     # relies on this value.  Then copy the breakpoint list into the project,
     # then save the preferences.
@@ -567,11 +566,11 @@ proc proj::saveProj {file} {
 
     # Only update the state if the file was correctly saved.  If the
     # value of 'result' is false, then the file saved w/o errors.
-    
+
     if {!$result} {
-	# Add the project to the list of "recently used projects" 
+	# Add the project to the list of "recently used projects"
 	# cascade menu.
-	
+
 	proj::AddRecentProj $file
 
 	# Set the following bit indicating that the file has been saved.
@@ -617,7 +616,7 @@ proc proj::restartProj {} {
 #
 # Results:
 #	The project path.
- 
+
 proc proj::getProjectPath {} {
     return $::proj::projectPath
 }
@@ -654,7 +653,7 @@ proc proj::isProjectOpen {} {
 
 # proj::projectNeverSaved --
 #
-#	Accessor function to determine if the current project has never 
+#	Accessor function to determine if the current project has never
 #	been saved (a new, "Untitled", project.)
 #
 # Arguments:
@@ -705,7 +704,7 @@ proc proj::checkProj {} {
 	if {(![file exist $dir]) || (![file isdirectory $dir])} {
 	    set msg "$dir : Invalid directory\n"
 	    append msg "Please verify the correct path was specified."
-	}	    
+	}
     }
     if {$interp == {}} {
 	set msg "You must specify an interpreter."
@@ -759,10 +758,10 @@ proc proj::showNewProjWindow {} {
     } else {
 	proj::closeProjCmd $how
     }
-    
+
     # Generate the new file name.
 
-    set projPath "Untitled" 
+    set projPath "Untitled"
     proj::setProjectPath $projPath
 
     # Create a new Project group.  Make the save command callback such that
@@ -778,7 +777,7 @@ proc proj::showNewProjWindow {} {
 
     # Display the Project Settings Window, and register the callbacks
     # for Ok/Apply and Cancel.  The New Project Settings Window calls
-    # the same apply routine regardless if OK, Apply or Cancel is 
+    # the same apply routine regardless if OK, Apply or Cancel is
     # pressed.  However, if the user doesn't save, we need to set the
     # projWin::destroyCmd var to empty in the proj::closeProjDialog proc.
 
@@ -810,7 +809,7 @@ proc proj::showThisProjWindow {} {
 	proj::showDefaultProjWindow
 	return
     }
-    
+
     # Display the Project Settings Window.
 
     set proj [file rootname [file tail [proj::getProjectPath]]]
@@ -827,7 +826,7 @@ proc proj::showThisProjWindow {} {
 
 # proj::applyThisProjCmd --
 #
-#	The command to execute when the Project Settings window, 
+#	The command to execute when the Project Settings window,
 #	for a current project, is applied by the user.
 #
 # Arguments:
@@ -858,7 +857,7 @@ proc proj::applyThisProjCmd {destroy} {
     }
 
     # If this is a remote project, initialize the port now so the
-    # debugger is waiting for the app to connect.  If this is a 
+    # debugger is waiting for the app to connect.  If this is a
     # local project, make sure the debugger is not listening on a
     # port.
 
@@ -869,7 +868,7 @@ proc proj::applyThisProjCmd {destroy} {
 
 # proj::showDefaultProjWindow --
 #
-#	Display the Project Settings Window for setting default project 
+#	Display the Project Settings Window for setting default project
 #	values.
 #
 # Arguments:
@@ -879,7 +878,7 @@ proc proj::applyThisProjCmd {destroy} {
 #	None.
 
 proc proj::showDefaultProjWindow {} {
-    # Create a new Project group.  Then move the project default preferences 
+    # Create a new Project group.  Then move the project default preferences
     # into the Project group.
 
     pref::groupNew Project
@@ -896,7 +895,7 @@ proc proj::showDefaultProjWindow {} {
 
 # proj::applyDefaultProjCmd --
 #
-#	The command to execute when the Project Settings window, 
+#	The command to execute when the Project Settings window,
 #	for the default project, is applied by the user.
 #
 # Arguments:
@@ -927,7 +926,7 @@ proc proj::applyDefaultProjCmd {destroy} {
 
 # proj::fileMissingWindow --
 #
-#	Display a dialog box that states the file cannot be found , and ask 
+#	Display a dialog box that states the file cannot be found , and ask
 #	the user if they want to browse for this file.
 #
 # Arguments:
@@ -937,7 +936,7 @@ proc proj::applyDefaultProjCmd {destroy} {
 #	types	The file types to use in the dialog.  Can be an empty string.
 #
 # Results:
-#	Returns a new path if one is located, otherwise 
+#	Returns a new path if one is located, otherwise
 
 proc proj::fileMissingWindow {prefix path types} {
     proj::ShowFileMissingWindow $prefix $path $types
@@ -955,7 +954,7 @@ proc proj::fileMissingWindow {prefix path types} {
 #	dir	The directory name of current working directory.  If the value
 #		does not reference a valid path, current working dir is used.
 #	file	Default name for file.  Can be null.
-#	types	File types to put into the fileDialog.  If null a default 
+#	types	File types to put into the fileDialog.  If null a default
 #		value is set.
 #	ext	The default extension to use.
 #
@@ -1002,7 +1001,7 @@ proc proj::saveAsFileWindow {parent dir file {types {}} {ext {}}} {
 #	parent	The parent window of the open dialog.
 #	dir	The directory name of current working directory.  If the value
 #		does not reference a valid path, current working dir is used.
-#	types	File types to put into the fileDialog.  If null a default 
+#	types	File types to put into the fileDialog.  If null a default
 #		value is set.
 #
 # Results:
@@ -1103,7 +1102,7 @@ proc proj::ShowFileMissingWindow {prefix path types} {
     set pad2     [expr {$pad / 2}]
     set width    300
     set height   100
-    set butWidth 6 
+    set butWidth 6
 
     # Center window on the screen.
 
@@ -1138,7 +1137,7 @@ proc proj::ShowFileMissingWindow {prefix path types} {
 # proj::BrowseFileMissingWindow --
 #
 #	Open the file browser dialog.  When a file is selected or the
-#	window is canceled, set the fileFound vwait variable to the 
+#	window is canceled, set the fileFound vwait variable to the
 #	file name if one is found, or empty string if nothing was found.
 #
 # Arguments:
@@ -1200,13 +1199,13 @@ proc proj::InitNewProj {} {
 
     pref::groupUpdate Project
 
-    # Put the name of the project in the main window.  Trim off the 
-    # path and file extension, so only the name of the file is 
+    # Put the name of the project in the main window.  Trim off the
+    # path and file extension, so only the name of the file is
     # displayed.
 
     set proj [file rootname [file tail $projPath]]
     gui::setDebuggerTitle $proj
-    
+
     # If the Debugger is not running an application, update the GUI state
     # to reflect the change in project settings.
 
@@ -1219,13 +1218,13 @@ proc proj::InitNewProj {} {
 	    proj::initPort
 	} else {
 	    # Quitting the debugger will insure the connection status is
-	    # current.  This is necessary if the user switched from a 
+	    # current.  This is necessary if the user switched from a
 	    # remote project (currently listening on the port) to a local
 	    # project (when the debugger should not be listening.)
 	    # Note: We want to preserve the breakpoints.  The quit routine,
 	    # amoung other tasks, clears them.  So save the bps before, then
 	    # restore them after.
-	    
+
 	    break::preserveBreakpoints breakList
 	    gui::quit
 	    bp::setProjectBreakpoints $breakList
@@ -1239,7 +1238,7 @@ proc proj::InitNewProj {} {
 	# Show the last viewed file.  If this is a new project, use the
 	# script argument for this project.  Verify that the file name
 	# entered is actually valid.
-	
+
 	set file    [pref::prefGet prevViewFile Project]
 	set script  [lindex [pref::prefGet appScriptList] 0]
 	set workDir [lindex [pref::prefGet appDirList] 0]
@@ -1280,7 +1279,7 @@ proc proj::initPort {} {
 	# Attempt to set the server port with the port preference.  
 	# If an error occurs, display the window that prompts the 
 	# user for a new port.
-	
+
 	while {![dbg::setServerPort $port]} {
 	    proj::validatePortDialog
 	    set port [pref::prefGet portRemote Project]
@@ -1291,8 +1290,8 @@ proc proj::initPort {} {
 
 # proj::validatePortDialog --
 #
-#	Verify the remote port preference is valid and available for 
-#	use.  If any errors occur, pormpt the user to enter a new 
+#	Verify the remote port preference is valid and available for
+#	use.  If any errors occur, pormpt the user to enter a new
 #	remote port preference.  If the preference changes, it will
 #	automatically set the preference.
 #
@@ -1305,11 +1304,11 @@ proc proj::initPort {} {
 proc proj::validatePortDialog {} {
     set port [pref::prefGet portRemote]
     set newPort $port
-    
+
     while {![portWin::isPortValid $newPort]} {
 	set newPort [portWin::showWindow $newPort]
     }
-    
+
     if {$newPort != $port} {
 	if {[pref::groupExists Project]} {
 	    pref::prefSet Project portRemote $newPort
@@ -1332,7 +1331,7 @@ proc proj::validatePortDialog {} {
 #	None.
 
 proc proj::AddRecentProj {projPath} {
-    # Try to ensure that the same file doesn't appear twice in 
+    # Try to ensure that the same file doesn't appear twice in
     # the recent project list by making it native.
 
     set projPath [file nativename $projPath]
@@ -1355,8 +1354,8 @@ proc proj::AddRecentProj {projPath} {
     if {$index > 0} {
 	set projList [lreplace $projList $index $index]
     }
-    
-    # If the project is not already at the head of the list, 
+
+    # If the project is not already at the head of the list,
     # insert the project path.
 
     if {($index < 0) || ($index > 0)} {
@@ -1398,7 +1397,7 @@ proc proj::RemoveRecentProj {projPath} {
 # proj::SaveProjCmd --
 #
 #	This is the command that is called when the Project group
-#	is asked to save its preferences.  All error checking is 
+#	is asked to save its preferences.  All error checking is
 #	assumed to have been made, and errors should be caught
 #	in the groupSave routine.
 #
@@ -1407,7 +1406,7 @@ proc proj::RemoveRecentProj {projPath} {
 #	group		The group doing the saving.
 #
 # Results:
-#	Return a boolean, 1 means that the save did not succeed, 
+#	Return a boolean, 1 means that the save did not succeed,
 #	0 means it succeeded.
 
 proc proj::SaveProjCmd {projPath group} {
@@ -1428,7 +1427,7 @@ proc proj::SaveProjCmd {projPath group} {
 # proj::RestoreProjCmd --
 #
 #	This is the command that is called when the Project group
-#	is asked to restore its preferences.  All error checking is 
+#	is asked to restore its preferences.  All error checking is
 #	assumed to have been made, and errors should be caught
 #	in the groupRestore routine.
 #
@@ -1437,7 +1436,7 @@ proc proj::SaveProjCmd {projPath group} {
 #	group		The group doing the saving.
 #
 # Results:
-#	Return a boolean, 1 means that the save did not succeed, 
+#	Return a boolean, 1 means that the save did not succeed,
 #	0 means it succeeded.
 
 proc proj::RestoreProjCmd {projPath group} {

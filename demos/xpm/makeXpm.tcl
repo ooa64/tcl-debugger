@@ -5,8 +5,6 @@
 #
 # Copyright (c) 1998 Scriptics Corporation
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
-# RCS: @(#) $Id: makeXpm.tcl,v 1.2 2000/10/31 23:31:13 welch Exp $
 
 proc red {width} {
 
@@ -28,9 +26,9 @@ proc red {width} {
 
     set color v
     for {set colorCount 0} {$colorCount < $space} {incr colorCount} {
-	append result $color	
+	append result $color
     }
-    return $result 
+    return $result
 }
 
 proc orange {width var} {
@@ -43,7 +41,7 @@ proc orange {width var} {
     }
     yellow $width result
     for {set colorCount 0} {$colorCount < $width} {incr colorCount} {
-	append result $color	
+	append result $color
     }
 }
 
@@ -81,7 +79,7 @@ proc blue {width var} {
     set color b
 
     for {set colorCount 0} {$colorCount < $width} {incr colorCount} {
-	append result $color	
+	append result $color
     }
     indigo $width result
     for {set colorCount 0} {$colorCount < $width} {incr colorCount} {
@@ -96,7 +94,7 @@ proc indigo {width var} {
 
     set color i
     for {set colorCount 0} {$colorCount < $width} {incr colorCount} {
-	append result $color	
+	append result $color
     }
 
     if {$space > 0} {
@@ -135,7 +133,7 @@ proc writeToFile {fileId repeat} {
     for {set lineNumber 1} {$lineNumber <= $fullLength} {incr lineNumber} {
 
 	puts -nonewline $fileId "\""
-	
+
 	for {set repeatNumber 0} {$repeatNumber < $repeat} {incr repeatNumber} {
 	    puts -nonewline $fileId [red $width]
 	}

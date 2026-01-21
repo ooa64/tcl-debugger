@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 namespace eval stack {
     # Handle to the stack text widget.
@@ -15,9 +14,9 @@ namespace eval stack {
     # The stack::stack array stores opaque <location> types for each
     # stack displayed in the stack window.  Each time the stack is
     # updated (i.e., calls to stack::updateStackWindow) this array
-    # is re-initalized.  The <location> types are indexed using the 
+    # is re-initalized.  The <location> types are indexed using the
     # line number of the text widget.
-    
+
     variable stack
 
     # For every stack level displayed in the Stack Window, store
@@ -28,7 +27,7 @@ namespace eval stack {
     variable blockPC
 
     variable selectedArg
-    
+
     # If this variable is set, selecting a line in the stack window will
     # update the rest of the gui.
 
@@ -83,15 +82,15 @@ proc stack::createWindow {masterFrm} {
 
 # stack::updateWindow --
 #
-#	Update the Stack Window after (1) a file is loaded 
-#	(2) a breakpoint is reached or (3) a new stack level 
+#	Update the Stack Window after (1) a file is loaded
+#	(2) a breakpoint is reached or (3) a new stack level
 #	was selected from the stack window.
 #
 # Arguments:
 #	currentLevel	The current level being displayed by
 #			debugger.
 #
-# Results: 
+# Results:
 #	None.
 
 proc stack::updateWindow {currentLevel} {
@@ -100,7 +99,7 @@ proc stack::updateWindow {currentLevel} {
     variable stackText
 
     # The stack array caches <location> types based on the current
-    # line number.  Unset any existing data and delete the contents 
+    # line number.  Unset any existing data and delete the contents
     # of the stack text widget.
 
     stack::resetWindow
@@ -128,8 +127,8 @@ proc stack::updateWindow {currentLevel} {
 	set name [code::mangle $name]
 	set args [code::mangle $args]
 
-	# Determine if the level is a hidden level and 
-	# insert the newline now so the last line in the 
+	# Determine if the level is a hidden level and
+	# insert the newline now so the last line in the
 	# text is not an empty line after a newline.
 
 	set hiddenLevel 0
@@ -148,9 +147,9 @@ proc stack::updateWindow {currentLevel} {
 
 	# Trim the "name" argument if the type is "proc" or
 	# "source".  If the type is "proc", then trim leading
-	# namespace colons (if >= 8.0),   If the type is 
+	# namespace colons (if >= 8.0),   If the type is
 	# "source", then convert the name into a unique, short
-	# file name.  
+	# file name.
 
 	set shortName $name
 	switch $type {
@@ -201,7 +200,7 @@ proc stack::updateWindow {currentLevel} {
 	incr line -1
     }
 
-    # Make sure the last line entered is visible in the text 
+    # Make sure the last line entered is visible in the text
     # window, and that the lines are formatted correctly.
 
     set ::stack::needsUpdate 0
@@ -243,9 +242,9 @@ proc stack::updateDbgWindow {} {
 	watch::resetWindow {}
 	var::resetWindow "No variable info for this stack."
     } elseif {$::stack::needsUpdate} {
-	# Display the var selected from the stack window.  This 
-	# function must be called after gui::showCode. 
-	
+	# Display the var selected from the stack window.  This
+	# function must be called after gui::showCode.
+
 	watch::varDataReset
 	var::updateWindow
 	watch::updateWindow
@@ -291,7 +290,7 @@ proc stack::resetWindow {{msg {}}} {
 
 # stack::checkState --
 #
-#	This proc is executed whenever the selection 
+#	This proc is executed whenever the selection
 #	in the Stack Window changes.
 #
 # Arguments:
@@ -304,7 +303,7 @@ proc stack::checkState {} {
     variable stackText
 
     gui::formatText $stackText right
-    stack::updateDbgWindow 
+    stack::updateDbgWindow
 }
 
 # stack::selectArg --
@@ -344,14 +343,14 @@ proc stack::selectArg {text index} {
 
 proc stack::isVarFrameHidden {} {
     variable stackText
-    
+
     # If the tag "hiddenLevel" is on the text item, then this
     # is a stack entry with conflicting variable frames.
 
     set line [sel::getSelectedLines $stackText]
     if {$line == {}} {
 	return 1
-    } 
+    }
     if {[lsearch [$stackText tag names $line.0] hiddenLevel] < 0} {
 	return 0
     }
@@ -371,7 +370,7 @@ proc stack::isVarFrameHidden {} {
 
 proc stack::getSelectedLevel {} {
     variable stackText
-    
+
     set line [sel::getSelectedLines $stackText]
     set range [stack::getStackWordRange $stackText \
 	    "$line.0 lineend" stackLevel]
@@ -385,7 +384,7 @@ proc stack::getSelectedLevel {} {
 #	array, and the key is the line number of the text widget.
 #
 # Arguments:
-#	line	Line number of a stack being displayed in the 
+#	line	Line number of a stack being displayed in the
 #		Stack Window.
 #
 # Results:
@@ -397,15 +396,15 @@ proc stack::getLocation {line} {
 
 # stack::getPC --
 #
-#	Return the <location> opaque type of the currently 
+#	Return the <location> opaque type of the currently
 #	selected stack frame.
 #
 # Arguments:
 #	None.
 #
 # Results:
-#	Return the <location> opaque type of the currently 
-#	selected stack frame, or empty string if there is 
+#	Return the <location> opaque type of the currently
+#	selected stack frame, or empty string if there is
 #	no stack data.
 
 proc stack::getPC {} {
@@ -426,10 +425,10 @@ proc stack::getPC {} {
 #
 # Results:
 #	Return the type of PC to display, or empty string if there
-#	is no stack data. 
+#	is no stack data.
 
 proc stack::getPCType {} {
-    # If the selection cursor is on the last line, then 
+    # If the selection cursor is on the last line, then
     # the PC type is "current".
 
     if {[gui::getCurrentState] != "stopped"} {
@@ -445,7 +444,7 @@ proc stack::getPCType {} {
 
 # stack::getStackWordRange --
 #
-#	Get the range of a word in the Stack Window, where the 
+#	Get the range of a word in the Stack Window, where the
 #	word may have embedded whitespace.  The word must have a
 #	tag from beginning to end, with non-tagged delimiting
 #	whitespace on either ends.
@@ -460,5 +459,5 @@ proc stack::getPCType {} {
 
 proc stack::getStackWordRange {text index tag} {
     set index [$text index $index]
-    return [$text tag prevrange $tag "$index + 1 chars"]    
+    return [$text tag prevrange $tag "$index + 1 chars"]
 }

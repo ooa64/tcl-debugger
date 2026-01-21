@@ -20,7 +20,7 @@ button .controls.stop -text "Stop" -command {stop}
 button .controls.clear -text "Clear" -command {clear}
 
 pack .title -pady 4 -padx 6
-pack .beats 
+pack .beats
 pack .scaleTitle -pady 4 -padx 2
 pack .rate -padx 2 -fill x
 pack .controls -fill x -pady 4
@@ -30,7 +30,7 @@ pack .controls.stop -padx 4 -side left -expand yes
 pack .controls.clear -padx 4 -side left -expand yes
 
 proc start {} {
-    global pending 
+    global pending
 
     if {$pending == ""} {
 	set pending [after idle animate]
@@ -44,7 +44,6 @@ proc animate {} {
     set delay [expr {int(60.0/$rate*1000)}]
     set pending [after $delay animate]
 }
-    
 
 proc stop {} {
     global pending
@@ -60,4 +59,4 @@ proc clear {} {
 
     set beats 0
 }
-	
+
