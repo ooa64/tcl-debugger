@@ -157,8 +157,8 @@ proc tool::createButton {but img txt cmd {side left}} {
 #	None.
 
 proc tool::addButtonBindings {but} {
-    bind $but <Enter> {+ 
-        if {[%W cget -state] == "normal"} {
+    bind $but <Enter> {+
+        if {[%W cget -state] eq "normal"} {
 	    %W config -relief raised
 	}
     }
@@ -283,7 +283,7 @@ proc tool::changeState {buttonList state} {
 proc tool::changeButtonState {but state} {
     variable tool
 
-    if {$state == "disabled"} {
+    if {$state eq "disabled"} {
 	$tool($but) configure -image $::image::image(${but}_disable)
     } else {
 	$tool($but) configure -image $::image::image($but)

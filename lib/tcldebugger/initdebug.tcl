@@ -25,7 +25,7 @@
 # Avoid redefining these functions in case this file is sourced multiple
 # times.  This ensures that we only connect to one debugger at a time.
 
-if {[info commands debugger_init] == ""} {
+if {[info commands debugger_init] eq ""} {
 
 # debugger_init --
 #

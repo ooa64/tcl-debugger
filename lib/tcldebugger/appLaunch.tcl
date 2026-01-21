@@ -44,7 +44,7 @@ proc DbgNub_Main {} {
     set argv $argList
     set argc [llength $argList]
 
-    if {[info commands tk] == "tk"} {
+    if {[info commands tk] eq "tk"} {
 	set appName [lindex [file split $argv0] end]
 	tk appname $appName
     }

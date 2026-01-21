@@ -44,8 +44,8 @@ namespace eval break {
 
 proc break::MakeBreakpoint {type location {test {}}} {
     variable counter
-    
-    if {$type == "line"} {
+
+    if {$type eq "line"} {
 	set type L
     } else {
 	set type V
@@ -74,10 +74,10 @@ proc break::MakeBreakpoint {type location {test {}}} {
 #	None.
 
 proc break::Release {breakList} {
-    if {$breakList == "all"} {
+    if {$breakList eq "all"} {
 	# Release all breakpoints
 	set all [info vars ::break::break*]
-	if {$all != ""} {
+	if {$all ne ""} {
 	    eval unset $all
 	}
     } else {
@@ -216,7 +216,7 @@ proc break::setData {breakpoint data} {
 proc break::GetLineBreakpoints {{location {}}} {
     set result {}
     foreach breakpoint [info vars ::break::breakL*] {
-	if {($location == "") \
+	if {($location eq "") \
 		|| [loc::match $location [set ${breakpoint}(location)]]} {
 	    lappend result $breakpoint
 	}
@@ -240,8 +240,8 @@ proc break::GetLineBreakpoints {{location {}}} {
 proc break::GetVarBreakpoints {{handle {}}} {
     set result {}
     foreach breakpoint [info vars ::break::breakV*] {
-	if {($handle == "") \
-		|| ([set ${breakpoint}(location)] == $handle)} {
+	if {($handle eq "") \
+		|| ([set ${breakpoint}(location)] eq $handle)} {
 	    lappend result $breakpoint
 	}
     }
@@ -268,7 +268,7 @@ proc break::preserveBreakpoints {varName} {
 	set location [getLocation $bp]
 	set file [blk::getFile [loc::getBlock $location]]
 	set line [loc::getLine $location]
-	if {$file != ""} {
+	if {$file ne ""} {
 	    lappend data [list $file $line [getState $bp] \
 		    [getTest $bp]]
 	}

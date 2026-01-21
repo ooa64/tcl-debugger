@@ -359,7 +359,7 @@ proc tkCon::Prompt {{pre {}} {post {}} {prompt {}}} {
     $w see "end + 1 lines"
 }
 
-## tkCon::Event - get history event, search if string != {}
+## tkCon::Event - get history event, search if string ne {}
 ## look forward (next) if $int>0, otherwise look back (prev)
 # ARGS:	W	- console widget
 ##

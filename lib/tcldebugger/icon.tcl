@@ -57,13 +57,13 @@ proc icon::getLBPState {loc} {
     set state noBreak
     set bps [dbg::getLineBreakpoints $loc]
     foreach bp $bps {
-	if {[break::getState $bp] == "enabled"} {
-	    if {$state == "disabled"} {
+	if {[break::getState $bp] eq "enabled"} {
+	    if {$state eq "disabled"} {
 		return mixedBreak
 	    }
 	    set state enabledBreak
 	} else {
-	    if {$state == "enabled"} {
+	    if {$state eq "enabled"} {
 		return mixedBreak
 	    }
 	    set state disabledBreak
@@ -95,7 +95,7 @@ proc icon::toggleLBPOnOff {text index loc breakState {pcType {}}} {
 	noBreak {
 	    # If the "current" icon is on the current line,
 	    # delete it, then set the state to "enabled".
-	    if {$pcType != {}} {
+	    if {$pcType ne {}} {
 		$text delete $index
 	    }
 
@@ -230,14 +230,14 @@ proc icon::setLBP {state loc} {
 proc icon::drawLBP {text index breakState {pcType {}}} {
     switch -exact $breakState {
 	noBreak {
-	    if {$pcType != {}} {
+	    if {$pcType ne {}} {
 		$text image create $index -name currentImage \
 			-image $::image::image($pcType)
 	    }
 	    return
 	}
 	enabledBreak {
-	    if {$pcType != {}} {
+	    if {$pcType ne {}} {
 		set imageName currentImage
 		set imageType ${pcType}_enable
 	    } else {
@@ -247,7 +247,7 @@ proc icon::drawLBP {text index breakState {pcType {}}} {
 	    set tagName enabledBreak
 	}
 	disabledBreak {
-	    if {$pcType != {}} {
+	    if {$pcType ne {}} {
 		set imageName currentImage
 		set imageType ${pcType}_disable
 	    } else {
@@ -257,7 +257,7 @@ proc icon::drawLBP {text index breakState {pcType {}}} {
 	    set tagName disabledBreak
 	}
 	mixedBreak {
-	    if {$pcType != {}} {
+	    if {$pcType ne {}} {
 		set imageName currentImage
 		set imageType ${pcType}_mixed
 	    } else {
@@ -290,12 +290,12 @@ proc icon::drawLBP {text index breakState {pcType {}}} {
 proc icon::getVBPState {level name} {
     set state noBreak
 
-    if {[gui::getCurrentState] == "stopped"} {
+    if {[gui::getCurrentState] eq "stopped"} {
 	set vbps [dbg::getVarBreakpoints $level $name]
 	foreach vbp $vbps {
-	    if {[break::getState $vbp] == "enabled"} {
+	    if {[break::getState $vbp] eq "enabled"} {
 		set state enabledBreak
-	    } elseif {$state != "enabled"} {
+	    } elseif {$state ne "enabled"} {
 		set state disabledBreak
 	    }
 	}
@@ -406,7 +406,7 @@ proc icon::toggleVBPEnableDisable {text index level name breakState \
 #	None.
 
 proc icon::setVBP {state level name} {
-    if {[gui::getCurrentState] != "stopped"} {
+    if {[gui::getCurrentState] ne "stopped"} {
 	error "icon::setVBP called when state is running"
     }
     set bps [dbg::getVarBreakpoints $level $name]
@@ -420,7 +420,7 @@ proc icon::setVBP {state level name} {
 	    foreach bp $bps {
 		dbg::enableBreakpoint $bp
 		set orig [lindex [break::getData $bp] 0]
-		if {$orig == {}} {
+		if {$orig eq {}} {
 		    break::setData $bp [list [list $level $name] [list]]
 		} else {
 		    break::setData $bp [list $orig [list $level $name]]
@@ -468,21 +468,21 @@ proc icon::drawVBP {text index breakState {pcType {}}} {
     # pcType is "history" then we should treat this as a line break
     # point instead.
 
-    if {$pcType == "history"} {
+    if {$pcType eq "history"} {
 	icon::drawLBP $text $index $breakState $pcType
 	return
     }
 
     switch -exact $breakState {
 	noBreak {
-	    if {$pcType != {}} {
+	    if {$pcType ne {}} {
 		$text image create $index -name currentImage \
 			-image $::image::image($pcType)
 	    }
 	    return
 	}
 	enabledBreak {
-	    if {$pcType != {}} {
+	    if {$pcType ne {}} {
 		set imageName currentImage
 		set imageType ${pcType}_var
 	    } else {
@@ -492,7 +492,7 @@ proc icon::drawVBP {text index breakState {pcType {}}} {
 	    set tagName enabledBreak
 	}
 	disabledBreak {
-	    if {$pcType != {}} {
+	    if {$pcType ne {}} {
 		error "This shouldn't happen:  current over disabled VBP!"
 		set imageName currentImage
 		set imageType ${pcType}_var_disable
@@ -584,7 +584,7 @@ proc icon::getVBPNextLevel {vbp} {
 proc icon::isCurrentIconAtLine {text index} {
     set start  [$text index "$index linestart"]
     if {[catch {set cIndex [$text index currentImage]}] == 0} {
-	if {$start == $cIndex} {
+	if {$start eq $cIndex} {
 	    return 1
 	}
     }
@@ -605,13 +605,13 @@ proc icon::isCurrentIconAtLine {text index} {
 #	None.
 
 proc icon::setCurrentIcon {text index breakType pcType} {
-    
-    if {$breakType == "var"} {
+
+    if {$breakType eq "var"} {
 	icon::drawVBP $text $index enabledBreak $pcType
     } else {
 	set loc [code::makeCodeLocation $text $index]
 	set breakState [icon::getLBPState $loc]
-	if {$breakState != "noBreak"} {
+	if {$breakState ne "noBreak"} {
 	    $text delete $index
 	}
 	icon::drawLBP $text $index $breakState $pcType

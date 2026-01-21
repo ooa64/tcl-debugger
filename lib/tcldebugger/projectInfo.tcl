@@ -60,7 +60,7 @@ on usage and redistribution of this file.
 
     # The directory name to propose to the user in the installers.
 
-    if {$type == "."} {
+    if {$type eq "."} {
         variable directoryName ${major}.${minor}
     } else {
         variable directoryName ${major}.${minor}${type}${patch}
@@ -109,7 +109,7 @@ on usage and redistribution of this file.
     # locations if needed (testing licenses, for example)
 
     variable prefsRoot {}
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
         set prefsRoot "HKEY_CURRENT_USER\\SOFTWARE\\Tcl\\$productName"
     } else {
         if {[package vcompare "9.0" [info tclversion]] <= 0} {
@@ -218,7 +218,7 @@ proc projectInfo::printCopyrightOnly {name {extra {}}} {
 	puts stdout "$name -- Version $versString"
 	puts stdout $copyright
 
-	if {$extra != ""} {
+	if {$extra ne ""} {
 	    puts stdout $extra
 	}
 
@@ -249,7 +249,7 @@ proc projectInfo::printCopyright {name {extra {}}} {
 	puts stdout "$name -- Version $versString"
 	puts stdout $copyright
 
-	if {$extra != ""} {
+	if {$extra ne ""} {
 	    puts stdout $extra
 	}
     }

@@ -672,10 +672,10 @@ proc instrument::correctForExpandOp {} {
 proc instrument::isLiteral {word} {
     variable script
 
-    if {[lindex $word 0] != "simple"} {
+    if {[lindex $word 0] ne "simple"} {
 	foreach token [lindex $word 2] {
 	    set type [lindex $token 0]
-	    if {$type != "text" && $type != "backslash"} {
+	    if {$type ne "text" && $type ne "backslash"} {
 		return 0
 	    }
 	}
@@ -686,7 +686,7 @@ proc instrument::isLiteral {word} {
 	# this won't interfere with recursive parsing.
 
 	if {[string index $script [parse charindex $script [lindex $word 1]]] \
-		== "\{"} {
+		eq "\{"} {
 	    return 1
 	} else {
 	    return 0
@@ -715,9 +715,9 @@ proc instrument::getLiteral {word resultVar} {
     set result ""
     foreach token [lindex $word 2] {
 	set type [lindex $token 0]
-	if {$type == "text"} {
+	if {$type eq "text"} {
 	    append result [parse getstring $script [lindex $token 1]]
-	} elseif {$type == "backslash"} {
+	} elseif {$type eq "backslash"} {
 	    append result [subst [parse getstring $script [lindex $token 1]]]
 	} else {
 	    set result [parse getstring $script [lindex $word 1]]
@@ -753,7 +753,7 @@ proc instrument::Instrument {block} {
 	# script failed to parse, we should restore the original errorCode
 	# before returning, otherwise we need to report the error.
 
-	if {[lindex $errorCode 0] != "CAUGHT"} {
+	if {[lindex $errorCode 0] ne "CAUGHT"} {
 	    bgerror $msg
 	} else {
 	    set errorCode [lindex $errorCode 1]
@@ -794,7 +794,7 @@ proc instrument::parseScript {{scriptRange {}}} {
 
     pushContext
     set first 1
-    if {$scriptRange == ""} {
+    if {$scriptRange eq ""} {
 	set scriptRange [parse getrange $script]
     }
     for {} {[parse charlength $script $scriptRange] > 0} \
@@ -805,7 +805,7 @@ proc instrument::parseScript {{scriptRange {}}} {
 		comment cmdRange tail tree}]} {
 	    # An error occurred during parsing.
 
-	    if {$::instrument::errorHandler != ""} {
+	    if {$::instrument::errorHandler ne ""} {
 		pushContext
 		setLocation [list [lindex $::errorCode 2] 1]
 		set location [getLocation]
@@ -964,11 +964,11 @@ proc instrument::parseBody {args} {
 		[parse charindex $script [lindex $word 1]]]
 	set range [lindex $word 1]
 	set addBrace 0
-	if {$quote == "\""} {
+	if {$quote eq "\""} {
 	    set range [list [expr {[lindex $range 0] + 1}] \
 		    [expr {[lindex $range 1] - 2}]]
 	    set closeChar "\""
-	} elseif {$quote == "\{"} {
+	} elseif {$quote eq "\{"} {
 	    set range [list [expr {[lindex $range 0] + 1}] \
 		    [expr {[lindex $range 1] - 2}]]
 	    set closeChar "\}"
@@ -1013,7 +1013,7 @@ proc instrument::parseBody {args} {
 #	Returns the next token to be parsed.
 
 proc instrument::parseOption {optionTable default tokens index} {
-    if {($index == [llength $tokens]) && ($default == "")} {
+    if {($index == [llength $tokens]) && ($default eq "")} {
 	return $index
     }
 
@@ -1028,7 +1028,7 @@ proc instrument::parseOption {optionTable default tokens index} {
     }
 
     if {![matchKeyword $optionTable $value 0 script]} {
-	if {$default != ""} {
+	if {$default ne ""} {
 	    set script $default
 	} else {
 	    set script parseCommand
@@ -1190,7 +1190,7 @@ proc instrument::parseSwitches {exact switches chainCmd tokens index} {
 	if {![getLiteral $word value]} {
 	    break
 	}
-	if {[string index $value 0] != "-"} {
+	if {[string index $value 0] ne "-"} {
 	    break
 	}
 
@@ -1199,10 +1199,10 @@ proc instrument::parseSwitches {exact switches chainCmd tokens index} {
 	    return [parseCommand $tokens $index]
 	} else {
 	    incr index
-	    if {$value == "--"} {
+	    if {$value eq "--"} {
 		break
 	    }
-	    if {$script != ""} {
+	    if {$script ne ""} {
 		if {$index >= $argc} {
 		    return $argc
 		}
@@ -1211,7 +1211,7 @@ proc instrument::parseSwitches {exact switches chainCmd tokens index} {
 	    }
 	}
     }
-    if {$chainCmd != ""} {
+    if {$chainCmd ne ""} {
 	return [eval $chainCmd {$tokens $index}]
     }
     return $index
@@ -1297,7 +1297,7 @@ proc instrument::parseExpr {tokens index} {
     if {[catch {parse expr $::instrument::script $range} tree]} {
 	# An error occurred during parsing.
 
-	if {$::instrument::errorHandler != ""} {
+	if {$::instrument::errorHandler ne ""} {
 	    pushContext
 	    setLocation [list [lindex $::errorCode 2] 1]
 	    set location [getLocation]
@@ -1350,7 +1350,7 @@ proc instrument::parseIncr22Class {range} {
 		comment cmdRange tail tree}]} {
 	    # An error occurred during parsing.
 
-	    if {$::instrument::errorHandler != ""} {
+	    if {$::instrument::errorHandler ne ""} {
 		pushContext
 		setLocation [list [lindex $::errorCode 2] 1]
 		set location [getLocation]
@@ -1475,7 +1475,7 @@ proc instrument::parseIncr22Class {range} {
 
 proc instrument::parseIncr22NSBody {tokens index} {
     set word [lindex $tokens $index]
-    if {[getLiteral $word string] && ([string index $string 0] == "-")} {
+    if {[getLiteral $word string] && ([string index $string 0] eq "-")} {
 	return [parseWord $tokens $index]
     } else {
 	return [wrapCommand DbgNub_NamespaceEval 1 {parseBody} $tokens $index]
@@ -1503,10 +1503,10 @@ proc instrument::parseItclBody {args} {
 	set script ""
     }
     set word [lindex $tokens $index]
-    if {[getLiteral $word string] && ([string index $string 0] == "@")} {
+    if {[getLiteral $word string] && ([string index $string 0] eq "@")} {
 	parseWord $tokens $index
     } else {
-	if {$script != ""} {
+	if {$script ne ""} {
 	    parseBody $script $tokens $index
 	} else {
 	    parseBody $tokens $index
@@ -1538,7 +1538,7 @@ proc instrument::parseMethod {range} {
     parseScript $range
     appendString "\n} DbgNub_result\]\]
     foreach DbgNub_index \[info locals\] {
-	if {\[trace info variable \$DbgNub_index\] != \"\"} {
+	if {\[trace info variable \$DbgNub_index\] ne \"\"} {
 	    if {[catch {upvar 0 DbgNub_dummy \$DbgNub_index}]} {
 		catch {unset \$DbgNub_index}
 	    }
@@ -1818,7 +1818,7 @@ proc instrument::parseIfCmd {tokens index} {
 	    incr i
 	    if {($i < $argc) \
 		    && [getLiteral [lindex $tokens $i] text] \
-		    && ($text == "then")} {
+		    && ($text eq "then")} {
 		incr i
 	    }
 
@@ -1832,7 +1832,7 @@ proc instrument::parseIfCmd {tokens index} {
 		return
 	    }
 
-	    if {[getLiteral [lindex $tokens $i] text] && ($text == "elseif")} {
+	    if {[getLiteral [lindex $tokens $i] text] && ($text eq "elseif")} {
 		incr i
 		continue
 	    }
@@ -1840,7 +1840,7 @@ proc instrument::parseIfCmd {tokens index} {
 	}
 
 	# Now we check for an else clause
-	if {[getLiteral [lindex $tokens $i] text] && ($text == "else")} {
+	if {[getLiteral [lindex $tokens $i] text] && ($text eq "else")} {
 	    incr i
 
 	    if {$i >= $argc} {
@@ -1965,7 +1965,7 @@ proc instrument::parseSwitchCmd {tokens index} {
 		# the result to parseBody.  This isn't quite right, but it
 		# should handle the common cases.
 
-		if {$body != "" && [parse getstring $::instrument::script $body] != "-"} {
+		if {$body ne "" && [parse getstring $::instrument::script $body] ne "-"} {
 		    append commands "parseBody \[lindex \
 		    \[parse command \$::instrument::script [list $body]\] \
 		    3\] 0\n"
@@ -1978,7 +1978,7 @@ proc instrument::parseSwitchCmd {tokens index} {
 		incr i
 		if {$i < $argc} {
 		    if {(![getLiteral [lindex $tokens $i] string] \
-			    || $string == "-")} {
+			    || $string eq "-")} {
 			append commands "parseWord \$tokens $i\n"
 		    } else {
 			append commands "parseBody \$tokens $i\n"
@@ -2057,7 +2057,7 @@ proc instrument::parseExpect {chainCmd tokens index} {
 	# If the switch is "-brace" increment the index so the rangeCmd
 	# is called with the index pointing to the body.
 
-	if {$switch == "-brace"} {
+	if {$switch eq "-brace"} {
 	    incr index
 	    set tokens [parseExpRange $tokens $index]
 	    set index  0
@@ -2086,7 +2086,7 @@ proc instrument::parseExpRange {tokens index} {
     set word   [lindex $tokens $index]
     set range  [lindex $word 1]
     set quote  [string index $script [parse charindex $script $range]]
-    if {$quote == "\"" || $quote == "\{"} {
+    if {$quote eq "\"" || $quote eq "\{"} {
 	set range [list [expr {[lindex $range 0] + 1}] \
 		[expr {[lindex $range 1] - 2}]]
     }
@@ -2101,7 +2101,7 @@ proc instrument::parseExpRange {tokens index} {
 		[parse command $script $range] {}}]} {
 	    # An error occurred during parsing so generate the error.
 
-	    if {$::instrument::errorHandler != ""} {
+	    if {$::instrument::errorHandler ne ""} {
 		pushContext
 		setLocation [list [lindex $::errorCode 2] 1]
 		set location [getLocation]
@@ -2146,7 +2146,7 @@ proc instrument::expMatch {keywords str minlen} {
     foreach key $keywords {
 	set m $minlen
 	for {set i 0} {$i < $end} {incr i; incr m -1} {
-	    if {[string index $str $i] != [string index $key $i]} {
+	    if {[string index $str $i] ne [string index $key $i]} {
 		break
 	    }
 	}
@@ -2194,7 +2194,7 @@ proc instrument::parseExpectTokens {tokens index} {
 	    }
 	    -* {
 		set arg [string range $arg 1 end]
-		if {($arg == "-") || [expMatch {glob regexp exact} $arg 2]} {
+		if {($arg eq "-") || [expMatch {glob regexp exact} $arg 2]} {
 		    # The next word is a pattern followed by a command.
 
 		    incr index
@@ -2208,10 +2208,10 @@ proc instrument::parseExpectTokens {tokens index} {
 		} elseif {[expMatch "nocase" $arg 3]} {
 		    incr index
 		    continue
-		} elseif {$arg == "nobrace"} {
+		} elseif {$arg eq "nobrace"} {
 		    incr index
 		    continue
-		} elseif {$arg == "i" || [expMatch "timeout" $arg 2]} {
+		} elseif {$arg eq "i" || [expMatch "timeout" $arg 2]} {
 		    # The next token is a switch argument.
 
 		    incr index
@@ -2278,17 +2278,17 @@ proc instrument::parseInteractTokens {tokens index} {
 	    }
 	    -* {
 		set arg [string range $arg 1 end]
-		if {($arg == "-") \
+		if {($arg eq "-") \
 			|| [expMatch {regexp exact} $arg 2] \
-			|| ($arg == "timeout")} {
+			|| ($arg eq "timeout")} {
 		    # The next word is a pattern or argument followed by
 		    # a command.
 		    incr index
 		    set index [parseWord $tokens $index]
-		} elseif {$arg == "i" \
+		} elseif {$arg eq "i" \
 			|| [expMatch "input" $arg 2] \
 			|| [expMatch "output" $arg 3] \
-			|| ($arg == "u")} {
+			|| ($arg eq "u")} {
 		    # The next word is the switch argument.
 
 		    incr index
@@ -2296,12 +2296,12 @@ proc instrument::parseInteractTokens {tokens index} {
 		    continue
 		} elseif {[expMatch {nobuffer indices} $arg 3] \
 			|| [expMatch {iread iwrite timestamp} $arg 2] \
-			|| ($arg == "echo") \
-			|| ($arg == "f") \
-			|| ($arg == "F") \
-			|| ($arg == "reset") \
-			|| ($arg == "nobrace") \
-			|| ($arg == "o")} {
+			|| ($arg eq "echo") \
+			|| ($arg eq "f") \
+			|| ($arg eq "F") \
+			|| ($arg eq "reset") \
+			|| ($arg eq "nobrace") \
+			|| ($arg eq "o")} {
 		    # These switches take no args.
 
 		    incr index

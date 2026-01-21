@@ -112,12 +112,12 @@ proc loc::makeLocation {block line {range {}}} {
 
 proc loc::match {pattern location} {
     # Check for null line.
-    if {[lindex $pattern 1] == ""} {
+    if {[lindex $pattern 1] eq ""} {
 	return [expr {[string compare [lindex $pattern 0] \
 		[lindex $location 0]] == 0}]
     }
     # Check for null range.
-    if {[lindex $pattern 2] == ""} {
+    if {[lindex $pattern 2] eq ""} {
 	return [expr {[string compare [lrange $pattern 0 1] \
 		[lrange $location 0 1]] == 0}]
     }

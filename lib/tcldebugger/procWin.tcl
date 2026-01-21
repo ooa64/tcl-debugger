@@ -219,8 +219,8 @@ proc procWin::updateWindow {{preserve 0}} {
     # "Show Code" button
 
     set state [gui::getCurrentState]
-    if {$state != "stopped"} {
-	if {$state == "running"} {
+    if {$state ne "stopped"} {
+	if {$state eq "running"} {
 	    set afterID [after $::gui::afterTime ::procWin::resetWindow]
 	} else {
 	    procWin::resetWindow
@@ -237,7 +237,7 @@ proc procWin::updateWindow {{preserve 0}} {
     # If the user deletes the pattern, insert the star to provide
     # feedback that all procs will be displayed.
 
-    if {$patValue == {}} {
+    if {$patValue eq {}} {
 	set patValue "*"
     }
 
@@ -259,7 +259,7 @@ proc procWin::updateWindow {{preserve 0}} {
 	if {[string match $patValue $name] == 0} {
 	    continue
 	}
-	if {($loc != {}) && [blk::isInstrumented [loc::getBlock $loc]]} {
+	if {($loc ne {}) && [blk::isInstrumented [loc::getBlock $loc]]} {
 	    $procText insert end "  $name\n" procName
 	} elseif {$::procWin::showChkVar} {
 	    $procText insert end "* $name\n" procName
@@ -309,7 +309,7 @@ proc procWin::resetWindow {{msg {}}} {
     }
     $procText delete 0.0 end
     checkState $procText
-    if {$msg != {}} {
+    if {$msg ne {}} {
 	$procText insert 0.0 $msg
     }
 }
@@ -331,7 +331,7 @@ proc procWin::showCode {text} {
     variable procCache
 
     set state [gui::getCurrentState]
-    if {$state != "running" && $state != "stopped"} {
+    if {$state ne "running" && $state ne "stopped"} {
 	return
     }
     set line [sel::getCursor $text]
@@ -352,7 +352,7 @@ proc procWin::showCode {text} {
     set procName [procWin::getProcName $text $line]
     if {[info exists procCache($procName)]} {
 	set loc $procCache($procName)
-	if {$loc == {}} {
+	if {$loc eq {}} {
 	    if {[catch {set loc [dbg::getProcLocation $procName]}]} {
 		set runningErr 1
 	    }
@@ -389,7 +389,7 @@ proc procWin::instrument {op text} {
     variable procCache
 
     set state [gui::getCurrentState]
-    if {$state != "stopped"} {
+    if {$state ne "stopped"} {
 	set msg "Cannot instrument or uninstrumented code while running."
 	code::resetWindow $msg
 	return
@@ -416,7 +416,7 @@ proc procWin::instrument {op text} {
 	if {$op} {
 	    # Instrument the procedure
 
-	    if {$loc != ""} {
+	    if {$loc ne ""} {
 		continue
 	    }
 	    set loc [dbg::getProcLocation $procName]
@@ -424,7 +424,7 @@ proc procWin::instrument {op text} {
 	} else {
 	    # Uninstrument the procedure
 
-	    if {$loc == ""} {
+	    if {$loc eq ""} {
 		continue
 	    }
 	    dbg::uninstrumentProc $procName $loc
@@ -455,7 +455,7 @@ proc procWin::instrument {op text} {
     # This needs to be called after "procWin::updateWindow" is
     # called, so the new block is displayed.
 
-    if {($blk != {}) && ([gui::getCurrentBlock] == $blk) \
+    if {($blk ne {}) && ([gui::getCurrentBlock] eq $blk) \
 	    && [blk::isDynamic $blk]} {
 	procWin::showCode $text
     }
@@ -496,7 +496,7 @@ proc procWin::checkState {text} {
 	if {[info exists procCache($procName)]} {
 	    set loc $procCache($procName)
 	}
-	if {$loc == ""} {
+	if {$loc eq ""} {
 	    set inst 1
 	} else {
 	    set uninst 1
@@ -520,7 +520,7 @@ proc procWin::checkState {text} {
 	$::procWin::showBut configure -state normal
     }
 
-    if {[focus] == $procText} {
+    if {[focus] eq $procText} {
 	sel::changeFocus $procText in
     }
 }
@@ -546,7 +546,7 @@ proc procWin::trimProcName {procName} {
     set procName [code::mangle $procName]
 
     set appVersion [dbg::getAppVersion]
-    if {$appVersion != {} && $appVersion >= 8.0 \
+    if {$appVersion ne {} && $appVersion >= 8.0 \
 	    && [string match {::*} $procName]} {
 	set procName [string range $procName 2 end]
     }

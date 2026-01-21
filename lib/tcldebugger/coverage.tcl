@@ -77,7 +77,7 @@ proc coverage::checkState {text} {
     variable coverText
 
     set state [gui::getCurrentState]
-    if {$state != "stopped"} {
+    if {$state ne "stopped"} {
 	$::coverage::clearAllBut configure -state disabled
     } else {
 	$::coverage::clearAllBut configure -state normal
@@ -92,7 +92,7 @@ proc coverage::checkState {text} {
 	$::coverage::clearBut configure -state normal
     }
 
-    if {[focus] == $coverText} {
+    if {[focus] eq $coverText} {
 	sel::changeFocus $coverText in
     }
 }
@@ -111,7 +111,7 @@ proc coverage::clearAllCoverage {text} {
     variable instrumentedBlock
 
     set state [gui::getCurrentState]
-    if {$state != "running" && $state != "stopped"} {
+    if {$state ne "running" && $state ne "stopped"} {
 	return
     }
 
@@ -133,7 +133,7 @@ proc coverage::clearBlockCoverage {text} {
     variable instrumentedBlock
 
     set state [gui::getCurrentState]
-    if {$state != "running" && $state != "stopped"} {
+    if {$state ne "running" && $state ne "stopped"} {
 	return
     }
 
@@ -458,7 +458,7 @@ proc coverage::resetWindow {{msg {}}} {
 
     $coverText delete 0.0 end
     checkState $coverText
-    if {$msg != {}} {
+    if {$msg ne {}} {
 	$coverText insert 0.0 $msg
     }
 }
@@ -481,7 +481,7 @@ proc coverage::showCode {text} {
     variable coverText
 
     set state [gui::getCurrentState]
-    if {$state != "running" && $state != "stopped"} {
+    if {$state ne "running" && $state ne "stopped"} {
 	return
     }
     set line [sel::getCursor $text]
@@ -657,8 +657,8 @@ proc coverage::updateWindow {} {
     # the display and disable the "Show Code" button
 
     set state [gui::getCurrentState]
-    if {$state != "stopped"} {
-	if {$state == "running"} {
+    if {$state ne "stopped"} {
+	if {$state eq "running"} {
 	    set afterID [after $::gui::afterTime ::coverage::resetWindow]
 	} else {
 	    coverage::resetWindow

@@ -333,7 +333,7 @@ proc sel::setWidgetCmd {w type cmd {seeCmd {}}} {
     variable widgetCmd
 
     set widgetCmd($w,$type) $cmd
-    if {$seeCmd != {}} {
+    if {$seeCmd ne {}} {
 	set widgetCmd($w,see) $seeCmd
     }
 }
@@ -403,7 +403,7 @@ proc sel::widgetSeeCmd {w i} {
 
 proc sel::changeFocus {text focus} {
     $text tag remove focusIn 1.0 end
-    if {$focus == "in"} {
+    if {$focus eq "in"} {
 	sel::updateCursor $text
     }
 }

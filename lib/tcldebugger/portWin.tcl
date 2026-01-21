@@ -32,7 +32,7 @@ namespace eval portWin {
 #	The next OK port to use.
 
 proc portWin::showWindow {port} {
-    if {[info command $::gui::gui(errorPortWin)] == $::gui::gui(errorPortWin)} {
+    if {[info command $::gui::gui(errorPortWin)] eq $::gui::gui(errorPortWin)} {
 	wm deiconify $::gui::gui(errorPortWin)
     } else {
 	portWin::CreateWindow

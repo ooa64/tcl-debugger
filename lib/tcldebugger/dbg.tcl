@@ -5,7 +5,6 @@
 # Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-#
 
 package require parser
 
@@ -36,13 +35,13 @@ namespace eval dbg {
     #
     #	Communication with the nub is performed using a socket.  The
     #	debugger creates a server socket that a nub will connect to
-    #	when starting.  If the nub is started by the debugger, then 
+    #	when starting.  If the nub is started by the debugger, then
     #	the process id is also recorded.
     #
     # Fields:
     #	nubSocket	Socket to use to communicate with the
     #			currently connected nub.  Set to -1 if no
-    #			nub is currently connected. 
+    #			nub is currently connected.
     #	serverSocket	Socket listening for nub connect requests.
     #	serverPort	Port that the server is listening on.
     #	appPid		Process ID for application started by the debugger.
@@ -120,7 +119,7 @@ namespace eval dbg {
 # Arguments:
 #	application	The shell in which to run the script.
 #	startDir	the directory where the client program should be
-#			started. 
+#			started.
 #	script		The script to run in the application.
 #	argList		A list of commandline arguments to pass to the script.
 #	clientData	An opaque piece of data that will be passed through
@@ -135,7 +134,7 @@ proc dbg::start {application startDir script argList clientData} {
     variable tempDir
     variable serverPort
 
-    if {$appState != "dead"} {
+    if {$appState ne "dead"} {
 	error "dbg::start called with an app that is already started."
     }
 
@@ -154,13 +153,13 @@ proc dbg::start {application startDir script argList clientData} {
 	# If the start directory is blank, use the debugger startup directory,
 	# otherwise use the specified directory.
 
-	if { $startDir != "" } {
+	if { $startDir ne "" } {
 	    cd $startDir
 	}
-	
+
 	# start up the application
 
-	if {$::tcl_platform(platform) == "windows"} {
+	if {$::tcl_platform(platform) eq "windows"} {
 	    set args ""
 	    foreach arg [list \
 		    [file nativename $appLaunch] \
@@ -196,7 +195,7 @@ proc dbg::start {application startDir script argList clientData} {
 		# spaces and ignoring null values.
 
 		foreach arg [split [string trim $argList]] {
-		    if {$arg != ""} {
+		    if {$arg ne ""} {
 			lappend args $arg
 		    }
 		}
@@ -210,7 +209,7 @@ proc dbg::start {application startDir script argList clientData} {
             close $f
 	}
     } msg]} {
-	# Make sure to restore the original directory before throwing 
+	# Make sure to restore the original directory before throwing
 	# the error.
 
 	cd $oldDir
@@ -238,7 +237,7 @@ proc dbg::kill {} {
     variable appPid
     variable tempBreakpoint
 
-    if {$appState == "dead"} {
+    if {$appState eq "dead"} {
 	error "dbg::kill called with an app that is already dead."
     }
 
@@ -267,10 +266,10 @@ proc dbg::kill {} {
 proc dbg::step {{level any}} {
     variable appState
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::step called with an app that is not stopped."
     }
-    set appState "running"		
+    set appState "running"
 
     Log timing {DbgNub_Run $level}
     SendAsync DbgNub_Run $level
@@ -296,8 +295,8 @@ proc dbg::evaluate {level script} {
     variable appState
     variable currentLevel
     variable evalId
-    
-    if {$appState != "stopped"} {
+
+    if {$appState ne "stopped"} {
 	error "dbg::evaluate called with an app that is not stopped."
     }
 
@@ -314,7 +313,7 @@ proc dbg::evaluate {level script} {
 
 # dbg::run --
 #
-#	Runs the currently stopped application to either completion or the 
+#	Runs the currently stopped application to either completion or the
 #	next breakpoint.  Generates an error if an application is not
 #	currently stopped.
 #
@@ -328,20 +327,20 @@ proc dbg::evaluate {level script} {
 
 proc dbg::run {{location {}}} {
     variable appState
-    variable tempBreakpoint 
+    variable tempBreakpoint
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::run called with an app that is not stopped."
     }
 
     # If requested, set a temporary breakpoint at the specified location.
-    
-    if {$location != ""} {
+
+    if {$location ne ""} {
 	 set tempBreakpoint [dbg::addLineBreakpoint $location]
     }
-    
+
     # Run until the next breakpoint
-    set appState "running"	
+    set appState "running"
     SendAsync DbgNub_Run
 
     return
@@ -362,7 +361,7 @@ proc dbg::run {{location {}}} {
 proc dbg::interrupt {} {
     variable appState
 
-    if {$appState != "running"} {
+    if {$appState ne "running"} {
 	error "dbg::interrupt called with an app that is not running."
     }
 
@@ -480,8 +479,8 @@ proc dbg::DeliverEvent {event args} {
 proc dbg::getLevel {} {
     variable appState
     variable currentLevel
-    
-    if {$appState != "stopped"} {
+
+    if {$appState ne "stopped"} {
 	error "dbg::getLevel called with an app that is not stopped."
     }
 
@@ -504,8 +503,8 @@ proc dbg::getLevel {} {
 proc dbg::getPC {} {
     variable appState
     variable currentPC
-    
-    if {$appState != "stopped"} {
+
+    if {$appState ne "stopped"} {
 	error "dbg::getPC called with an app that is not stopped."
     }
 
@@ -552,7 +551,7 @@ proc dbg::getStack {} {
     variable appState
     variable stack
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::getStack called with an app that is not stopped."
     }
 
@@ -579,7 +578,7 @@ proc dbg::getStack {} {
 proc dbg::getProcs {} {
     variable appState
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::getProcs called with an app that is not stopped."
     }
 
@@ -601,7 +600,7 @@ proc dbg::getProcs {} {
 
 proc dbg::getProcLocation {name} {
     variable appState
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::getProcLocation called with an app that is not stopped."
     }
     blk::SetSource Temp [Send DbgNub_GetProcDef $name]
@@ -638,8 +637,8 @@ proc dbg::getProcBody {loc} {
 
 # dbg::uninstrumentProc --
 #
-#	Given a fully qualified procedure name that is currently 
-#	instrumented this procedure will insteract with the 
+#	Given a fully qualified procedure name that is currently
+#	instrumented this procedure will insteract with the
 #	application to redefine the procedure as un uninstrumented
 #	procedure.
 #
@@ -696,7 +695,7 @@ proc dbg::getVariables {level {vars {}}} {
     variable appState
     variable currentLevel
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::getVariables called with an app that is not stopped."
     }
 
@@ -734,7 +733,7 @@ proc dbg::getVar {level maxlen varList} {
     variable appState
     variable currentLevel
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::getVar called with an app that is not stopped."
     }
 
@@ -764,7 +763,7 @@ proc dbg::setVar {level var value} {
     variable appState
     variable currentLevel
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::setVar called with an app that is not stopped."
     }
 
@@ -789,7 +788,7 @@ proc dbg::setVar {level var value} {
 
 proc dbg::getResult {maxlen} {
     variable appState
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::getVar called with an app that is not stopped."
     }
 
@@ -811,8 +810,8 @@ proc dbg::getResult {maxlen} {
 
 proc dbg::addLineBreakpoint {location} {
     variable appState
-    
-    if {$appState != "dead"} {
+
+    if {$appState ne "dead"} {
 	SendAsync DbgNub_AddBreakpoint line $location
     }
     return [break::MakeBreakpoint line $location]
@@ -831,9 +830,9 @@ proc dbg::addLineBreakpoint {location} {
 
 proc dbg::getLineBreakpoints {{location {}}} {
     variable tempBreakpoint
-    
+
     set bps [break::GetLineBreakpoints $location]
-    if {$tempBreakpoint != ""} {
+    if {$tempBreakpoint ne ""} {
 	set index [lsearch -exact $bps $tempBreakpoint]
 	if {$index != -1} {
 	    set bps [lreplace $bps $index $index]
@@ -941,7 +940,7 @@ proc dbg::binarySearch {ls elt} {
 proc dbg::addVarBreakpoint {level name} {
     variable appState
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::addVarBreakpoint called with an app that is not stopped."
     }
 
@@ -966,14 +965,14 @@ proc dbg::addVarBreakpoint {level name} {
 proc dbg::getVarBreakpoints {{level {}} {name {}}} {
     variable appState
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::getVarBreakpoints called with an app that is not stopped."
     }
-    if {$level == ""} {
+    if {$level eq ""} {
 	return [break::GetVarBreakpoints]
     }
     set handle [Send DbgNub_GetVarTrace $level $name]
-    if {$handle != ""} {
+    if {$handle ne ""} {
 	return [break::GetVarBreakpoints $handle]
     }
     return ""
@@ -993,11 +992,11 @@ proc dbg::getVarBreakpoints {{level {}} {name {}}} {
 
 proc dbg::removeBreakpoint {breakpoint} {
     variable appState
-    
-    if {$appState != "dead"} {
+
+    if {$appState ne "dead"} {
 	SendAsync DbgNub_RemoveBreakpoint [break::getType $breakpoint] \
 		[break::getLocation $breakpoint] [break::getTest $breakpoint]
-	if {[break::getType $breakpoint] == "var"} {
+	if {[break::getType $breakpoint] eq "var"} {
 	    SendAsync DbgNub_RemoveVarTrace [break::getLocation $breakpoint]
 	}
     }
@@ -1022,7 +1021,7 @@ proc dbg::removeBreakpoint {breakpoint} {
 
 proc dbg::moveLineBreakpoint {breakpoint newLoc} {
     variable appState
-    
+
     set removedBpState [break::getState $breakpoint]
     dbg::removeBreakpoint $breakpoint
 
@@ -1034,16 +1033,16 @@ proc dbg::moveLineBreakpoint {breakpoint newLoc} {
 
     set priorBpts [break::GetLineBreakpoints $newLoc]
     if {[llength $priorBpts] > 0} {
-	if {$removedBpState == "disabled"} {
+	if {$removedBpState eq "disabled"} {
 	    return ""
 	}
 	foreach priorBpt $priorBpts {
-	    if {[break::getState $priorBpt] != "disabled"} {
+	    if {[break::getState $priorBpt] ne "disabled"} {
 		return ""
 	    }
 	}
 	foreach priorBpt $priorBpts {
-	    dbg::removeBreakpoint $priorBpt	    
+	    dbg::removeBreakpoint $priorBpt
 	}
     }
     return [dbg::addLineBreakpoint $newLoc]
@@ -1064,8 +1063,8 @@ proc dbg::moveLineBreakpoint {breakpoint newLoc} {
 
 proc dbg::disableBreakpoint {breakpoint} {
     variable appState
-    
-    if {$appState != "dead"} {
+
+    if {$appState ne "dead"} {
 	SendAsync DbgNub_RemoveBreakpoint [break::getType $breakpoint] \
 		[break::getLocation $breakpoint] [break::getTest $breakpoint]
     }
@@ -1088,12 +1087,12 @@ proc dbg::disableBreakpoint {breakpoint} {
 
 proc dbg::enableBreakpoint {breakpoint} {
     variable appState
-    
-    if {$appState != "dead"} {
+
+    if {$appState ne "dead"} {
 	SendAsync DbgNub_AddBreakpoint [break::getType $breakpoint] \
 		[break::getLocation $breakpoint] [break::getTest $breakpoint]
     }
-    
+
     break::SetState $breakpoint enabled
     return
 }
@@ -1117,7 +1116,7 @@ proc dbg::initialize {{dir {}}} {
     # Find the library directory for the debugger.  If one is not specified
     # look in the directory containing the startup script.
 
-    if {$dir == {}} {
+    if {$dir eq {}} {
 	set libDir [file dir [info nameofexecutable]]
     } else {
 	set libDir $dir
@@ -1150,7 +1149,7 @@ proc dbg::initialize {{dir {}}} {
 #			suitable port in a standard range.
 #
 # Results:
-#	Return 1 if the new port was available and is now being used, 
+#	Return 1 if the new port was available and is now being used,
 #	returns 0 if we couldn't open the new port for some reason.
 #	The old port will still work if we fail.
 
@@ -1164,12 +1163,12 @@ proc dbg::setServerPort {port} {
     if {($serverSocket != -1) && ($serverPort == $port)} {
 	return 1
     }
-    
+
     # Close the port if it has been opened.
 
     dbg::closeServerSocket
 
-    if {$port == "random"} {
+    if {$port eq "random"} {
 	set result 1
 	set port 16999
 	while {$result != 0} {
@@ -1263,7 +1262,7 @@ proc dbg::quit {} {
     variable appState
     variable tempBreakpoint
 
-    if {$appState != "dead"} {
+    if {$appState ne "dead"} {
 	catch {dbg::kill}
     }
     dbg::closeServerSocket
@@ -1299,7 +1298,7 @@ proc dbg::HandleClientExit {} {
     variable appState
     variable appPid
     variable tempBreakpoint
-    
+
     # Release all of the variable breakpoints.
 
     break::Release [break::GetVarBreakpoints]
@@ -1308,7 +1307,7 @@ proc dbg::HandleClientExit {} {
     # Release all of the dynamic blocks and breakpoints.  We
     # also need to mark all instrumented blocks as uninstrumented.
 
-    if {$tempBreakpoint != ""} {
+    if {$tempBreakpoint ne ""} {
 	break::Release $tempBreakpoint
 	set tempBreakpoint {}
     }
@@ -1318,14 +1317,14 @@ proc dbg::HandleClientExit {} {
 	    break::Release $bp
 	}
     }
-    
+
     set tempBreakpoint {}
 
     blk::release dynamic
     blk::unmarkInstrumented
 
     # Close the connection to the client.
-    
+
     close $nubSocket
     set nubSocket -1
     set appState "dead"
@@ -1362,7 +1361,7 @@ proc dbg::HandleConnect {sock host port} {
 	fileevent $sock readable ::dbg::HandleNubEvent
 
 	# Close the server socket
-	dbg::closeServerSocket 
+	dbg::closeServerSocket
     }
     return
 }
@@ -1403,7 +1402,7 @@ proc dbg::GetMessage {} {
 
     set bytes [gets $nubSocket]
     Log message {reading $bytes bytes}
-    if { $bytes == "" } {
+    if { $bytes eq "" } {
 	return ""
     }
     set msg [read $nubSocket $bytes]
@@ -1429,7 +1428,7 @@ proc dbg::SendAsync {args} {
 
 # dbg::Send --
 #
-#	Send the given script to be evaluated in the nub.  The 
+#	Send the given script to be evaluated in the nub.  The
 #	debugger enters a limited event loop until the result of
 #	the evaluation is received.  This call should only be used
 #	for scripts that are expected to return quickly and cannot
@@ -1439,14 +1438,14 @@ proc dbg::SendAsync {args} {
 #	args	The script to be evaluated.
 #
 # Results:
-#	Returns the result of evaluating the script in the nub, 
+#	Returns the result of evaluating the script in the nub,
 #	including any errors that may result.
 
 proc dbg::Send {args} {
     SendMessage "SEND" 1 $args
     while {1} {
 	set msg [GetMessage]
-	if {$msg == ""} {
+	if {$msg eq ""} {
 	    return
 	}
 	switch -- [lindex $msg 0] {
@@ -1467,7 +1466,7 @@ proc dbg::Send {args} {
 # dbg::HandleNubEvent --
 #
 #	This function is called whenever the nub generates an event on
-#	the nub socket.  It will invoke HandleEvent to actually 
+#	the nub socket.  It will invoke HandleEvent to actually
 #	process the event.
 #
 # Arguments:
@@ -1482,7 +1481,7 @@ proc dbg::HandleNubEvent {} {
     variable appState
     variable stack
     variable currentLevel
-    variable tempBreakpoint 
+    variable tempBreakpoint
 
 
     set result [catch {
@@ -1523,7 +1522,7 @@ proc dbg::HandleNubEvent {} {
 
 		# Remove any current temporary breakpoint
 
-		if {$tempBreakpoint != ""} {
+		if {$tempBreakpoint ne ""} {
 		    dbg::removeBreakpoint $tempBreakpoint
 		    set tempBreakpoint {}
 		}
@@ -1581,7 +1580,7 @@ proc dbg::HandleNubEvent {} {
 proc dbg::ignoreError {} {
     variable appState
 
-    if {$appState != "stopped"} {
+    if {$appState ne "stopped"} {
 	error "dbg::step called with an app that is not stopped."
     }
 
@@ -1620,16 +1619,16 @@ proc dbg::Instrument {file script} {
     set icode [blk::Instrument $block $script]
 
     # Ensure that all breakpoints are valid.
-	
+
     dbg::validateBreakpoints $file $block
 
-    if {$icode != "" && !$alreadyInstrumented} {
+    if {$icode ne "" && !$alreadyInstrumented} {
 	# If the instrumentation succeeded and the block was not previously
 	# instrumented (e.g. re-sourcing), create any enabled breakpoints.
 
 	foreach breakpoint [break::GetLineBreakpoints \
 		[loc::makeLocation $block {}]] {
-	    if {[break::getState $breakpoint] == "enabled"} {
+	    if {[break::getState $breakpoint] eq "enabled"} {
 		SendAsync DbgNub_AddBreakpoint "line" \
 			[break::getLocation $breakpoint] \
 			[break::getTest $breakpoint]
@@ -1699,11 +1698,11 @@ proc dbg::InitializeNub {nubVersion tclVersion clientData} {
 
     if {$tclVersion < 8.1} {
 	fconfigure $nubSocket -encoding iso8859-1
-    }	
+    }
 
     SendMessage NUB $nubScript
 
-    # Fetch some information about the client and set up some 
+    # Fetch some information about the client and set up some
     # initial state.
 
     set appPid [Send pid]
@@ -1749,7 +1748,7 @@ proc dbg::InitializeNub {nubVersion tclVersion clientData} {
 #	None.
 
 proc dbg::initInstrument {} {
-    if {$::dbg::appState != "dead"} {
+    if {$::dbg::appState ne "dead"} {
 	SendAsync set DbgNub(dynProc)      [pref::prefGet instrumentDynamic]
 	SendAsync set DbgNub(includeFiles) [pref::prefGet doInstrument]
 	SendAsync set DbgNub(excludeFiles) [pref::prefGet dontInstrument]
@@ -1787,7 +1786,7 @@ proc dbg::isLocalhost {} {
     variable appState
     variable appHost
 
-    if {$appState == "dead"} {
+    if {$appState eq "dead"} {
 	return 1
     }
     return [expr {[string compare $appHost [info hostname]] == 0}]

@@ -184,7 +184,7 @@ namespace eval gui {
 proc gui::showMainWindow {} {
     variable gui
 
-    if {[info command $gui(mainDbgWin)] == $gui(mainDbgWin)} {
+    if {[info command $gui(mainDbgWin)] eq $gui(mainDbgWin)} {
 	wm deiconify $gui(mainDbgWin)
 	raise $gui(mainDbgWin)
 	return $gui(mainDbgWin)
@@ -259,7 +259,7 @@ proc gui::showMainWindow {} {
 proc gui::setDebuggerTitle {proj} {
     variable gui
 
-    if {$proj == ""} {
+    if {$proj eq ""} {
 	set proj "<no project loaded>"
     }
     wm title $gui(mainDbgWin) "$::debugger::parameters(productName): $proj"
@@ -494,7 +494,7 @@ proc gui::userbreakHandler {args} {
     eval gui::linebreakHandler $args
 
     set str [lindex $args 0]
-    if {$str == ""} {
+    if {$str eq ""} {
 	set msg "Script called debugger_break"
     } else {
 	set msg $str
@@ -562,7 +562,7 @@ proc gui::exitHandler {} {
 	# is not done, it will appear as though another app is using
 	# our port.
 
-	if {$::tcl_platform(platform) == "windows"} {
+	if {$::tcl_platform(platform) eq "windows"} {
 	    after 300
 	}
 	proj::initPort
@@ -620,7 +620,7 @@ proc gui::instrumentHandler {status block} {
 	after cancel $::gui::msgAfterID
     }
 
-    if {$status == "start"} {
+    if {$status eq "start"} {
 	gui::updateStatusMessage -state 1 -msg \
 		"instrumenting [blk::getFile $block]"
     } else {
@@ -633,7 +633,7 @@ proc gui::instrumentHandler {status block} {
 	set ::gui::msgAfterID [after $::gui::afterTime {
 	    gui::updateStatusMessage -state 1 -msg [gui::getCurrentState]
 	}]
-	if {[gui::getCurrentBlock] == $block} {
+	if {[gui::getCurrentBlock] eq $block} {
 	    code::updateCodeBar
 	}
     }
@@ -806,9 +806,9 @@ proc gui::start {cmd} {
 	    # that it has attached.  Convert the "run" or "step" requests
 	    # to commands that do not require a location.
 
-	    if {$cmd == "dbg::run"} {
+	    if {$cmd eq "dbg::run"} {
 		set cmd "dbg::step run"
-	    } elseif {$cmd == "dbg::step"} {
+	    } elseif {$cmd eq "dbg::step"} {
 		set cmd "dbg::step any"
 	    }
 	    set ::gui::attachCmd $cmd
@@ -846,7 +846,7 @@ proc gui::run {cmd} {
     # simply return.  If all steps succeed, set the gui state to running
     # and return.  When the nub connects, the step will be evaluated.
 
-    if {[getCurrentState] == "dead"} {
+    if {[getCurrentState] eq "dead"} {
 	gui::start $cmd
 	return
     }
@@ -902,7 +902,7 @@ proc gui::kill {} {
     # We don't need to kill it if it isn't running.  Also, we
     # need to check with the user to see if we want to kill.
 
-    if {($state == "dead") || ($state == "new")} {
+    if {($state eq "dead") || ($state eq "new")} {
 	return 0
     }
     if {[gui::askToKill]} {
@@ -936,7 +936,7 @@ proc gui::kill {} {
 #	None.
 
 proc gui::interrupt {} {
-    if {[gui::getCurrentState] == "running"} {
+    if {[gui::getCurrentState] eq "running"} {
 	gui::updateStatusMessage -state 1 -msg "interrupt pending"
 	dbg::interrupt
     }
@@ -1072,7 +1072,7 @@ proc gui::changeState {state} {
     # Enable the refresh button if the current block is associated
     # with a file that is currently instrumented.
 
-    if {([gui::getCurrentFile] == {}) \
+    if {([gui::getCurrentFile] eq {}) \
 	    || ([blk::isInstrumented [gui::getCurrentBlock]])} {
 	tool::changeState {refreshFile} disabled
     } else {
@@ -1114,11 +1114,11 @@ proc gui::askToKill {} {
 	return 0
     }
     set state [gui::getCurrentState]
-    if {($state == "stopped") || ($state == "running")} {
+    if {($state eq "stopped") || ($state eq "running")} {
 	set but [tk_messageBox -icon warning -type okcancel \
 		-title "Warning" -parent [gui::getParent] \
 		-message "This command will kill the running application."]
-	if {$but == "cancel"} {
+	if {$but eq "cancel"} {
 	    return 1
 	}
     }
@@ -1136,7 +1136,7 @@ proc gui::askToKill {} {
 #	A window name.
 
 proc gui::getParent {} {
-    if {[set parent [focus]] == {}} {
+    if {[set parent [focus]] eq {}} {
 	return "."
     }
     return [winfo toplevel $parent]
@@ -1184,7 +1184,7 @@ proc gui::setDbgTextBindings {w {sb {}}} {
     # If there is a value for a scrollbar, set the yscroll callback
     # to display the scrollbar only when needed.
 
-    if {$sb != {}} {
+    if {$sb ne {}} {
 	$w configure -yscroll [list gui::scrollDbgText $w $sb \
 	    [list place $sb -in $w -anchor ne -relx 1.0 -rely 0.0 \
 	    -relheight 1.0]]
@@ -1417,7 +1417,7 @@ proc gui::formatText {text side} {
 
     gui::unformatText $text
 
-    if {$side == "left"} {
+    if {$side eq "left"} {
 	$::gui::fileText xview moveto 1
     }
 
@@ -1427,7 +1427,7 @@ proc gui::formatText {text side} {
     set end [$text index end]
     set viewable {}
     for {set i 1} {$i < $end} {incr i} {
-	if {[set info [$text dlineinfo $i.0]] != {}} {
+	if {[set info [$text dlineinfo $i.0]] ne {}} {
 	    lappend viewable [list $i.0 $info]
 	}
     }
@@ -1921,7 +1921,7 @@ proc gui::updateStatusMessage {args} {
     # then we have a new GUI state, cache the message in the
     # gui array.
 
-    if {$a(-msg) == {}} {
+    if {$a(-msg) eq {}} {
 	set a(-msg) $::gui::gui(statusStateMsg)
     }
     if {$a(-state)} {
@@ -1953,7 +1953,7 @@ proc gui::updateStatusFile {} {
     $fileText delete 0.0 end
     $instLbl configure -text " "
 
-    if {[gui::getCurrentState] == "new"} {
+    if {[gui::getCurrentState] eq "new"} {
 	return
     }
 
@@ -1961,7 +1961,7 @@ proc gui::updateStatusFile {} {
     # is instrumented.
 
     set block [gui::getCurrentBlock]
-    if {($block != {}) && ([blk::exists $block])} {
+    if {($block ne {}) && ([blk::exists $block])} {
 	set inst [blk::isInstrumented $block]
     } else {
 	set inst 0
@@ -1976,7 +1976,7 @@ proc gui::updateStatusFile {} {
     # with a file that is currently instrumented.
 
     set file [gui::getCurrentFile]
-    if {($file == {}) || $inst} {
+    if {($file eq {}) || $inst} {
 	tool::changeState {refreshFile} disabled
     } else {
 	tool::changeState {refreshFile} normal
@@ -1984,7 +1984,7 @@ proc gui::updateStatusFile {} {
 
     # Insert the name of the block being shown.
 
-    if {$file == {}} {
+    if {$file eq {}} {
 	set file "<Dynamic Block>"
     }
     $fileText insert 0.0 "$file" right
@@ -1992,7 +1992,7 @@ proc gui::updateStatusFile {} {
     # Insert the line number that the cursor is on.
 
     set line [code::getInsertLine]
-    if {$line != {}} {
+    if {$line ne {}} {
 	$fileText insert end " : $line" [list right lineStatus]
     }
     gui::updateStatusFileFormat
@@ -2014,7 +2014,7 @@ proc gui::updateStatusLine {} {
     set update 0
     set line  [code::getInsertLine]
     set range [$fileText tag range lineStatus]
-    if {$range == {}} {
+    if {$range eq {}} {
 	set update 1
     } else {
 	foreach {start end} $range {
@@ -2076,7 +2076,7 @@ proc gui::updateStatusFileFormat {} {
 
 proc gui::registerStatusMessage {win msg {delay 1000}} {
     bind $win <Enter> "
-	if \{\[%W cget -state\] == \"normal\"\} \{
+	if \{\[%W cget -state\] eq \"normal\"\} \{
 	    set ::gui::afterStatus(%W) \[after $delay \\
 		    \{gui::updateStatusMessage -msg \[list $msg\]\}\]
 	\}
@@ -2110,7 +2110,7 @@ proc gui::registerStatusMessage {win msg {delay 1000}} {
 #	The name of the toplevel window.
 
 proc gui::showErrorWindow {level loc errMsg errStack errCode} {
-    if {[info command $::gui::gui(errorDbgWin)] == $::gui::gui(errorDbgWin)} {
+    if {[info command $::gui::gui(errorDbgWin)] eq $::gui::gui(errorDbgWin)} {
 	gui::updateErrorWindow $level $loc $errMsg $errStack $errCode
 	wm deiconify $::gui::gui(errorDbgWin)
 	focus -force $::gui::gui(errorDbgWin)
@@ -2267,7 +2267,7 @@ proc gui::handleError {{option {}}} {
 #	The name of the top level window.
 
 proc gui::showParseErrorWindow {msg} {
-    if {[info command $::gui::gui(parseDbgWin)] == $::gui::gui(parseDbgWin)} {
+    if {[info command $::gui::gui(parseDbgWin)] eq $::gui::gui(parseDbgWin)} {
 	gui::updateParseErrorWindow $msg
 	wm deiconify $::gui::gui(parseDbgWin)
 	focus -force $::gui::gui(parseDbgWin)
@@ -2550,7 +2550,7 @@ proc gui::showConnectStatus {{update {}}} {
     if {[winfo exists $w]} {
 	set createWindow 0
     }
-    if {$update != ""} {
+    if {$update ne ""} {
 	# Update case: Don't update values if window doesn't exist
 	if {$createWindow} {
 	    return

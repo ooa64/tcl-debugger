@@ -59,7 +59,7 @@ namespace eval bind {
     bind watchBind <ButtonRelease-1> {
 	watch::tkCancelRepeat %W
 	if {[info exists ::watch::text(valu,%W)] \
-		&& ([$::watch::text(valu,%W) index @0,%y] == \
+		&& ([$::watch::text(valu,%W) index @0,%y] eq \
 		$::sel::selectStart($::watch::text(valu,%W)))} {
 	    watch::selectLine %W @0,%y
 	}
@@ -349,7 +349,7 @@ namespace eval bind {
     bind noEdit <KP_Enter> {
 	# nothing
     }
-    if {$::tcl_platform(platform) == "macintosh"} {
+    if {$::tcl_platform(platform) eq "macintosh"} {
 	bind noEdit <Command-KeyPress> {# nothing}
     }
 
@@ -515,7 +515,7 @@ proc bind::commonBindings {tag tabOrder} {
 	destroy [winfo toplevel %W]
     }
 
-    if {$tabOrder != {}} {
+    if {$tabOrder ne {}} {
 	bind $tag <Key-Tab> "bind::tabNext \%W $tabOrder;break"
 	bind $tag <Shift-Key-Tab> "bind::tabPrev \%W $tabOrder;break"
     }

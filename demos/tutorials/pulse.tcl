@@ -32,7 +32,7 @@ pack .controls.clear -padx 4 -side left -expand yes
 proc start {} {
     global pending
 
-    if {$pending == ""} {
+    if {$pending eq ""} {
 	set pending [after idle animate]
     }
 }
@@ -48,7 +48,7 @@ proc animate {} {
 proc stop {} {
     global pending
 
-    if {$pending != ""} {
+    if {$pending ne ""} {
 	after cancel $pending
 	set pending ""
     }

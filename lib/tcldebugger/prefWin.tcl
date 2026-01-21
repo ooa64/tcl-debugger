@@ -58,7 +58,7 @@ proc prefWin::showWindow {} {
     # If the window already exists, show it, otherwise
     # create it from scratch.
 
-    if {[info command $::gui::gui(prefDbgWin)] == $::gui::gui(prefDbgWin)} {
+    if {[info command $::gui::gui(prefDbgWin)] eq $::gui::gui(prefDbgWin)} {
 	wm deiconify $::gui::gui(prefDbgWin)
 	focus $::gui::gui(prefDbgWin)
 	return $::gui::gui(prefDbgWin)
@@ -416,7 +416,7 @@ proc prefWin::chooseColor {but pref} {
     # If the color is not an empty string, then set the preference value
     # to the newly selected color.
 
-    if {$color != ""} {
+    if {$color ne ""} {
 	$but configure -bg $color
 	pref::prefSet TempPref $pref $color
     }

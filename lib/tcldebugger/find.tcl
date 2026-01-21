@@ -79,7 +79,7 @@ proc find::showWindow {} {
     # If the window already exists, show it, otherwise
     # create it from scratch.
 
-    if {[info command $::gui::gui(findDbgWin)] == $::gui::gui(findDbgWin)} {
+    if {[info command $::gui::gui(findDbgWin)] eq $::gui::gui(findDbgWin)} {
 	wm deiconify $::gui::gui(findDbgWin)
 	focus $::find::findBox.e
 	return $::gui::gui(findDbgWin)
@@ -285,7 +285,7 @@ proc find::init {} {
 #	Boolean, true is find next can be called.
 
 proc find::nextOK {} {
-    return [expr {$::find::findText != {}}]
+    return [expr {$::find::findText ne {}}]
 }
 
 # find::next --
@@ -321,7 +321,7 @@ proc find::next {} {
     # we are not searching all open documents.
 
     set range [find::search]
-    if {($range == {}) && ($searchVar == 0)} {
+    if {($range eq {}) && ($searchVar == 0)} {
 	return
     }
 
@@ -342,7 +342,7 @@ proc find::next {} {
     # empty string, then we cannot find a match in any documents.
     # In this case we will also break the loop.
 
-    while {$range == {} || [info exists found($range,$thisBlk)]} {
+    while {$range eq {} || [info exists found($range,$thisBlk)]} {
 	# Get the next block from the list of open blocks.
 	# If the next block is the same as when we started,
 	# (determined in find::init) then unset any found
@@ -357,7 +357,7 @@ proc find::next {} {
 	    if {[info exists found]} {
 		unset found
 	    }
-	    if {$range == {}} {
+	    if {$range eq {}} {
 		break
 	    }
 	}
@@ -381,7 +381,7 @@ proc find::next {} {
 	set range [find::search]
     }
 
-    if {$range != {}} {
+    if {$range ne {}} {
 	# Add this range and block to the found index so we know
 	# when we looped searching in this block.
 
@@ -406,13 +406,13 @@ proc find::next {} {
 	$findText tag add sel $start $end
 	$findText mark set insert $start
 	$findSeeCmd $start
-    } elseif {$restoreBlk != {}} {
+    } elseif {$restoreBlk ne {}} {
 	# Restore the original block, highlight the text,
 	# reset the insertion cursor and view the region.
 
 	gui::showCode [loc::makeLocation $restoreBlk {}]
 	$findYviewCmd moveto $restoreView
-	if {$restoreRange != {}} {
+	if {$restoreRange ne {}} {
 	    eval {$findText tag add highlight} $restoreRange
 	    $findText mark set insert [lindex $restoreRange 0]
 	}
@@ -467,7 +467,7 @@ proc find::search {} {
     set index [eval "$findText search $dir $match $nocase \
 	    -count numChars --  [list $findVar] $blkIndex"]
 
-    if {$index != {}} {
+    if {$index ne {}} {
 	set start $index
 	set end   "$index + ${numChars}c"
 	if {[find::wholeWordMatch $start $end]} {
@@ -537,7 +537,7 @@ proc goto::showWindow {} {
     # If the window already exists, show it, otherwise
     # create it from scratch.
 
-    if {[info command $::gui::gui(gotoDbgWin)] == $::gui::gui(gotoDbgWin)} {
+    if {[info command $::gui::gui(gotoDbgWin)] eq $::gui::gui(gotoDbgWin)} {
 	wm deiconify $::gui::gui(gotoDbgWin)
 	focus $::goto::lineEnt
 	return $::gui::gui(gotoDbgWin)
@@ -676,7 +676,7 @@ proc goto::execute {} {
     variable lineEnt
     variable gotoBut
 
-    if {[gui::getCurrentBlock] == {}} {
+    if {[gui::getCurrentBlock] eq {}} {
 	bell -displayof $::gui::gui(gotoDbgWin)
 	return
     }
@@ -684,13 +684,13 @@ proc goto::execute {} {
     # Get the line number and verify that it is numeric.
 
     set line [$lineEnt get]
-    if {$line == ""} {
+    if {$line eq ""} {
 	return
     }
 
     set end [code::getCodeSize]
     if {[catch {incr line 0}]} {
-	if {$line == "end"} {
+	if {$line eq "end"} {
 	    set line $end
 	} else {
 	    bell -displayof $::gui::gui(gotoDbgWin)

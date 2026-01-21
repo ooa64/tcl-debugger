@@ -57,7 +57,7 @@ namespace eval proj {
 #	Return 1 if there was an error saving the project file.
 
 proc proj::openProjCmd {{file {}}} {
-    if {$file == {}} {
+    if {$file eq {}} {
 	set file [proj::openProjDialog]
     } else {
 	set file [proj::checkOpenProjDialog $file]
@@ -87,7 +87,7 @@ proc proj::openProjCmd {{file {}}} {
 
 proc proj::openProjDialog {} {
     set file [proj::openFileWindow [gui::getParent] {} $::proj::projFileTypes]
-    if {$file != {}} {
+    if {$file ne {}} {
 	set file [proj::checkOpenProjDialog $file]
     }
     return $file
@@ -117,7 +117,7 @@ proc proj::checkOpenProjDialog {file} {
 
     if {$projectOpen} {
 	set how [proj::closeProjDialog]
-	if {$how == "CANCEL"} {
+	if {$how eq "CANCEL"} {
 	    return {}
 	} else {
 	    if {[proj::closeProjCmd $how]} {
@@ -165,7 +165,7 @@ proc proj::checkOpenProjDialog {file} {
 proc proj::openProj {file} {
     variable projectNeverSaved
 
-    if {$file == {}} {
+    if {$file eq {}} {
 	return 0
     }
 
@@ -213,10 +213,10 @@ proc proj::openProj {file} {
 #	Return 1 if there was an error saving the project file.
 
 proc proj::closeProjCmd {{how {}}} {
-    if {$how == {}} {
+    if {$how eq {}} {
 	set how [proj::closeProjDialog]
     }
-    if {$how == "CANCEL"} {
+    if {$how eq "CANCEL"} {
 	return 0
     }
     # Cancel the project setting window if it is open.
@@ -294,8 +294,8 @@ proc proj::closeProjDialog {} {
 	    error "saveOnCloseProjDialog returned unexpected value."
 	}
     }
-    
-    if {$result != "CANCEL"} {
+
+    if {$result ne "CANCEL"} {
 	if {[projWin::isOpen]} {
 	    projWin::DestroyWindow
 	}
@@ -323,13 +323,13 @@ proc proj::closeProj {how} {
     variable projectOpen
     variable projectNeverSaved
 
-    if {$how == "NONE" || $how == "CANCEL"} {
+    if {$how eq "NONE" || $how eq "CANCEL"} {
 	return 0
     }
 
     set result 0
 
-    if {$how == "SAVE"} {
+    if {$how eq "SAVE"} {
 	if {[proj::saveProj [proj::getProjectPath]]} {
 	    return 1
 	}
@@ -372,7 +372,7 @@ proc proj::closeProj {how} {
 #	Return 1 if there was an error saving the project file.
 
 proc proj::saveProjCmd {{file {}}} {
-    if {$file == {}} {
+    if {$file eq {}} {
 	set file [proj::saveProjDialog]
     }
 
@@ -475,9 +475,9 @@ proc proj::saveOnCloseProjDialog {file} {
     # projectPath contains the new file name so the saveProj API save the
     # project to the correct file.
 
-    if {$result == "YES"} {
+    if {$result eq "YES"} {
 	set file [proj::saveProjDialog]
-	if {$file == {}} {
+	if {$file eq {}} {
 	    set result CANCEL
 	} else {
 	    proj::setProjectPath $file
@@ -546,7 +546,7 @@ proc proj::saveProj {file} {
     variable projectOpen
     variable projectNeverSaved
 
-    if {$file == {}} {
+    if {$file eq {}} {
 	return 0
     }
     if {!$projectOpen} {
@@ -594,10 +594,10 @@ proc proj::saveProj {file} {
 
 proc proj::restartProj {} {
     set state [gui::getCurrentState]
-    if {$state == "new"} {
+    if {$state eq "new"} {
 	error "restartProj called when no project is loaded"
     }
-    if {($state == "stopped") || ($state == "running")} {
+    if {($state eq "stopped") || ($state eq "running")} {
 	if {[gui::kill]} {
 	    # User cancelled the kill action
 	    return
@@ -694,23 +694,23 @@ proc proj::checkProj {} {
 	set dir [file join [file dirname [proj::getProjectPath]] $dir]
     }
 
-    if {$script == {}} {
+    if {$script eq {}} {
 	set msg "You must enter a script to Debug."
     } elseif {![file exist [file join $dir $script]]} {
 	set msg "$script : File not found.\n"
 	append msg "Please verify the correct filename was given."
     }
-    if {$dir != {}} {
+    if {$dir ne {}} {
 	if {(![file exist $dir]) || (![file isdirectory $dir])} {
 	    set msg "$dir : Invalid directory\n"
 	    append msg "Please verify the correct path was specified."
 	}
     }
-    if {$interp == {}} {
+    if {$interp eq {}} {
 	set msg "You must specify an interpreter."
     }
 
-    if {$msg != {}} {
+    if {$msg ne {}} {
 	tk_messageBox -icon error -type ok -title "Load Error" \
 	    -parent [gui::getParent] -message $msg
 	set result 0
@@ -731,7 +731,7 @@ proc proj::checkProj {} {
 #	Boolean, true if the project is connected remotely.
 
 proc proj::isRemoteProj {} {
-    return [expr {[pref::prefGet appType] == "remote"}]
+    return [expr {[pref::prefGet appType] eq "remote"}]
 }
 
 # proj::showNewProjWindow --
@@ -752,8 +752,8 @@ proc proj::showNewProjWindow {} {
     # to be saved.  If the save was canceled, then do not continue to
     # open this project.
 
-    set how [proj::closeProjDialog] 
-    if {$how == "CANCEL"} {
+    set how [proj::closeProjDialog]
+    if {$how eq "CANCEL"} {
 	return
     } else {
 	proj::closeProjCmd $how
@@ -848,7 +848,7 @@ proc proj::applyThisProjCmd {destroy} {
 
 	set dir    [lindex [pref::prefGet appDirList TempProj]    0]
 	set script [lindex [pref::prefGet appScriptList TempProj] 0]
-	if {($dir == {}) && ($script != {})} {
+	if {($dir eq {}) && ($script ne {})} {
 	    set dir   [file dirname $script]
 	    set dList [projWin::AddToCombo $::projWin::dirCombo $dir]
 	    $::projWin::dirCombo set $dir
@@ -969,13 +969,13 @@ proc proj::saveAsFileWindow {parent dir file {types {}} {ext {}}} {
     if {![file exist $dir]} {
 	set dir [pref::prefGet fileOpenDir]
     }
-    if {$file == {}} {
+    if {$file eq {}} {
 	set file [file::getUntitledFile $dir Untitled $::proj::projFileExt]
     }
 
     # If types is empty, then use the default values.
 
-    if {$types == {}} {
+    if {$types eq {}} {
 	set types {
 	    {"Tcl Scripts"		{.tcl .tk}	}
 	    {"Text files"		{.txt .doc}	TEXT}
@@ -986,7 +986,7 @@ proc proj::saveAsFileWindow {parent dir file {types {}} {ext {}}} {
     set file [tk_getSaveFile -filetypes $types -parent $parent \
 	    -initialdir $dir -initialfile $file -defaultextension $ext]
 
-    if {$file != {}} {
+    if {$file ne {}} {
 	pref::prefSet GlobalDefault fileOpenDir [file dirname $file]
     }
     return $file
@@ -1019,7 +1019,7 @@ proc proj::openFileWindow {parent dir {types {}}} {
 
     # If types is empty, then use the default values.
 
-    if {$types == {}} {
+    if {$types eq {}} {
 	set types {
 	    {"Tcl Scripts"		{.tcl .tk}	}
 	    {"Text files"		{.txt .doc}	TEXT}
@@ -1029,7 +1029,7 @@ proc proj::openFileWindow {parent dir {types {}}} {
 
     set file [tk_getOpenFile -filetypes $types -parent $parent \
 	    -initialdir $dir]
-    if {$file != {}} {
+    if {$file ne {}} {
 	pref::prefSet GlobalDefault fileOpenDir [file dirname $file]
     }
     return $file
@@ -1053,7 +1053,7 @@ proc proj::openComboFileWindow {combo types} {
     set file [$combo get]
     if {[file isdirectory $file]} {
 	set dir $file
-    } elseif {$file != {}} {
+    } elseif {$file ne {}} {
 	set dir [file dirname $file]
     } else {
 	set dir {}
@@ -1062,7 +1062,7 @@ proc proj::openComboFileWindow {combo types} {
 	set dir [pref::prefGet fileOpenDir]
     }
 
-    if {$types == {}} {
+    if {$types eq {}} {
 	set types {
 	    {"Tcl Scripts"		{.tcl .tk}	}
 	    {"Text files"		{.txt .doc}	TEXT}
@@ -1210,7 +1210,7 @@ proc proj::InitNewProj {} {
     # to reflect the change in project settings.
 
     set state [gui::getCurrentState]
-    if {($state == "new") || ($state == "dead")} { 
+    if {($state eq "new") || ($state eq "dead")} {
 	if {[proj::isRemoteProj]} {
 	    # Update the server port if we are currenly not listening or
 	    # the listening port is different from the preference.
@@ -1243,15 +1243,15 @@ proc proj::InitNewProj {} {
 	set script  [lindex [pref::prefGet appScriptList] 0]
 	set workDir [lindex [pref::prefGet appDirList] 0]
 	set script  [file join $workDir $script]
-	
-	if {($script != {}) && [file exists $script]} {
+
+	if {($script ne {}) && [file exists $script]} {
 	    set loc [loc::makeLocation [blk::makeBlock $script] {}]
 	} elseif {[file exists $file]} {
 	    set loc [loc::makeLocation [blk::makeBlock $file] {}]
 	} else {
 	    set loc {}
 	}
-	if {$loc != {}} {
+	if {$loc ne {}} {
 	    gui::showCode $loc
 	}
     }
@@ -1275,9 +1275,9 @@ proc proj::initPort {} {
     set listenPort [lindex $server 0]
     set port       [pref::prefGet portRemote Project]
 
-    if {($status != "Listening") || ($listenPort != $port)} {
-	# Attempt to set the server port with the port preference.  
-	# If an error occurs, display the window that prompts the 
+    if {($status ne "Listening") || ($listenPort != $port)} {
+	# Attempt to set the server port with the port preference.
+	# If an error occurs, display the window that prompts the
 	# user for a new port.
 
 	while {![dbg::setServerPort $port]} {
@@ -1339,7 +1339,7 @@ proc proj::AddRecentProj {projPath} {
 
     # Make sure we do an case insensitive comparison on Windows.
 
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	set list [string toupper $projList]
 	set file [string toupper $projPath]
     } else {

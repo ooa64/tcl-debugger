@@ -6,7 +6,7 @@
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
 
-if {$::tcl_platform(platform) == "windows"} {
+if {$::tcl_platform(platform) eq "windows"} {
     # package require dbgext
     catch {package require Winico}
     package require registry
@@ -60,7 +60,7 @@ proc system::init {} {
     # debugger icon for the minimize state.  (C code)
     # Note the window must be mapped before this call can be made.
 
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	update
 #	chgClass .
     }
@@ -198,7 +198,7 @@ proc system::initGroups {} {
     # Create the GlobalDefault group.  Specify the save and restore commands
     # based on which platform we're running on.
 
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	pref::groupNew GlobalDefault system::winSaveCmd system::winRestoreCmd
     } else {
 	pref::groupNew GlobalDefault system::unixSaveCmd system::unixRestoreCmd
@@ -215,7 +215,7 @@ proc system::initGroups {} {
     # Create the ProjectDefault group.  Specify the save and restore commands
     # based on which platform we're running on.
 
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	pref::groupNew ProjectDefault system::winSaveCmd system::winRestoreCmd
     } else {
 	pref::groupNew ProjectDefault system::unixSaveCmd \
@@ -253,7 +253,7 @@ proc system::saveDefaultPrefs {close} {
 
     if {$close} {
 	set how [proj::closeProjDialog]
-	if {$how == "CANCEL"} {
+	if {$how eq "CANCEL"} {
 	    return 1
 	}
     }
@@ -267,12 +267,12 @@ proc system::saveDefaultPrefs {close} {
     # on the next session.
 
     set projPath [proj::getProjectPath]
-    if {$close && ($how == "SAVE")} {
+    if {$close && ($how eq "SAVE")} {
 	pref::prefSet GlobalDefault projectPrev $projPath
 	if {[proj::saveProjCmd $projPath]} {
 	    return 1
 	}
-    } elseif {$close && ($how == "CLOSE")} {
+    } elseif {$close && ($how eq "CLOSE")} {
 	if {[proj::projectNeverSaved]} {
 	    pref::prefSet GlobalDefault projectPrev {}
 	} else {
@@ -488,7 +488,7 @@ proc system::updatePreferences {} {
 
 proc system::getInterps {} {
     set result {}
-#    if {$::tcl_platform(platform) == "windows"} {
+#    if {$::tcl_platform(platform) eq "windows"} {
 #	set ext ".exe"
 #    } else {
 #	set ext ""
@@ -515,9 +515,9 @@ proc system::getInterps {} {
 	set result [concat {*}$result]
 
     # Look for other Tcl shells on user's path (not available on Windows)
-    
-    if {$::tcl_platform(platform) != "windows"} {
-    
+
+    if {$::tcl_platform(platform) ne "windows"} {
+
 	foreach path [split $::env(PATH) :] {
 	    foreach y [glob -nocomplain [file join $path wish*]] {
 		lappend result $y
@@ -549,7 +549,7 @@ proc system::getFontList {} {
     # For UNIX, use only a small set of fonts.  For Windows, 
     # search all of the fonts.
 
-#    if {$::tcl_platform(platform) == "windows"} {
+#    if {$::tcl_platform(platform) eq "windows"} {
 #	return [font families]
 #    } else {
 #	return {fixed courier {lucida typewriter} serif terminal screen}
@@ -569,7 +569,7 @@ proc system::getFontList {} {
 #	The command to use that will launch a browser.
 
 proc system::getBrowserCmd {} {
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	return {}
     } else {
 	return $::system::browser(netscape)
@@ -588,7 +588,7 @@ proc system::getBrowserCmd {} {
 #	is to be used.
 
 proc system::getDefBrowser {} {
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	return 1
     } else {
 	return 0
@@ -651,7 +651,7 @@ proc system::getKeyBindings {} {
 	<<Dbg_Close>>	<Control-w>
 	<<Dbg_Close>>	<Alt-Key-F4>
     }
-    if { 1 || $::tcl_platform(platform) == "windows"} {
+    if { 1 || $::tcl_platform(platform) eq "windows"} {
 	lappend keyList "<<Dbg_TclHelp>>" "<Key-F2>"
     }
 
@@ -706,9 +706,9 @@ proc system::setWidgetAttributes {} {
     variable exeString
     variable dbgSuffix
 
-    # Set various data used by the system.  
-    
-    if {$::tcl_platform(platform) == "windows"} {
+    # Set various data used by the system.
+
+    if {$::tcl_platform(platform) eq "windows"} {
 	array set color {
 	    lightOutside systemButtonHighlight
 	    lightInside system3Dlight
@@ -876,7 +876,7 @@ proc system::getComSpec {} {
     global env
 
     foreach x [array names env] {
-	if {[string tolower $x] == "comspec"} {
+	if {[string tolower $x] eq "comspec"} {
 	    return $env($x)
 	}
     }
@@ -896,7 +896,7 @@ proc system::getComSpec {} {
 #	The system dependent fileName used for comparisons.
 
 proc system::formatFilename {filename} {
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	return [string tolower $filename]
     } else {
 	return $filename
@@ -916,9 +916,9 @@ proc system::formatFilename {filename} {
 #	None.
 
 proc system::bindToAppIcon {toplevel} {
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	catch {winico setwindow $toplevel $::debugger::parameters(iconImage)}
-    } elseif {$::tcl_platform(platform) == "unix"} {
+    } elseif {$::tcl_platform(platform) eq "unix"} {
     	set iconImage [image create photo \
 		-file $::debugger::parameters(iconImage)]
 	set iconTop   [toplevel ${toplevel}_iconWindow]
@@ -940,7 +940,7 @@ proc system::bindToAppIcon {toplevel} {
 #	The browserCmd.
 
 proc system::getBrowser {} {
-    if {($::tcl_platform(platform) == "windows") \
+    if {($::tcl_platform(platform) eq "windows") \
 	    && ([pref::prefGet browserDefault])} {
 	return $::system::browser(start)
     }
@@ -965,16 +965,16 @@ proc system::getBrowser {} {
 proc system::openURL {url} {
     if {[catch {
 	set browserCmd [system::getBrowser]
-	if {$browserCmd == {}} {
-	    set msg1 "No command defined for launching a browser."  
+	if {$browserCmd eq {}} {
+	    set msg1 "No command defined for launching a browser."
 	    set msg2 "Please set this option in the Preferences."
 	    tk_messageBox -icon error -type ok \
 		    -title "Error" -parent [gui::getParent] \
 		    -message "$msg1\n$msg2"
 	    return
 	}
-	
-	if {$::tcl_platform(platform) == "windows"} {
+
+	if {$::tcl_platform(platform) eq "windows"} {
 	    # If the URL is not an http reference, convert it to a native
 	    # file name to make browsers happy.
 
@@ -1000,8 +1000,8 @@ proc system::openURL {url} {
 	    # If the browserCmd is "netscape" then try two possible
 	    # methods to exec Netscape on Unix.  Otherwise append
 	    # the URL and exec the browser command.
-	    
-	    if {$::system::browser(netscape) == $browserCmd} {
+
+	    if {$::system::browser(netscape) eq $browserCmd} {
 		set browserCmdCopy $browserCmd
 		lappend browserCmd -remote openURL($url)
 		if {[catch {set result [eval exec $browserCmd]}]} {
@@ -1078,7 +1078,7 @@ proc system::createBrowserWindow {mainFrm} {
     set pad  6
     set pad2 10
 
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	set subFrm  [prefWin::createSubFrm $mainFrm browserFrm "Browser"]
 	set otherLbl [label $subFrm.otherLbl -text "Command Line:"]
 	set otherEnt [entry $subFrm.otherEnt \
@@ -1144,7 +1144,7 @@ proc system::createBrowserWindow {mainFrm} {
 #	None
 
 proc system::checkBrowserWindowState {args} {
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	set lbl [lindex $args 0]
 	set ent [lindex $args 1]
 	if {[pref::prefGet browserDefault TempPref]} {
@@ -1171,7 +1171,7 @@ proc system::checkBrowserWindowState {args} {
 # Results:
 #	The application with with process id "pid" is killed.
 
-if {$::tcl_platform(platform) == "unix"} {
+if {$::tcl_platform(platform) eq "unix"} {
     proc kill {pid} {
 	exec kill -9 $pid
     }

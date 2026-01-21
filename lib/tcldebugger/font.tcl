@@ -33,7 +33,7 @@ proc font::createFontData {} {
     foreach font [system::getFontList] {
 	font configure findFixed -family $font -size 10
 	if {([font metrics findFixed -fixed]) && \
-		[font actual findFixed -family] == $font} {
+		[font actual findFixed -family] eq $font} {
 	    set foundFixed 1
 	    lappend fontList $font
 	}
@@ -41,7 +41,7 @@ proc font::createFontData {} {
     if {!$foundFixed} {
 	error "could not locate a fixed font on this system."
     }
-    if {$fontList == {}} {
+    if {$fontList eq {}} {
 	error "could not find min size a fixed font on this system."
     }
     set fontList [lsort $fontList]
@@ -60,8 +60,8 @@ proc font::createFontData {} {
 
 proc font::getFonts {} {
     variable fontList
-    
-    if {$fontList == {}} {
+
+    if {$fontList eq {}} {
 	font::createFontData
     }
     return $fontList

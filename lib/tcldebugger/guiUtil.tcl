@@ -130,7 +130,7 @@ proc guiUtil::paneDrag {master D} {
 	    set grip -4
 	    set percent 1.0
 	}
-	if {$pane(D) == "X"} {
+	if {$pane(D) eq "X"} {
 	    $pane(grip) configure -width 4 -bg grey25
 	    place $pane(grip) -relheight 1.0 -x $grip -relx $percent
 	} else {
@@ -159,7 +159,7 @@ proc guiUtil::paneStop {master} {
     upvar #0 Pane$master pane
     guiUtil::paneGeometry $master
     catch {unset pane(lastD)}
-    if {$pane(D) == "X"} {
+    if {$pane(D) eq "X"} {
 	$pane(grip) configure -width 2 -bg $pane(bg)
 
     } else {
@@ -179,7 +179,7 @@ proc guiUtil::paneStop {master} {
 
 proc guiUtil::paneGeometry {master} {
     upvar #0 Pane$master pane
-    if {$pane(D) == "X"} {
+    if {$pane(D) eq "X"} {
 	place $pane(1)    -relwidth $pane(-percent)
 	place $pane(grip) -relx $pane(-percent) -relheight 1.0 -x -1
 	place $pane(2)    -relwidth [expr {1.0 - $pane(-percent)}] -x 2
@@ -260,7 +260,7 @@ proc guiUtil::tableCreate {master frm1 frm2 args} {
     # If there are two sub windows, create the grip to slide
     # the widows vertically and add the bindings.
 
-    if {$frm2 != {}} {
+    if {$frm2 ne {}} {
 	set pane(2) $frm2
 	set pane(t2) [label $title.title1  -relief raised -bd 2 \
 		-text $pane(-title2) -justify $pane(-justify) \
@@ -440,7 +440,7 @@ proc guiUtil::ComboBox {ComboBox args} {
     bind $list <ButtonRelease-1> "guiUtil::ComboBox_popdown $ComboBox $w"
     bind $list <Return> "guiUtil::ComboBox_popdown $ComboBox $w"
     bind $entry <Return>  "
-	if {\$::guiUtil::comboCommand($ComboBox) != {}} {
+	if {\$::guiUtil::comboCommand($ComboBox) ne {}} {
 	    uplevel #0 \$::guiUtil::comboCommand($ComboBox)
 	}
     "
@@ -495,7 +495,7 @@ proc guiUtil::ComboBox_set {ComboBox args} {
 	$ComboBox.e insert end [lindex $args 0]
     }
     $ComboBox.e xview end
-    if {$::guiUtil::comboCommand($ComboBox) != {}} {
+    if {$::guiUtil::comboCommand($ComboBox) ne {}} {
 	uplevel #0 $::guiUtil::comboCommand($ComboBox)
     }
 }
@@ -546,7 +546,7 @@ proc guiUtil::ComboBox_add {ComboBox args} {
     # Now remove all {} args from the list.
     set newList {}
     foreach arg $tmpList {
-	if {$arg != {}} {
+	if {$arg ne {}} {
 	    lappend newList $arg
 	}
     }
@@ -554,8 +554,8 @@ proc guiUtil::ComboBox_add {ComboBox args} {
     # If there were non-duplicate entries, insert each new
     # entry into the listbox.
 
-    if {$newList != {}} {
-	# Configure the size of the list box to 
+    if {$newList ne {}} {
+	# Configure the size of the list box to
 	# be no greater then 4 lines long.
 
 	set height [llength $newList]
@@ -679,20 +679,20 @@ proc guiUtil::ComboBox_popdown { {frame .f} {win .combobox} } {
     if { ![string compare [$frame.e cget -state] "disabled"] } {
 	$frame.e configure -state normal
 	set index [$win.frm.list curselection]
-	if {$index != {}} {
+	if {$index ne {}} {
 	    $frame.e delete 0 end
 	    $frame.e insert end [$win.frm.list get $index]
 	}
 	$frame.e configure -state disabled
     } else {
 	set index [$win.frm.list curselection]
-	if {$index != {}} {
+	if {$index ne {}} {
 	    $frame.e delete 0 end
 	    $frame.e insert end [$win.frm.list get $index]
 	}
     }
     $frame.e xview end
-    if {$::guiUtil::comboCommand($frame) != {}} {
+    if {$::guiUtil::comboCommand($frame) ne {}} {
 	uplevel #0 $::guiUtil::comboCommand($frame)
     }
     guiUtil::removeGrab
@@ -828,8 +828,8 @@ proc guiUtil::removeGrab {} {
 proc guiUtil::testRemoveGrab {} {
     variable comboPopup
     variable comboCursor
-    
-    if {($comboCursor == "out")} {
+
+    if {($comboCursor eq "out")} {
 	guiUtil::removeGrab
     }
 }
@@ -856,14 +856,14 @@ proc guiUtil::fileDialog {top ent op {types {}}} {
     set file [$ent get]
     set dir  [file dirname $file]
 
-    if {$types == {}} {
+    if {$types eq {}} {
 	set types {
 	    {"Tcl Scripts"		{.tcl .tk}	}
 	    {"Text files"		{.txt .doc}	TEXT}
 	    {"All files"		*}
 	}
     }
-    if {$op == "open"} {
+    if {$op eq "open"} {
 	set file [tk_getOpenFile -filetypes $types -parent $top \
 		-initialdir $dir]
     } else {
@@ -894,7 +894,7 @@ proc guiUtil::fileDialog {top ent op {types {}}} {
 #	None.
 
 proc guiUtil::positionWindow {win {defaultGeom {}}} {
-    if {![winfo exists $win] || ($win != [winfo toplevel $win])} {
+    if {![winfo exists $win] || ($win ne [winfo toplevel $win])} {
 	error "positionWindow not called on toplevel"
     }
 
@@ -903,7 +903,7 @@ proc guiUtil::positionWindow {win {defaultGeom {}}} {
     set index    [lsearch -regexp $winGeoms [list $tag *]]
 
     if {$index == -1} {
-	if {$defaultGeom != ""} {
+	if {$defaultGeom ne ""} {
 	    wm geometry $win $defaultGeom
 	}
     } else {
@@ -920,7 +920,7 @@ proc guiUtil::positionWindow {win {defaultGeom {}}} {
 	set sh [expr {[winfo screenheight $win] - $slop}]
 
 	if {($x > $sw) || ($x < 0) || ($y > $sh) || ($y < 0)} {
-	    if {($defaultGeom != "")} {
+	    if {($defaultGeom ne "")} {
 		# Perform some sanity checking on the default value.
 
 		foreach {w h x y} {0 0 0 0} {}
@@ -964,7 +964,7 @@ proc guiUtil::positionWindow {win {defaultGeom {}}} {
 
 proc guiUtil::saveGeometry {win} {
     set result [catch {set top [winfo toplevel $win]}]
-    if {($result != 0) || ($win != $top)} {
+    if {($result != 0) || ($win ne $top)} {
 	return
     }
 

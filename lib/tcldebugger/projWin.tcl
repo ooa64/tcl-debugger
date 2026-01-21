@@ -85,7 +85,7 @@ proc projWin::showWindow {title {aCmd {}} {dCmd {}}} {
     variable applyCmd
     variable destroyCmd
 
-    if {[info command $::gui::gui(projSettingWin)] == {}} {
+    if {[info command $::gui::gui(projSettingWin)] eq {}} {
 	projWin::createWindow
 	focus $::gui::gui(projSettingWin)
     } else {
@@ -201,11 +201,11 @@ proc projWin::updateWindow {{title {}}} {
     variable localRad
     variable remoteRad
 
-    if {[info command $::gui::gui(projSettingWin)] == {}} {
+    if {[info command $::gui::gui(projSettingWin)] eq {}} {
 	return
     }
 
-    if {$title != {}} {
+    if {$title ne {}} {
 	wm title $::gui::gui(projSettingWin) $title
     }
 
@@ -213,7 +213,7 @@ proc projWin::updateWindow {{title {}}} {
     array set color [system::getColor]
 
     if {[winfo exists $localRad]} {
-	if {$state == "dead" || $state == "new"} {
+	if {$state eq "dead" || $state eq "new"} {
 	    $localRad configure -fg [lindex [$localRad configure -fg] 3]
 	    $localRad configure -state normal
 	} else {
@@ -231,7 +231,7 @@ proc projWin::updateWindow {{title {}}} {
 	}
     }
     if {[winfo exists $portEnt]} {
-	if {$state == "dead" || $state == "new"} {
+	if {$state eq "dead" || $state eq "new"} {
 	    $portLbl configure -fg [lindex [$portLbl configure -fg] 3]
 	    $portEnt configure -fg [lindex [$portLbl configure -fg] 3]
 	    $portEnt configure -state normal
@@ -255,7 +255,7 @@ proc projWin::updateWindow {{title {}}} {
 #	Return a boolean, 1 if the window is open.
 
 proc projWin::isOpen {} {
-    return [expr {[info command $::gui::gui(projSettingWin)] != {}}]
+    return [expr {[info command $::gui::gui(projSettingWin)] ne {}}]
 }
 
 # projWin::ApplyProjSettings --
@@ -283,7 +283,7 @@ proc projWin::ApplyProjSettings {destroy} {
     # window if the destroy bit is true.
 
     pref::groupApply TempProj Project
-    if {$applyCmd != {}} {
+    if {$applyCmd ne {}} {
 	uplevel #0 $applyCmd $destroy
     }
     if {$destroy} {
@@ -308,7 +308,7 @@ proc projWin::ApplyProjSettings {destroy} {
 proc projWin::CancelProjSettings {} {
     variable destroyCmd
 
-    if {$destroyCmd != {}} {
+    if {$destroyCmd ne {}} {
 	uplevel #0 $destroyCmd 1
     }
     projWin::DestroyWindow
@@ -330,7 +330,7 @@ proc projWin::DestroyWindow {} {
     if {[pref::groupExists TempProj]} {
 	pref::groupDelete TempProj
     }
-    if {[info command $::gui::gui(projSettingWin)] != {}} {
+    if {[info command $::gui::gui(projSettingWin)] ne {}} {
 	destroy $::gui::gui(projSettingWin)
     }
     return
@@ -423,7 +423,7 @@ proc projWin::AddToCombo {combo value} {
     # ComboBox entry widget on the next display request.
 
     set size [pref::prefGet comboListSize]
-    if {$value == {}} {
+    if {$value eq {}} {
 	set result [linsert $result 0 {}]
 	incr size
     }
@@ -638,7 +638,7 @@ proc projWin::ShowDebuggingType {mainFrm type} {
     wm geometry $::gui::gui(projSettingWin) \
 	    [winfo geometry $::gui::gui(projSettingWin)]
 
-    if {$type == "local"} {
+    if {$type eq "local"} {
 	pack forget $remoteFrm
 	pack $localFrm -fill both -expand true
 
@@ -954,7 +954,7 @@ proc projWin::AddInstruGlob {globPat doInst} {
     }
 
     set globList [pref::prefGet $instPref TempProj]
-    if {($globPat != {}) && ([lsearch -exact $globList $globPat] < 0)} {
+    if {($globPat ne {}) && ([lsearch -exact $globList $globPat] < 0)} {
 	lappend globList $globPat
 	pref::prefSet TempProj $instPref $globList
     }
@@ -1029,7 +1029,7 @@ proc projWin::RemoveSelectedInstru {doInst} {
     # glob patterns.  Then call updateWindow to display the
     # updated globList.
 
-    if {$selectedLines != {}} {
+    if {$selectedLines ne {}} {
 	set globList [pref::prefGet $instPref TempProj]
 	set newGlobList {}
 	for {set i 0; set j 0} {$i < [llength $globList]} {incr i} {
@@ -1089,10 +1089,10 @@ proc projWin::CheckInstruFilesState {} {
     }
     $::projWin::remDoBut configure -state $state
 
-    if {[focus] == $noInstText} {
+    if {[focus] eq $noInstText} {
 	sel::changeFocus $noInstText in
     }
-    if {[focus] == $doInstText} {
+    if {[focus] eq $doInstText} {
 	sel::changeFocus $doInstText in
     }
 }
@@ -1111,15 +1111,15 @@ proc projWin::updateScriptList {} {
     variable scriptCombo
 
     if {[pref::groupExists TempProj] && \
-	    [pref::prefGet appType TempProj] == "local"} {
-	# Add the current combo entry to the combo's drop down 
+	    [pref::prefGet appType TempProj] eq "local"} {
+	# Add the current combo entry to the combo's drop down
 	# list.  The result of the command is the ordered list
 	# of elements in the combo's drop down list.
 
 	set script [pref::prefGet appScript TempProj]
 	set sList  [projWin::AddToCombo $scriptCombo $script]
-	
-	if {$sList != [pref::prefGet appScriptList Project]} {
+
+	if {$sList ne [pref::prefGet appScriptList Project]} {
 	    pref::prefSet Project  appScriptList $sList
 	    pref::prefSet TempProj appScriptList $sList
 	}
@@ -1141,15 +1141,15 @@ proc projWin::updateInterpList {} {
     variable interpCombo
 
     if {[pref::groupExists TempProj] && \
-	    [pref::prefGet appType TempProj] == "local"} {
-	# Add the current combo entry to the combo's drop down 
+	    [pref::prefGet appType TempProj] eq "local"} {
+	# Add the current combo entry to the combo's drop down
 	# list.  The result of the command is the ordered list
 	# of elements in the combo's drop down list.
 
 	set interp [pref::prefGet appInterp TempProj]
 	set iList  [projWin::AddToCombo $interpCombo $interp]
 
-	if {$iList != [pref::prefGet appInterpList Project]} {
+	if {$iList ne [pref::prefGet appInterpList Project]} {
 	    pref::prefSet Project  appInterpList $iList
 	    pref::prefSet TempProj appInterpList $iList
 	}
@@ -1171,15 +1171,15 @@ proc projWin::updateArgList {} {
     variable argCombo
 
     if {[pref::groupExists TempProj] && \
-	    [pref::prefGet appType TempProj] == "local"} {
-	# Add the current combo entry to the combo's drop down 
+	    [pref::prefGet appType TempProj] eq "local"} {
+	# Add the current combo entry to the combo's drop down
 	# list.  The result of the command is the ordered list
 	# of elements in the combo's drop down list.
 
 	set arg   [pref::prefGet appArg TempProj]
 	set aList [projWin::AddToCombo $argCombo $arg]
 
-	if {$aList != [pref::prefGet appArgList Project]} {
+	if {$aList ne [pref::prefGet appArgList Project]} {
 	    pref::prefSet Project  appArgList $aList
 	    pref::prefSet TempProj appArgList $aList
 	}
@@ -1201,15 +1201,15 @@ proc projWin::updateDirList {} {
     variable dirCombo
 
     if {[pref::groupExists TempProj] && \
-	    [pref::prefGet appType TempProj] == "local"} {
-	# Add the current combo entry to the combo's drop down 
+	    [pref::prefGet appType TempProj] eq "local"} {
+	# Add the current combo entry to the combo's drop down
 	# list.  The result of the command is the ordered list
 	# of elements in the combo's drop down list.
 
 	set dir   [pref::prefGet appDir TempProj]
 	set dList [projWin::AddToCombo $dirCombo $dir]
 
-	if {$dList != [pref::prefGet appDirList Project]} {
+	if {$dList ne [pref::prefGet appDirList Project]} {
 	    pref::prefSet Project  appDirList $dList
 	    pref::prefSet TempProj appDirList $dList
 	}

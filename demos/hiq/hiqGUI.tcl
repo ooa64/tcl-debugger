@@ -114,7 +114,7 @@ proc CanvasDrop {w x y row column} {
 
     # if user made an illegal move, then error
     set answer [move_peg $row $column $newrow $newcolumn]
-    if {$answer == ""} {
+    if {$answer eq ""} {
 	new_message $w "illegal move"
 	replace_peg $w peg($row,$column) $x $y
 	return

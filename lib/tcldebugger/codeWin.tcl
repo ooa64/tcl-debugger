@@ -156,7 +156,7 @@ proc code::updateWindow {loc} {
     # and LineBar; set the currentBlock to empty; and update
     #  the Status window so no filename is displayed.
 
-    if {$loc == {}} {
+    if {$loc eq {}} {
 	code::resetWindow "No Source Code..."
 	gui::setCurrentBlock {}
 	gui::setCurrentFile  {}
@@ -182,7 +182,7 @@ proc code::updateWindow {loc} {
     # same block, just remove the highlighting from the Code
     # Window so we don't have multiple lines highlighted.
 
-    if {($blk != [gui::getCurrentBlock]) || ($ver != [gui::getCurrentVer])} {
+    if {($blk ne [gui::getCurrentBlock]) || ($ver != [gui::getCurrentVer])} {
 	$codeWin delete 0.0 end
 	$codeWin insert end [code::binaryClean $src]
 
@@ -233,10 +233,10 @@ proc code::updateWindow {loc} {
     # first line.  If it does not, then highlight the
     # entire range.
 
-    if {$line == {}} {
+    if {$line eq {}} {
 	set cmdStart 0.0
 	set cmdEnd [$codeWin index "0.0 - 1 chars"]
-    } elseif {$range == {}} {
+    } elseif {$range eq {}} {
 	set cmdStart [$codeWin index $line.0]
 	set cmdEnd   [$codeWin index "$cmdStart lineend + 1 chars"]
     } else {
@@ -258,8 +258,8 @@ proc code::updateWindow {loc} {
     # bring as much of the statement into view as possible.  If the
     # entire statement is greater then the viewable region, then the
     # top of the statement is always in view.
-    
-    if {[$codeWin dlineinfo "$cmdStart+2 lines"] == ""} {
+
+    if {[$codeWin dlineinfo "$cmdStart+2 lines"] eq ""} {
 	$codeWin see "$cmdStart+2 lines"
     }
     $codeWin see "$cmdEnd linestart"
@@ -302,7 +302,7 @@ proc code::updateCodeBar {} {
 
     $codeBar delete 0.0 end
     set blk [gui::getCurrentBlock]
-    if {$blk == {}} {
+    if {$blk eq {}} {
 	return
     }
 
@@ -320,7 +320,7 @@ proc code::updateCodeBar {} {
 
     # Now add dashes on the lines where we can set breakpoints.
 
-    if {$validLines == "-1"} {
+    if {$validLines eq "-1"} {
 	# All lines are valid at this point, so insert the dash
 	# on every line.
 
@@ -380,10 +380,10 @@ proc code::updateCodeBar {} {
     # block, then draw the PC.
 
     set stackLoc [stack::getPC]
-    if {$stackLoc != {}} {
-	if {[loc::getBlock $stackLoc] == $blk} {
+    if {$stackLoc ne {}} {
+	if {[loc::getBlock $stackLoc] eq $blk} {
 	    set pc [loc::getLine $stackLoc]
-	    if {$pc != {}} {
+	    if {$pc ne {}} {
 		icon::setCurrentIcon $codeBar $pc.0 \
 			[gui::getCurrentBreak] [stack::getPCType]
 	    }
@@ -446,7 +446,7 @@ proc code::resetWindow {{msg {}}} {
     $::code::codeWin tag remove highlight_cmdresult 0.0 end
     code::changeFocus out
     icon::unsetCurrentIcon $::code::codeBar currentImage
-    if {$msg != {}} {
+    if {$msg ne {}} {
 	$::code::codeBar delete 0.0 end
 	$::code::lineBar delete 0.0 end
 	$::code::codeWin delete 0.0 end
@@ -494,7 +494,7 @@ proc code::changeFocus {focus} {
 #	None.
 
 proc code::focusCodeWin {} {
-    if {[focus] == $::code::codeWin} {
+    if {[focus] eq $::code::codeWin} {
 	code::changeFocus in
     } else {
 	focus -force $::code::codeWin
@@ -607,11 +607,11 @@ proc code::toggleLBP {text index type} {
     # The most common occurence of this is when a new
     # sessions begins and no files are loaded.
 
-    if {[gui::getCurrentBlock] == {}} {
+    if {[gui::getCurrentBlock] eq {}} {
 	return
     }
     if {(![blk::isInstrumented [gui::getCurrentBlock]]) && \
-	    ([blk::getFile [gui::getCurrentBlock]] == {})} {
+	    ([blk::getFile [gui::getCurrentBlock]] eq {})} {
 	return
     }
     set end  [code::getCodeSize]
@@ -624,7 +624,7 @@ proc code::toggleLBP {text index type} {
 	return
     }
     set validLines [blk::getLines [gui::getCurrentBlock]]
-    if {($validLines != "-1") && ([lsearch $validLines $line] == -1)} {
+    if {($validLines ne "-1") && ([lsearch $validLines $line] == -1)} {
 	return
     }
 

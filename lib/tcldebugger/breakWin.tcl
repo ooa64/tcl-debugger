@@ -38,7 +38,7 @@ proc bp::showWindow {} {
     # If the window already exists, show it, otherwise
     # create it from scratch.
 
-    if {[info command $::gui::gui(breakDbgWin)] == $::gui::gui(breakDbgWin)} {
+    if {[info command $::gui::gui(breakDbgWin)] eq $::gui::gui(breakDbgWin)} {
 	bp::updateWindow
 	wm deiconify $::gui::gui(breakDbgWin)
 	focus $::bp::breakText
@@ -212,7 +212,7 @@ proc bp::updateWindow {} {
 
     set first 1
     set bps [dbg::getLineBreakpoints]
-    if {$bps != {}} {
+    if {$bps ne {}} {
 	foreach bp $bps {
 	    set state [break::getState $bp]
 	    set test  [break::getTest $bp]
@@ -231,7 +231,7 @@ proc bp::updateWindow {} {
 	    set test  [lindex $unsorted($name) 4]
 
 	    set file [file tail $file]
-	    if {$file == {}} {
+	    if {$file eq {}} {
 		set file $::bp::dynamicBlock
 	    }
 
@@ -245,7 +245,7 @@ proc bp::updateWindow {} {
 	    }
 	    $breakText insert end "$file: $line" [list breakInfo LBP]
 	    set first 0
-	    if {$state == "enabled"} {
+	    if {$state eq "enabled"} {
 		icon::drawLBP $breakBar end enabledBreak
 	    } else {
 		icon::drawLBP $breakBar end disabledBreak
@@ -264,13 +264,13 @@ proc bp::updateWindow {} {
     # The breakpoints are in an unordered list.  Create an array
     # so the breakpoints can be sorted in order of the contents
     # in the VBP client data ({orig name & level} {new name & level})
-    
-    if {[gui::getCurrentState] == "stopped"} {
+
+    if {[gui::getCurrentState] eq "stopped"} {
 	set bps [dbg::getVarBreakpoints]
     } else {
 	set bps {}
     }
-    if {$bps != {}} {
+    if {$bps ne {}} {
 	foreach bp $bps {
 	    set state [break::getState $bp]
 	    set test  [break::getTest $bp]
@@ -293,11 +293,11 @@ proc bp::updateWindow {} {
 	    }
 	    set first 0
 	    $breakText insert end "\{$oName: $oLevel\}"   [list breakInfo VBP]
-	    if {($nName != "") || ($nLevel != "")} {
+	    if {($nName ne "") || ($nLevel ne "")} {
 		$breakText insert end "\ \{$nName: $nLevel\}" \
 			[list breakInfo VBP]
 	    }
-	    if {$state == "enabled"} {
+	    if {$state eq "enabled"} {
 		icon::drawVBP $breakBar end enabledBreak
 	    } else {
 		icon::drawVBP $breakBar end disabledBreak
@@ -357,7 +357,7 @@ proc bp::showCode {} {
     if {[sel::indexPastEnd $breakText $line.0]} {
 	return
     }
-    if {[break::getType $breakpoint($line)] == "line"} {
+    if {[break::getType $breakpoint($line)] eq "line"} {
 	set loc  [break::getLocation $breakpoint($line)]
 
 	# The BPs are preserved between sessions.  The
@@ -391,7 +391,7 @@ proc bp::removeAll {} {
     set updateCodeBar  0
     set updateVarWatch 0
     foreach {line bp} [array get breakpoint] {
-	if {[break::getType $bp] == "line"} {
+	if {[break::getType $bp] eq "line"} {
 	    set updateCodeBar  1
 	} else {
 	    set updateVarWatch 1
@@ -436,7 +436,7 @@ proc bp::removeSelected {} {
     set cursor [sel::getCursor $breakText]
     set selectedLines [sel::getSelectedLines $breakText]
     foreach line $selectedLines {
-	if {[break::getType $breakpoint($line)] == "line"} {
+	if {[break::getType $breakpoint($line)] eq "line"} {
 	    set updateCodeBar  1
 	} else {
 	    set updateVarWatch 1
@@ -444,7 +444,7 @@ proc bp::removeSelected {} {
 	dbg::removeBreakpoint $breakpoint($line)
     }
 
-    if {$selectedLines != {}} {
+    if {$selectedLines ne {}} {
 	bp::updateWindow
     }
     if {$updateCodeBar} {
@@ -501,7 +501,7 @@ proc bp::checkState {} {
     }
     $showBut configure -state $state
 
-    if {$lines == {}} {
+    if {$lines eq {}} {
 	$remBut configure -state disabled
     } else {
 	$remBut configure -state normal
@@ -515,8 +515,8 @@ proc bp::checkState {} {
 	$allBut configure -state normal
     } else {
 	$allBut configure -state disabled
-    }  
-    if {[focus] == $breakText} {
+    }
+    if {[focus] eq $breakText} {
 	sel::changeFocus $breakText in
     }
     $breakBar yview moveto [lindex [$breakText yview] 0]
@@ -555,7 +555,7 @@ proc bp::toggleBreakState {index} {
     # Use this state to determine the new state of one or more
     # selected breakpoints.
 
-    if {$selType == "line"} {
+    if {$selType eq "line"} {
 	set loc  [break::getLocation $breakpoint($selLine)]
 	set breakState [icon::getLBPState $loc]
     } else {
@@ -572,7 +572,7 @@ proc bp::toggleBreakState {index} {
     set updateVarWatch 0
     if {[lsearch -exact [$breakText tag names "$index lineend"] \
 	    highlight] < 0} {
-	if {$selType == "line"} {
+	if {$selType eq "line"} {
 	    bp::toggleLBP $breakBar $selLine $breakState
 	    set updateCodeBar 1
 	} else {
@@ -582,7 +582,7 @@ proc bp::toggleBreakState {index} {
     } else {
 	foreach line [sel::getSelectedLines $breakText] {
 	    set type [break::getType $breakpoint($line)]
-	    if {$type == "line"} {
+	    if {$type eq "line"} {
 		bp::toggleLBP $breakBar $line $breakState
 		set updateCodeBar 1
 	    } else {

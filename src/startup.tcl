@@ -79,7 +79,7 @@ proc ::TclProAboutBox {aboutImage logoImage} {
 
     # Add the Windows-only console hack
 
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	bind .about <F12> {
 	    console show
 	    destroy .about; break
@@ -136,7 +136,7 @@ if {[catch {
     $t insert end $errorInfo
     pack $f.text
 
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	console show
     }
 }

@@ -247,7 +247,7 @@ if {[info tclversion] >= 8.0} {
     set DbgNub(scope) ::
 } else {
     set DbgNub(namespace) 0
-    if {[info commands "namespace"] == "namespace"} {
+    if {[info commands "namespace"] eq "namespace"} {
 	set DbgNub(itcl76) 1
     } else {
 	set DbgNub(itcl76) 0
@@ -761,7 +761,7 @@ proc DbgNub_InstrumentProc {procName script} {
     set cmpBody {# Compiled -- no source code available}
     append cmpBody \n
     append cmpBody {error "called a copy of a compiled script"}
-    if {[DbgNub_infoCmd body $procName] == $cmpBody} {
+    if {[DbgNub_infoCmd body $procName] eq $cmpBody} {
 	return
     }
 
@@ -795,11 +795,11 @@ proc DbgNub_ProcessMessages {blocking} {
 
     set DbgNub(state) waiting
 
-    while {$DbgNub(state) == "waiting"} {
+    while {$DbgNub(state) eq "waiting"} {
 	if {[DbgNub_catchCmd {DbgNub_GetMessage $blocking} msg]} {
 	    DbgNub_Shutdown
 	    return
-	} elseif {$msg == ""} {
+	} elseif {$msg eq ""} {
 	    if {[eof $DbgNub(socket)]} {
 		DbgNub_Shutdown
 	    }
@@ -815,7 +815,7 @@ proc DbgNub_ProcessMessages {blocking} {
 		    global errorInfo errorCode
 		    DbgNub_SendMessage ERROR $result $code $errorCode \
 			    $errorInfo
-		} elseif {[lindex $msg 1] == "1"} {
+		} elseif {[lindex $msg 1] eq "1"} {
 		    DbgNub_SendMessage RESULT $result
 		}
 	    }
@@ -862,7 +862,7 @@ proc DbgNub_GetProcs {{namespace {}}} {
     global DbgNub
 
     set procList ""
-    if {$namespace != ""} {
+    if {$namespace ne ""} {
 	set nameProcs ""
 	# Be sure to call the "wrapped" version of info to filter DbgNub procs
 	foreach x [namespace eval $namespace "$DbgNub(scope)info procs"] {
@@ -925,16 +925,16 @@ proc DbgNub_GetVariables {level vars} {
     # We call the "wrapped" version of info vars which will weed
     # out any debugger variables that may exist in the var frame.
 
-    if {$vars == ""} {
+    if {$vars eq ""} {
 	set vars [DbgNub_uplevelCmd #$level "$DbgNub(scope)info vars"]
 	if {$DbgNub(itcl76)} {
 	    if {[DbgNub_uplevelCmd \#$level {info which info}] \
-		    == "::itcl::builtin::info"} {
+		    eq "::itcl::builtin::info"} {
 		# We are in a class or instance context
 		set name [DbgNub_uplevelCmd \#$level {lindex [info level 0] 0}]
 		set mvars [DbgNub_uplevelCmd \#$level {info variable}]
-		if {($name != "") && ([DbgNub_uplevelCmd \#$level \
-			[list info function $name -type]] == "proc")} {
+		if {($name ne "") && ([DbgNub_uplevelCmd \#$level \
+			[list info function $name -type]] eq "proc")} {
 		    # We are in a class proc, so we need to filter out
 		    # all of the instance variables.  Note that we also
 		    # need to filter out duplicates because once they have
@@ -943,7 +943,7 @@ proc DbgNub_GetVariables {level vars} {
 
 		    foreach var $mvars {
 			if {([DbgNub_uplevelCmd \#$level \
-				[list info variable $var -type]] == "common") \
+				[list info variable $var -type]] eq "common") \
 				&& ([lsearch $vars $var] == -1)} {
 			    lappend vars $var
 			}
@@ -966,20 +966,20 @@ proc DbgNub_GetVariables {level vars} {
 
 	    if {[DbgNub_uplevelCmd \#$level \
 		    [list $DbgNub(scope)namespace origin info]] \
-		    == "::itcl::builtin::info"} {
+		    eq "::itcl::builtin::info"} {
 		# If the function name is null, we're in a configure context,
 		# otherwise we need to check the function type to determine
 		# whether the function is a proc or a method.
 
 		set name [DbgNub_uplevelCmd \#$level {lindex [info level 0] 0}]
 		set mvars [DbgNub_uplevelCmd \#$level {info variable}]
-		if {($name != "") && ([DbgNub_uplevelCmd \#$level \
-			[list info function $name -type]] == "proc")} {
+		if {($name ne "") && ([DbgNub_uplevelCmd \#$level \
+			[list info function $name -type]] eq "proc")} {
 		    # We are in a class proc, so filter out instance variables
 
 		    foreach var $mvars {
 			if {[DbgNub_uplevelCmd \#$level \
-				[list info variable $var -type]] == "common"} {
+				[list info variable $var -type]] eq "common"} {
 			    lappend vars $var
 			}
 		    }
@@ -989,7 +989,7 @@ proc DbgNub_GetVariables {level vars} {
 	    } else {
 		set current [DbgNub_uplevelCmd #$level \
 			"$DbgNub(scope)namespace current"]
-		if {$current != "::"} {
+		if {$current ne "::"} {
 		    set vars [concat $vars \
 			    [DbgNub_uplevelCmd #$level \
 			    "$DbgNub(scope)info vars" [list ${current}::*]]]
@@ -1073,7 +1073,7 @@ proc DbgNub_GetVar {level maxlen varList} {
 	}
 	# We use the odd string range call instead of string index
 	# to work on 8.0
-	if {[string range $var end end] == ")"} {
+	if {[string range $var end end] eq ")"} {
 	    set avar [lindex [split $var "("] 0]
 	    upvar #$level $avar alocal
 
@@ -1276,7 +1276,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 
     for {set level [expr {$oldTop + 1}]} {$level <= $current} {incr level} {
 	set name [lindex [DbgNub_infoCmd level $level] 0]
-	if {$name == ""} {
+	if {$name eq ""} {
 	    # This is a "namespace eval" so compute the name and push
 	    # it onto the stack.
 	    if {$DbgNub(itcl76)} {
@@ -1290,7 +1290,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 	    # Handle the special case of the [incr Tcl] parser namespace
 	    # so classes appear as expected.
 
-	    if {$name == "::itcl::parser"} {
+	    if {$name eq "::itcl::parser"} {
 		lappend DbgNub(stack) [list $level class]
 	    } else {
 		lappend DbgNub(stack) [list $level namespace eval $name]
@@ -1305,7 +1305,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 
 	if {$DbgNub(itcl76)} {
 	    if {[DbgNub_uplevelCmd \#$level {info which info}] \
-		    == "::itcl::builtin::info"} {
+		    eq "::itcl::builtin::info"} {
 		lappend DbgNub(stack) [concat $level \
 			[DbgNub_uplevelCmd \#$level \
 			[list info function $name -type -name -args]]]
@@ -1314,7 +1314,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 	} elseif {$DbgNub(namespace)} {
 	    if {[DbgNub_uplevelCmd \#$level \
 		    [list $DbgNub(scope)namespace origin info]] \
-		    == "::itcl::builtin::info"} {
+		    eq "::itcl::builtin::info"} {
 		lappend DbgNub(stack) [concat $level \
 			[DbgNub_uplevelCmd \#$level \
 			[list info function $name -type -name -args]]]
@@ -1334,7 +1334,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 
 	    set infoLevel \#[expr {$level - 1}]
 	    if {[DbgNub_uplevelCmd $infoLevel \
-		    [list $DbgNub(scope)info commands $name]] == ""} {
+		    [list $DbgNub(scope)info commands $name]] eq ""} {
 		lappend DbgNub(stack) [list $level proc $name (deleted)]
 		continue
 	    }
@@ -1349,7 +1349,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 	    # "info" command inside the namespace.
 
 	    set qual [namespace qualifiers $name]
-	    if {$qual == ""} {
+	    if {$qual eq ""} {
 		set qual ::
 	    }
 	    set tail [namespace tail $name]
@@ -1359,7 +1359,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 	    # Check to make sure the command still exists.
 
 	    if {[DbgNub_uplevelCmd \#[expr {$level - 1}] \
-		    [list DbgNub_infoCmd commands $name]] == ""} {
+		    [list DbgNub_infoCmd commands $name]] eq ""} {
 		lappend DbgNub(stack) [list $level proc $name (deleted)]
 		continue
 	    }
@@ -1371,7 +1371,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 
 	# Attempt to determine the argument list.
 
-	if {$isProc != ""} {
+	if {$isProc ne ""} {
 	    set argList [DbgNub_uplevelCmd \#$level \
 		    [list DbgNub_infoCmd args $name]]
 	} else {
@@ -1383,7 +1383,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 	    if {[regexp \
 		    {^(::)?tk_(messageBox|getOpenFile|getSaveFile)$} \
 		    $name dummy1 dummy2 match]} {
-		if {$match == "messageBox"} {
+		if {$match eq "messageBox"} {
 		    set name "tkMessageBox"
 		} else {
 		    set name "tkFDialog"
@@ -1398,7 +1398,7 @@ proc DbgNub_PushStack {current {frame {}}} {
 	}
 	lappend DbgNub(stack) [list $level "proc" $name $argList]
     }
-    if {$frame != {}} {
+    if {$frame ne {}} {
 	lappend DbgNub(stack) $frame
     }
     return $marker
@@ -1477,7 +1477,7 @@ proc DbgNub_CollateStacks {} {
 		}
 	    }
 	    # Add a dummy frame if we have an empty context.
-	    if {$context != "" && $locations == ""} {
+	    if {$context ne "" && $locations eq ""} {
 		set iframes [linsert $iframes 0 [linsert $context 1 {}]]
 	    }
 	    set type [lindex $context 1]
@@ -1586,7 +1586,7 @@ proc DbgNub_Proc {location name argList body} {
     ${ns}set DbgNub_catchCode \[DbgNub_UpdateReturnInfo \[
         [list DbgNub_catchCmd $body DbgNub_result DbgNub_options]\]\]
     ${ns}foreach DbgNub_index \[${ns}info locals\] {
-	${ns}if {\[${ns}trace info variable \$DbgNub_index\] != \"\"} {
+	${ns}if {\[${ns}trace info variable \$DbgNub_index\] ne \"\"} {
 	    ${ns}if {[${ns}catch {${ns}upvar 0 DbgNub_dummy \$DbgNub_index}]} {
 		${ns}catch {${ns}unset \$DbgNub_index}
 	    }
@@ -1622,7 +1622,7 @@ proc DbgNub_PushProcContext {level} {
 	set qualName [DbgNub_uplevelCmd \#[expr {$level - 1}] \
 		[list $DbgNub(scope)namespace origin $name]]
 
-	if {$qualName == ""} {
+	if {$qualName eq ""} {
 	    DbgNub_PushContext $level "proc" $name {}
 	} else {
 	    set name $qualName
@@ -1634,7 +1634,7 @@ proc DbgNub_PushProcContext {level} {
 	# "info" command inside the namespace.
 
 	set qual [namespace qualifiers $name]
-	if {$qual == ""} {
+	if {$qual eq ""} {
 	    set qual ::
 	}
 	set tail [namespace tail $name]
@@ -1642,8 +1642,8 @@ proc DbgNub_PushProcContext {level} {
     } else {
 	set isProc [DbgNub_infoCmd procs $name]
     }
-	
-    if {$isProc != ""} {
+
+    if {$isProc ne ""} {
 	set args [DbgNub_uplevelCmd \#$level [list DbgNub_infoCmd args $name]]
     } else {
 	set args ""
@@ -1669,7 +1669,7 @@ proc DbgNub_WrapItclBody {args} {
     upvar #0 DbgNub(scope) ns
     set body [lindex $args end]
     set args [lrange $args 0 [expr {[llength $args] - 2}]]
-    if {[string index $body 0] != "@"} {
+    if {[string index $body 0] ne "@"} {
 	set body "#DBG INSTRUMENTED PROC TAG
     ${ns}upvar #0 errorInfo DbgNub_errorInfo errorCode DbgNub_errorCode
     ${ns}set DbgNub_level \[DbgNub_infoCmd level\]
@@ -1677,7 +1677,7 @@ proc DbgNub_WrapItclBody {args} {
     ${ns}set DbgNub_catchCode \[DbgNub_UpdateReturnInfo \[
         [list DbgNub_catchCmd $body DbgNub_result DbgNub_options]\]\]
     ${ns}foreach DbgNub_index \[${ns}info locals\] {
-	${ns}if {\[${ns}trace info variable \$DbgNub_index\] != \"\"} {
+	${ns}if {\[${ns}trace info variable \$DbgNub_index\] ne \"\"} {
 	    ${ns}if {[${ns}catch {${ns}upvar 0 DbgNub_dummy \$DbgNub_index}]} {
 		${ns}catch {${ns}unset \$DbgNub_index}
 	    }
@@ -1705,7 +1705,7 @@ proc DbgNub_WrapItclBody {args} {
 proc DbgNub_WrapItclConfig {args} {
     set body [lindex $args end]
     set args [lrange $args 0 [expr {[llength $args] - 2}]]
-    if {[string index $body 0] != "@"} {
+    if {[string index $body 0] ne "@"} {
 	set body [list DbgNub_ItclConfig $body]
     }
     return [DbgNub_uplevelCmd 1 $args [list $body]]
@@ -1824,12 +1824,12 @@ proc DbgNub_Class {cmd name body} {
     DbgNub_PushContext [DbgNub_infoCmd level] class
 
     incr DbgNub(stepLevel)
-    if {$DbgNub(stepOutLevel) != {}} {
+    if {$DbgNub(stepOutLevel) ne {}} {
 	incr DbgNub(stepOutLevel)
     }
     set code [DbgNub_catchCmd \
 	    {DbgNub_uplevelCmd 1 [list $cmd $name $body]} result options]
-    if {$DbgNub(stepOutLevel) != {}} {
+    if {$DbgNub(stepOutLevel) ne {}} {
 	incr DbgNub(stepOutLevel) -1
     }
     incr DbgNub(stepLevel) -1
@@ -1868,13 +1868,13 @@ proc DbgNub_NamespaceEval {args} {
     regsub -all {::+} $name :: name
     DbgNub_PushContext $level "namespace eval $name"
     incr DbgNub(stepLevel)
-    if {$DbgNub(stepOutLevel) != {}} {
+    if {$DbgNub(stepOutLevel) ne {}} {
 	incr DbgNub(stepOutLevel)
     }
     set code [DbgNub_catchCmd {
 	DbgNub_uplevelCmd 1 $args
     } result options]
-    if {$DbgNub(stepOutLevel) != {}} {
+    if {$DbgNub(stepOutLevel) ne {}} {
 	incr DbgNub(stepOutLevel) -1
     }
     incr DbgNub(stepLevel) -1
@@ -1931,7 +1931,7 @@ proc DbgNub_WrapCommands {} {
     global DbgNub
 
     foreach cmd $DbgNub(wrappedCommandList) {
-	if {$cmd == "rename"} continue
+	if {$cmd eq "rename"} continue
 
 	rename $cmd DbgNub_${cmd}Cmd
 	rename DbgNub_${cmd}Wrapper $cmd
@@ -2066,7 +2066,7 @@ proc DbgNub_Return {args} {
 
 proc DbgNub_UpdateReturnInfo {code} {
     global errorInfo errorCode DbgNub
-    if {$code == 2 || $code == "return"} {
+    if {$code == 2 || $code eq "return"} {
 	if {[DbgNub_infoCmd exists DbgNub(returnState)]} {
 	    set code [lindex $DbgNub(returnState) 0]
 	    set errorCode [lindex $DbgNub(returnState) 1]
@@ -2313,7 +2313,7 @@ proc DbgNub_sourceWrapper {args} {
     if {!$DbgNub(autoLoad)} {
 	set DbgNub(inAutoLoad) 0
 	foreach stack $DbgNub(stack) {
-	    if {([lindex $stack 1] == "proc") \
+	    if {([lindex $stack 1] eq "proc") \
 		    && [regexp {^(::)?auto_(load|import)$} \
 			[lindex $stack 2]]} {
 		set DbgNub(inAutoLoad) 1
@@ -2421,7 +2421,7 @@ proc DbgNub_sourceWrapper {args} {
 
     # If the instrumentation failed, we just source the original file
 
-    if {$icode == ""} {
+    if {$icode eq ""} {
 	set icode $source
     }
 
@@ -2440,7 +2440,7 @@ proc DbgNub_sourceWrapper {args} {
     set DbgNub(script) [lreplace $DbgNub(script) end end]
     set DbgNub(inExclude) $oldExclude
 
-    if {($code == 1)  || ($code == "error")} {
+    if {($code == 1)  || ($code eq "error")} {
 	set result [DbgNub_cleanErrorInfo $result DbgNub_sourceCmd info]
 	set DbgNub(cleanWrapper) {DbgNub_sourceCmd source}
 	set errorInfo "$result$errorInfo"
@@ -2530,7 +2530,7 @@ proc DbgNub_updateWrapper {args} {
 proc DbgNub_uplevelWrapper {args} {
     global errorCode errorInfo
     set level [lindex $args 0]
-    if {[string index $level 0] == "#"} {
+    if {[string index $level 0] eq "#"} {
 	set level [string range $level 1 end]
 	set local 0
     } else {
@@ -2624,7 +2624,7 @@ proc DbgNub_renameWrapper {args} {
 	    # from a namespace.  If so we need to short circuit out here
 	    # because imported procs will choke on the code below.
 
-	    if {$name != [DbgNub_uplevelCmd 1 \
+	    if {$name ne [DbgNub_uplevelCmd 1 \
 		    [list $DbgNub(scope)namespace which [lindex $args 0]]]} {
 		set $name [lindex $args 0]
 		set code [DbgNub_catchCmd {
@@ -2669,7 +2669,7 @@ proc DbgNub_renameWrapper {args} {
 
     set newName [lindex $args 1]
     if {[info exists DbgNub(proc=$name)]} {
-	if {$newName == ""} {
+	if {$newName eq ""} {
 	    unset DbgNub(proc=$name)
 	} else {
 	    if {$DbgNub(namespace)} {
@@ -2717,7 +2717,7 @@ proc DbgNub_CheckLineBreakpoints {location level} {
 
     if {[DbgNub_infoCmd exists DbgNub($block:$line)]} {
 	foreach test $DbgNub($block:$line) {
-	    if {($test == "") || ([DbgNub_uplevelCmd #$level $test] == "1")} {
+	    if {($test eq "") || ([DbgNub_uplevelCmd #$level $test] eq "1")} {
 		return 1
 	    }
 	}
@@ -2776,7 +2776,7 @@ proc DbgNub_AddVarTrace {level name} {
     # Check to see if a trace already exists and bump the reference count.
 
     set handle [DbgNub_GetVarTrace $level $name]
-    if {$handle != ""} {
+    if {$handle ne ""} {
 	incr DbgNub(varRefs:$handle)
 	return $handle
     }
@@ -2893,7 +2893,7 @@ proc DbgNub_RemoveBreakpoint {type where test} {
 	    if {[DbgNub_infoCmd exists DbgNub($block:$line)]} {
 		set index [lsearch -exact $DbgNub($block:$line) $test]
 		set tests [lreplace $DbgNub($block:$line) $index $index]
-		if {$tests == ""} {
+		if {$tests eq ""} {
 		    unset DbgNub($block:$line)
 		} else {
 		    set DbgNub($block:$line) $tests
@@ -2957,12 +2957,12 @@ proc DbgNub_TraceVar {handle type name1 name2 op} {
 
     # Compute the complete name and the correct operation to report
 
-    if {$type == "array"} {
-	if {$name2 != "" && $op == "u"} {
+    if {$type eq "array"} {
+	if {$name2 ne "" && $op eq "u"} {
 	    set op "w"
 	}
 	set name $name1
-    } elseif {$name2 == ""} {
+    } elseif {$name2 eq ""} {
 	set name $name1
     } else {
 	set name ${name1}($name2)
@@ -2979,10 +2979,10 @@ proc DbgNub_TraceVar {handle type name1 name2 op} {
     # breakpoint.  Note that we execute all of the tests in case they have side
     # effects that are desired.
     
-    if {$op != "u"} {
+    if {$op ne "u"} {
 	set varBreak 0
 	foreach test $DbgNub(var:$handle) {
-	    if {($test == "")} {
+	    if {($test eq "")} {
 		set varBreak 1
 	    } elseif {([DbgNub_catchCmd {DbgNub_uplevelCmd #$level $test} result] == 0) \
 		    && $result} {
@@ -3186,7 +3186,7 @@ proc DbgNub_IgnoreError {} {
 
 proc DbgNub_cleanErrorInfo {{result {}} {wrapCmd {}} {actualCmd {}}} {
     global errorInfo
-    if {$wrapCmd != {}} {
+    if {$wrapCmd ne {}} {
 	if {[string match "wrong # args:*" $result]} {
 	    regsub -- $wrapCmd $result $actualCmd result
 	    regsub -- $wrapCmd $errorInfo $actualCmd errorInfo
@@ -3353,7 +3353,7 @@ DbgNub_procCmd debugger_eval {args} {
 
 	# If the instrumentation failed, we just eval the original script
 
-	if {$icode == ""} {
+	if {$icode eq ""} {
 	    set icode $script
 	}
     } else {

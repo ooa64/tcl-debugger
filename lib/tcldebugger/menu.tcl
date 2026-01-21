@@ -283,7 +283,7 @@ proc menu::create {mainDbgWin} {
 		system::openURL $::projectInfo::helpFile(thisProduct)] \
 	    -acc $menuKeys(Dbg_Help) -underline 5
     if { 1 || [string equal $::tcl_platform(platform) "windows"] \
-	    && ($::projectInfo::helpFile(tcl) != "")} {
+	    && ($::projectInfo::helpFile(tcl) ne "")} {
 	# On windows, show the Tcl/Tk help menu item
 	$help add command -label "View Tcl/Tk Help" \
 		-command [list system::openURL $::projectInfo::helpFile(tcl)] \
@@ -383,7 +383,7 @@ proc menu::filePostCmd {} {
     # Enable the refresh button if the current block is associated
     # with a file that is currently instrumented.
 
-    if {([gui::getCurrentFile] == {}) \
+    if {([gui::getCurrentFile] eq {}) \
 	    || ([blk::isInstrumented [gui::getCurrentBlock]])} {
 	menu::changeState {refreshFile} disabled
     } else {
@@ -391,7 +391,7 @@ proc menu::filePostCmd {} {
     }
 
     set state [gui::getCurrentState]
-    if {$state == "new"} {
+    if {$state eq "new"} {
 	$menu(file) entryconfigure {*Project Settings*} \
 		-label "Default Project Settings..."
     } else {
@@ -445,12 +445,12 @@ proc menu::recentProjPostCmd {} {
 proc menu::editPostCmd {} {
     menu::changeState {cut copy findNext} disabled
     set focusWin [focus]
-    if {$focusWin == $::code::codeWin} {
-        if {[$focusWin tag ranges sel] != {}} {
+    if {$focusWin eq $::code::codeWin} {
+        if {[$focusWin tag ranges sel] ne {}} {
 	    menu::changeState {cut copy} normal
 	}
-    } elseif {$focusWin == $::var::valuText || $focusWin == $::stack::stackText} {
-        if {[$focusWin tag ranges highlight] != {}} {
+    } elseif {$focusWin eq $::var::valuText || $focusWin eq $::stack::stackText} {
+        if {[$focusWin tag ranges highlight] ne {}} {
 	    menu::changeState {cut copy} normal
 	}
     }
@@ -473,8 +473,8 @@ proc menu::editPostCmd {} {
 proc menu::viewPostCmd {} {
     menu::changeState {inspector} disabled
     set focusWin [focus]
-    if {$focusWin == $::var::valuText} {
-        if {[$focusWin tag ranges highlight] != {}} {
+    if {$focusWin eq $::var::valuText} {
+        if {[$focusWin tag ranges highlight] ne {}} {
 	    menu::changeState {inspector} normal
 	}
     }
@@ -509,8 +509,8 @@ proc menu::dbgPostCmd {} {
     # the given menu item will be enabled.
 
     set conditions {
-	breakpoints {($focusWin != $::stack::stackText) && [proj::isProjectOpen]}
-	addToWatch {$focusWin == $::var::valuText}
+	breakpoints {($focusWin ne $::stack::stackText) && [proj::isProjectOpen]}
+	addToWatch {$focusWin eq $::var::valuText}
 	restart {!$remote && ($state(stopped) || $state(running))}
 	run {(!$remote && $state(dead)) || $state(stopped)}
 	stepIn {(!$remote && $state(dead)) || $state(stopped)}
@@ -547,7 +547,7 @@ proc menu::bpsPostCmd {} {
     variable focusWin
     variable menu
 
-    if {$focusWin == $::var::valuText} {
+    if {$focusWin eq $::var::valuText} {
 	menu::changeState {addVBP disableVBP} normal
 	menu::changeState {addLBP disableLBP} disabled
 	set breakState [icon::getState $::var::vbpText \
@@ -568,7 +568,7 @@ proc menu::bpsPostCmd {} {
 		$menu(bps) entryconfigure 4 -label "Enable Var Breakpoint"
 	    }
 	}
-    } elseif {$focusWin == $::code::codeWin} {
+    } elseif {$focusWin eq $::code::codeWin} {
 	menu::changeState {addLBP disableLBP} normal
 	menu::changeState {addVBP disableVBP} disabled
 	set breakState [icon::getState $::code::codeBar \
@@ -695,7 +695,7 @@ proc menu::refreshFile {} {
     global ::gui::fileText
 
     set file [gui::getCurrentFile]
-    if {$file == {}} {
+    if {$file eq {}} {
 	return
     }
 
@@ -875,7 +875,7 @@ proc menu::changeState {menuList state} {
 proc menu::showFileWindow {showList} {
     grab $::gui::gui(mainDbgWin)
 
-    if {[info command $::gui::gui(fileDbgWin)] == $::gui::gui(fileDbgWin)} {
+    if {[info command $::gui::gui(fileDbgWin)] eq $::gui::gui(fileDbgWin)} {
 	menu::updateFileWindow $showList
 	wm deiconify $::gui::gui(fileDbgWin)
 	focus $::menu::selectText
@@ -1051,8 +1051,8 @@ proc menu::accKeyPress {virtual} {
     variable menu
     variable postCmd
     variable invokeCmd
-    
-    if {$postCmd($virtual) != {}} {
+
+    if {$postCmd($virtual) ne {}} {
 	eval $postCmd($virtual)
     }
     eval $invokeCmd($virtual)

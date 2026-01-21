@@ -313,10 +313,10 @@ widget create Tabnotebook
     set darkOutside  $color(darkOutside)
     set lightInside  $color(lightInside)
     set lightOutside $color(lightOutside)
-    
+
     set LW $data(-linewidth)
     set CI [expr {2 * $LW}]
-    
+
     set cw1 [list $CI $FH]
     set cw2 [list $CI $CI]
     set cw3 [list $CI $CI]

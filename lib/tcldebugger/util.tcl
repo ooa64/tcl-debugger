@@ -49,10 +49,10 @@ proc lassign {valueList args} {
 
 proc matchKeyword {table str exact varName} {
     upvar $varName result
-    if {$str == ""} {
+    if {$str eq ""} {
 	foreach pair $table {
 	    set key [lindex $pair 0]
-	    if {$key == ""} {
+	    if {$key eq ""} {
 		set result [lindex $pair 1]
 		return 1
 	    }

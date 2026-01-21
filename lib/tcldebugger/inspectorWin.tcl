@@ -44,14 +44,14 @@ proc inspector::showVariable {name level} {
     variable nameVar
     variable levelVar
 
-    if {[gui::getCurrentState] != "stopped"} {
+    if {[gui::getCurrentState] ne "stopped"} {
 	return
     }
 
     # If the window already exists, show it, otherwise
     # create it from scratch.
 
-    if {[info command $::gui::gui(dataDbgWin)] != $::gui::gui(dataDbgWin)} {
+    if {[info command $::gui::gui(dataDbgWin)] ne $::gui::gui(dataDbgWin)} {
 	inspector::createWindow
     }
 
@@ -109,14 +109,14 @@ proc inspector::showResult {} {
     variable nameVar
     variable levelVar
 
-    if {[gui::getCurrentState] != "stopped"} {
+    if {[gui::getCurrentState] ne "stopped"} {
 	return
     }
 
     # If the window already exists, show it, otherwise
     # create it from scratch.
 
-    if {[info command $::gui::gui(dataDbgWin)] != $::gui::gui(dataDbgWin)} {
+    if {[info command $::gui::gui(dataDbgWin)] ne $::gui::gui(dataDbgWin)} {
 	inspector::createWindow
     }
 
@@ -287,7 +287,7 @@ proc inspector::updateWindow {{setChoice 0}} {
     if {![winfo exists $::gui::gui(dataDbgWin)]} {
 	return
     }
-    if {[gui::getCurrentState] != "stopped"} {
+    if {[gui::getCurrentState] ne "stopped"} {
 	return
     }
 
@@ -302,7 +302,7 @@ proc inspector::updateWindow {{setChoice 0}} {
 	}]} {
 	    set varInfo {}
 	}
-	if {$varInfo == {}} {
+	if {$varInfo eq {}} {
 	    set type  s
 	    set value "<No-Value>"
 	} else {
@@ -311,7 +311,7 @@ proc inspector::updateWindow {{setChoice 0}} {
 	}
     }
     set data {}
-    if {$type == "a"} {
+    if {$type eq "a"} {
 	foreach v $value {
 	    lappend data [code::binaryClean $v]
 	}
@@ -320,7 +320,7 @@ proc inspector::updateWindow {{setChoice 0}} {
     }
 
     if {$setChoice} {
-	if {$type == "a"} {
+	if {$type eq "a"} {
 	    set ::inspector::viewVar "Array"
 	} else {
 	    set ::inspector::viewVar "Line Wrap"
@@ -328,9 +328,9 @@ proc inspector::updateWindow {{setChoice 0}} {
     }
     set view [$choiceBox get]
 
-    if {($nameVar == $nameCache) && ($levelVar == $levelCache) \
-	    && ($value == $valueCache) && ($view == $viewCache)} {
-	if {[$varText get 1.0 1.1] != ""} {
+    if {($nameVar eq $nameCache) && ($levelVar == $levelCache) \
+	    && ($value eq $valueCache) && ($view eq $viewCache)} {
+	if {[$varText get 1.0 1.1] ne ""} {
 	    return
 	}
     }

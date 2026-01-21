@@ -75,7 +75,7 @@ proc watch::showWindow {} {
     # If the window already exists, show it, otherwise
     # create it from scratch.
 
-    if {[info command $::gui::gui(watchDbgWin)] == $::gui::gui(watchDbgWin)} {
+    if {[info command $::gui::gui(watchDbgWin)] eq $::gui::gui(watchDbgWin)} {
 	watch::updateWindow
 	wm deiconify $::gui::gui(watchDbgWin)
 	focus $::watch::valuText
@@ -257,7 +257,7 @@ proc watch::updateWindow {} {
     if {![winfo exists $::gui::gui(watchDbgWin)]} {
 	return
     }
-    if {$state == "running"} {
+    if {$state eq "running"} {
 	return
     }
 
@@ -267,8 +267,8 @@ proc watch::updateWindow {} {
     }
 
     set varInfo {}
-    if {$state == "stopped" && ![stack::isVarFrameHidden] \
-	    && ($varList != {})} {
+    if {$state eq "stopped" && ![stack::isVarFrameHidden] \
+	    && ($varList ne {})} {
 	set varInfo [watch::varDataAddVars $valuText $level $varList]
     } else {
 	# The GUI is dead so there is no variable information.
@@ -285,7 +285,7 @@ proc watch::updateWindow {} {
     # Call the internal routine that populates the var name and
     # var value windows.
 
-    if {$state == "running"} {
+    if {$state eq "running"} {
 	set afterID [after $::gui::afterTime [list
 		watch::updateInternal $nameText $valuText $vbpText \
 		\{$varInfo\} $level; watch::checkState
@@ -340,7 +340,7 @@ proc watch::resetWindow {msg} {
     } else {
 	gui::unsetFormatData $valuText
 	$valuText delete 0.0 end
-	if {$msg != {}} {
+	if {$msg ne {}} {
 	    $valuText insert 0.0 $msg message
 	}
     }
@@ -359,8 +359,8 @@ proc watch::resetWindow {msg} {
 
 proc watch::addVar {newVar} {
     variable varList
-    
-    if {($newVar != {}) && ([lsearch $varList $newVar] < 0)} {
+
+    if {($newVar ne {}) && ([lsearch $varList $newVar] < 0)} {
 	lappend varList $newVar
 	watch::setVarList $varList
     }
@@ -419,8 +419,8 @@ proc watch::removeSelected {} {
     set selectedLines [sel::getSelectedLines $nameText]
     set selectCursor  [sel::getCursor $nameText]
 
-    if {$selectedLines != {}} {
-	# Create a new varList containing only the unselected 
+    if {$selectedLines ne {}} {
+	# Create a new varList containing only the unselected
 	# variables.  Then call updateWindow to display the
 	# updated varList.
 
@@ -469,17 +469,17 @@ proc watch::checkState {} {
     } else {
 	$::watch::inspectBut configure -state disabled
     }
-    if {$lines == {}} {
+    if {$lines eq {}} {
 	$::watch::remBut configure -state disabled
     } else {
 	$::watch::remBut configure -state normal
-    }	
-    if {$::watch::varList == {}} {
+    }
+    if {$::watch::varList eq {}} {
 	$::watch::allBut configure -state disabled
     } else {
 	$::watch::allBut configure -state normal
     }
-    if {[focus] == $valuText} {
+    if {[focus] eq $valuText} {
 	watch::changeFocus $valuText in
     }
 }
@@ -641,7 +641,7 @@ proc watch::varDataSet {text index pairs} {
 	# Remove any old tags that may have been previopusly set.
 
 	set oldValue [watch::varDataGet $text $index $key]
-	if {$oldValue != {}} {
+	if {$oldValue ne {}} {
 	    $text tag remove "${key}:{oldValue}" $index
 	}
 	$text tag add "${key}:${value}" $index
@@ -663,7 +663,7 @@ proc watch::varDataSet {text index pairs} {
 #	Returns the value of the variable.
 
 proc watch::varDataGetValue {oname level type} {
-    if {$type == "a"} {
+    if {$type eq "a"} {
 	return [VarDataGetArrayValue $oname $level]
     } else {
 	return [VarDataGetScalarValue $oname $level]
@@ -689,7 +689,7 @@ proc watch::varDataGetValue {oname level type} {
 proc watch::VarDataGetScalarValue {oname level {existVar {}}} {
     variable scalarVarData
 
-    if {$existVar != {}} {
+    if {$existVar ne {}} {
 	upvar 1 $existVar exists
     }
     if {[info exists scalarVarData($oname,$level)]} {
@@ -740,7 +740,7 @@ proc watch::VarDataGetArrayValue {oname level} {
 #	Returns 1 if the var exists, 0 if it does not.
 
 proc watch::varDataFetched {oname level type} {
-    if {$type == "a"} {
+    if {$type eq "a"} {
 	return [info exists ::watch::arrayVarData($oname,$level)]
     } else {
 	watch::VarDataGetScalarValue $oname $level exists
@@ -849,7 +849,7 @@ proc watch::varDataAddVars {text level {vars {}}} {
 	# to be fetched.
 
 	if {([watch::varDataFetched $oname $level $type]) \
-		|| (($type == "a") \
+		|| (($type eq "a") \
 		&& (![watch::isArrayExpanded $text $level $oname]))} {
 	    set mname [code::mangle $oname]
 	    lappend foundList [list $mname $oname $type 1]
@@ -862,14 +862,14 @@ proc watch::varDataAddVars {text level {vars {}}} {
     # Next, fetch the values for the variables in the infoVars
     # list, add the list to the result and set the database.
 
-    if {$infoVars != ""} {
+    if {$infoVars ne ""} {
 	foreach info [dbg::getVar $level [font::get -maxchars] $infoVars] {
 	    set oname [lindex $info 0]
 	    set type  [lindex $info 1]
 	    set value [lindex $info 2]
 	    set mname [code::mangle $oname]
-	    
-	    if {$type == "a"} {
+
+	    if {$type eq "a"} {
 		set arrayVarData($oname,$level) $value
 	    } else {
 		set scalarVarData($oname,$level) $value
@@ -953,7 +953,7 @@ proc watch::updateInternal {nameText valuText vbpText varList level} {
 	# the highlight bar will connect entirely between the nameText
 	# and valuText windows.
 
-	if {$level != {}} {
+	if {$level ne {}} {
 	    icon::drawVBP $vbpText $line.0 [icon::getVBPState $level $oname]
 	}
 	$nameText insert $line.0 "$mname" [list varEntry leftIndent]
@@ -990,7 +990,7 @@ proc watch::updateInternal {nameText valuText vbpText varList level} {
 	# Expand the array after the keys have been inserted because
 	# the expand array APIs rely on these keys.
 
-	if {$type == "a" && $level != {}} {
+	if {$type eq "a" && $level ne {}} {
 	    if {[watch::isArrayExpanded $valuText $level $oname]} {
 		incr line [watch::ExpandArray $valuText $line.0]
 	    }
@@ -1031,7 +1031,7 @@ proc watch::configure {text} {
 	$nameText tag add highlight $line.0 "$line.0 lineend + 1c"
 	$valuText tag add highlight $line.0 "$line.0 lineend + 1c"
     }
-    if {$lines != {}} {
+    if {$lines ne {}} {
 	watch::cleanupSelection $nameText
     }
 }
@@ -1203,7 +1203,7 @@ proc watch::toggleVBP {text index toggleType} {
     # Dont allow user to toggle VBP state when the GUI's
     # state is not stopped.
 
-    if {[gui::getCurrentState] != "stopped"} {
+    if {[gui::getCurrentState] ne "stopped"} {
 	return
     }
 
@@ -1225,7 +1225,7 @@ proc watch::toggleVBP {text index toggleType} {
 
     if {![sel::isTagInLine $valuText $index highlight]} {
 	if {[watch::varDataGet $valuText $line.0 "exist"] == 1} {
-	    if {$toggleType == "onoff"} {
+	    if {$toggleType eq "onoff"} {
 		icon::toggleVBPOnOff $vbpText $line.0 $level $oname $state
 	    } else {
 		icon::toggleVBPEnableDisable $vbpText $line.0 $level $oname \
@@ -1243,7 +1243,7 @@ proc watch::toggleVBP {text index toggleType} {
 	    if {[watch::varDataGet $valuText $line.0 "exist"] != 1} {
 		continue
 	    }
-	    if {$toggleType == "onoff"} {
+	    if {$toggleType eq "onoff"} {
 		icon::toggleVBPOnOff $vbpText $line.0 $level $oname $state
 	    } else {
 		icon::toggleVBPEnableDisable $vbpText $line.0 $level $oname \
@@ -1255,10 +1255,10 @@ proc watch::toggleVBP {text index toggleType} {
     # Depending on what window was updated, tell related windows
     # to update themselves, so all windows have identical state.
 
-    if {$valuText == $::var::valuText} {
+    if {$valuText eq $::var::valuText} {
 	watch::updateWindow
 	watch::cleanupSelection $::var::valuText
-    } elseif {$valuText == $::watch::valuText} {
+    } elseif {$valuText eq $::watch::valuText} {
 	var::updateWindow
 	watch::cleanupSelection $::watch::valuText
     } else {
@@ -1286,16 +1286,16 @@ proc watch::expandOrFlattenArray {text index {type {}}} {
     set nameText $::watch::text(name,$text)
     set valuText $::watch::text(valu,$text)
 
-    if {[watch::varDataGet $valuText "$index linestart" "type"] != "a"} {
+    if {[watch::varDataGet $valuText "$index linestart" "type"] ne "a"} {
 	return
     }
     set arrayName [watch::varDataGet $valuText "$index linestart" "oname"]
     set level     [gui::getCurrentLevel]
     set expanded  [watch::isArrayExpanded $valuText $level $arrayName]
 
-    if {($expanded) && ($type != "expand")} {
+    if {($expanded) && ($type ne "expand")} {
 	watch::FlattenArray $valuText $index
-    } elseif {(!$expanded) && ($type != "flatten")} {
+    } elseif {(!$expanded) && ($type ne "flatten")} {
 	watch::ExpandArray $valuText $index
     }
     return
@@ -1320,7 +1320,7 @@ proc watch::ExpandArray {text index} {
     set valuText $::watch::text(valu,$text)
     set vbpText  $::watch::text(vbp,$text)
 
-    if {[watch::varDataGet $valuText "$index linestart" "type"] != "a"} {
+    if {[watch::varDataGet $valuText "$index linestart" "type"] ne "a"} {
 	return
     }
 
@@ -1396,7 +1396,7 @@ proc watch::FlattenArray {text index} {
     set valuText $::watch::text(valu,$text)
     set vbpText  $::watch::text(vbp,$text)
 
-    if {[watch::varDataGet $valuText "$index linestart" "type"] != "a"} {
+    if {[watch::varDataGet $valuText "$index linestart" "type"] ne "a"} {
 	return
     }
 
@@ -1747,7 +1747,7 @@ proc watch::copy {text} {
 	set name [string range $name 0 [expr {[string length $name] - 2}]]
 	lappend result "$name $valu"
     }
-    if {$result != {}} {
+    if {$result ne {}} {
     	clipboard clear -displayof $text
 	clipboard append -displayof $text [join $result {}]
     }

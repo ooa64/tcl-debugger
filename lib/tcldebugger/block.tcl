@@ -75,7 +75,7 @@ proc blk::makeBlock {file} {
 
     # don't create an entry for dynamic blocks
 
-    if {$file != ""} {
+    if {$file ne ""} {
 	set blockFiles($formatFile) $blockCounter
     }
     return $blockCounter
@@ -93,18 +93,18 @@ proc blk::makeBlock {file} {
 #	None.
 
 proc blk::release {args} {
-    if {$args == "dynamic"} {
+    if {$args eq "dynamic"} {
 	foreach block [info var ::blk::blk*] {
-	    if {[set ${block}(file)] == ""} {
+	    if {[set ${block}(file)] eq ""} {
 		unset $block
 	    }
 	}
-    } elseif {$args == "all"} {
+    } elseif {$args eq "all"} {
 	if {[info exists ::blk::blockFiles]} {
 	    unset ::blk::blockFiles
 	}
 	set all [info var ::blk::blk*]
-	if {$all != ""} {
+	if {$all ne ""} {
 	    eval unset $all
 	}
     } else {
@@ -113,7 +113,7 @@ proc blk::release {args} {
 		continue
 	    }
 	    set file [getFile $block]
-	    if {$file != ""} {
+	    if {$file ne ""} {
 		unset ::blk::blockFiles([system::formatFilename $file])
 	    }
 	    unset ::blk::blk$block
@@ -157,7 +157,7 @@ proc blk::getSource {blockNum} {
 
     if {[info exists block(script)]} {
 	return $block(script)
-    } elseif {[info exists block(file)] && $block(file) != ""} {
+    } elseif {[info exists block(file)] && $block(file) ne ""} {
 	set fd [open $block(file) r]
 	fconfigure $fd -encoding utf-8
 	set script [read $fd]
@@ -245,7 +245,7 @@ proc blk::Instrument {blockNum script} {
     # Don't mark the block as instrumented unless we have successfully
     # completed instrumentation.
 
-    if {$script != ""} {
+    if {$script ne ""} {
 	set ::blk::blk${blockNum}(instrumented) 1
 
 	# Compute the sorted list of line numbers containing statements.
@@ -302,7 +302,7 @@ proc blk::unmarkInstrumented {} {
     foreach block [info var ::blk::blk*] {
 	if {[set ${block}(instrumented)] == 1} {
 	    set ${block}(instrumented) 0
-	    if {[set ${block}(file)] != ""} {
+	    if {[set ${block}(file)] ne ""} {
 		unset ${block}(script)
 	    }
 	}
@@ -373,6 +373,6 @@ proc blk::SetSource {blockNum script} {
 #	Returns 1 if the block is not associated with a file.
 
 proc blk::isDynamic {blockNum} {
-    return [expr {[set ::blk::blk${blockNum}(file)] == ""}]
+    return [expr {[set ::blk::blk${blockNum}(file)] eq ""}]
 }
 

@@ -118,7 +118,7 @@ proc var::updateWindow {} {
     variable valuText
     variable vbpText
 
-    if {[gui::getCurrentState] != "stopped"} {
+    if {[gui::getCurrentState] ne "stopped"} {
 	return
     }
 
@@ -155,7 +155,7 @@ proc var::resetWindow {{msg {}}} {
     $valuText delete 0.0 end
     $vbpText delete 0.0 end
 
-    if {$msg != {}} {
+    if {$msg ne {}} {
 	$valuText insert 0.0 $msg message
     }
 }
@@ -174,7 +174,7 @@ proc var::resetWindow {{msg {}}} {
 proc var::checkState {} {
     variable valuText
 
-    if {[focus] == $valuText} {
+    if {[focus] eq $valuText} {
 	watch::changeFocus $valuText in
     }
 }

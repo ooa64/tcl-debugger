@@ -107,9 +107,9 @@ proc pref::groupNew {group {saveCmd {}} {restoreCmd {}}} {
 proc pref::groupSave {group} {
     variable groups
 
-    if {([pref::groupExists $group]) && ($groups($group,saveCmd) != {})} {
-	# Save the group preferences using the registered save command.  
-	# If the save succeeded then unset the group dirty bit since the 
+    if {([pref::groupExists $group]) && ($groups($group,saveCmd) ne {})} {
+	# Save the group preferences using the registered save command.
+	# If the save succeeded then unset the group dirty bit since the
 	# preferences have been saved.
 
 	set result [eval $groups($group,saveCmd) $group]
@@ -146,7 +146,7 @@ proc pref::groupRestore {group} {
     # the pref::prefSet API) so the values can be set with or without
     # calling the update commands (see the pref::groupApply command.)
 
-    if {([pref::groupExists $group]) && ($groups($group,restoreCmd) != {})} {
+    if {([pref::groupExists $group]) && ($groups($group,restoreCmd) ne {})} {
 	return [eval $groups($group,restoreCmd) $group]
     } else {
 	return 1
@@ -176,7 +176,7 @@ proc pref::groupUpdate {group} {
     set updateCmds {}
     foreach pref [pref::GroupGetPrefs $group] {
 	set uCmd [pref::PrefGetUpdateCmd $group $pref]
-	if {($uCmd != {}) && ([lsearch $updateCmds $uCmd] < 0)} {
+	if {($uCmd ne {}) && ([lsearch $updateCmds $uCmd] < 0)} {
 	    lappend updateCmds $uCmd
 	}
     }
@@ -287,7 +287,7 @@ proc pref::groupApply {group1 group2} {
 	set p1 [pref::prefGet $pref $group1]
 	set p2 [pref::prefGet $pref $group2]
 
-	if {$p1 != $p2} {
+	if {$p1 ne $p2} {
 	    # Move the requested value into the actual value.
 
 	    set ::pref::value${group2}($pref) \
@@ -303,7 +303,7 @@ proc pref::groupApply {group1 group2} {
 	    # commands are not called multiple times.
 
 	    set uCmd [pref::PrefGetUpdateCmd $group1 $pref]
-	    if {($uCmd != {}) && ([lsearch $updateCmds $uCmd] < 0)} {
+	    if {($uCmd ne {}) && ([lsearch $updateCmds $uCmd] < 0)} {
 		lappend updateCmds $uCmd
 	    }
 	}
@@ -464,7 +464,7 @@ proc pref::prefNew {group pref value update} {
 
 proc pref::prefGet {pref {group {}}} {
     set group [pref::PrefLocateGroup $pref $group]
-    if {$group == {}} {
+    if {$group eq {}} {
 	error "pref \"$pref\" does not exist."
     }
     return [set ::pref::value${group}($pref)]
@@ -514,7 +514,7 @@ proc pref::prefExists {pref {group {}}} {
     # not exist.  The list of groups is set by the pref::setGroupOrder
     # API.
 
-    return [expr {[pref::PrefLocateGroup $pref $group] != {}}]
+    return [expr {[pref::PrefLocateGroup $pref $group] ne {}}]
 }
 
 # pref::prefVar
@@ -533,7 +533,7 @@ proc pref::prefExists {pref {group {}}} {
 
 proc pref::prefVar {pref {group {}}} {
     set group [pref::PrefLocateGroup $pref $group]
-    if {$group == {}} {
+    if {$group eq {}} {
 	error "pref \"$pref\" does not exist."
     }
     return "::pref::value${group}($pref)"
@@ -618,7 +618,7 @@ proc pref::GroupGetPrefs {group} {
 #	Returns the group name, or {} if one does not exist.
 
 proc pref::PrefLocateGroup {pref {groupOrder {}}} {
-    if {$groupOrder == {}} {
+    if {$groupOrder eq {}} {
 	set groupOrder [pref::getGroupOrder]
     }
     foreach group $groupOrder {

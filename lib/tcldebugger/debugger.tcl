@@ -15,7 +15,7 @@
 
 package require Tk
 package require cmdline
-if {$::tcl_platform(platform) == "windows"} {
+if {$::tcl_platform(platform) eq "windows"} {
     package require registry
 }
 source [file join [file dirname [info script]] projectInfo.tcl]
@@ -154,7 +154,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
     append usageStr "Usage: [cmdline::getArgv0] ?options? projectFile\n" \
 	    "  -help                   print this help message\n" \
 	    "  -version                display version information\n"
-    if {$::tcl_platform(platform) == "unix"} {
+    if {$::tcl_platform(platform) eq "unix"} {
 	append usageStr "  -display <displayname>  X display for interface\n"
     }
     set optionList {? h help v version coverage}
@@ -192,7 +192,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
     # there is not stdout so we display the message to a message box.
 
     if {[info exists showHelp]} {
-	if {$::tcl_platform(platform) == "windows"} {
+	if {$::tcl_platform(platform) eq "windows"} {
 	    tk_messageBox -message $usageStr -title Help
 	} else {
 	    puts $usageStr
@@ -203,7 +203,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
     }
     if {[info exists errorBadArg]} {
 	puts $badArgMsg
-	if {$::tcl_platform(platform) == "windows"} {
+	if {$::tcl_platform(platform) eq "windows"} {
 	    tk_messageBox -message $badArgMsg -title Help
 	}
 	exit 1
@@ -221,7 +221,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
 
     # Remove the send command.  This will keep other applications
     # from being able to poke into our interp via the send command.
-    if {[info commands send] == "send"} {
+    if {[info commands send] eq "send"} {
 	rename send ""
     }
 
@@ -298,7 +298,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
     # there is not stdout so we display the message to a message box.
 
     if {[llength $argv] > 1} {
-	if {$::tcl_platform(platform) == "windows"} {
+	if {$::tcl_platform(platform) eq "windows"} {
 	    tk_messageBox -message $usageStr -title "Wrong Number of Arguments"
 	} else {
 	    puts $usageStr
@@ -325,7 +325,7 @@ proc debugger::init {argv newParameters {temporaryProject {}}} {
 	set projPath {}
     }
 
-    if {$projPath != {}} {
+    if {$projPath ne {}} {
 	proj::openProjCmd $projPath
     }
 
@@ -374,7 +374,7 @@ proc ExitDebugger {} {
 
 proc CleanExit {} {
     proc ExitDebugger {} {}
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	set key "$::projectInfo::prefsRoot\\$::projectInfo::prefsLocation\\$::debugger::parameters(productName)"
 	registry delete $key
     } else {

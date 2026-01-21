@@ -37,7 +37,7 @@ proc evalWin::showWindow {} {
     # If the window already exists, show it, otherwise
     # create it from scratch.
 
-    if {[info command $::gui::gui(evalDbgWin)] == $::gui::gui(evalDbgWin)} {
+    if {[info command $::gui::gui(evalDbgWin)] eq $::gui::gui(evalDbgWin)} {
 	# evalWin::updateWindow
 	wm deiconify $::gui::gui(evalDbgWin)
 	focus $::evalWin::evalText
@@ -117,7 +117,7 @@ proc evalWin::createWindow {} {
 	    evalWin::requestLevel $num; break
 	"
     }
-    if {[gui::getCurrentState] == "running"} {
+    if {[gui::getCurrentState] eq "running"} {
 	bind::addBindTags $evalText disableKeys
 	evalWin::resetWindow
     }
@@ -155,7 +155,7 @@ proc evalWin::updateWindow {} {
     bind::removeBindTag $::evalWin::evalText disableKeys
 
     set state [gui::getCurrentState]
-    if {$state == "stopped"} {
+    if {$state eq "stopped"} {
 	# Add the list of valid levels to the level combo box
 	# and set the display in the combo entry to the top
 	# stack level.
@@ -171,12 +171,12 @@ proc evalWin::updateWindow {} {
 	# still exists.  Otherwise use the top-most level.
 
 	set lastLevel [lindex $levels end]
-	if {([gui::getCurrentBreak] == "result") && $thisLevel < $lastLevel} {
+	if {([gui::getCurrentBreak] eq "result") && $thisLevel < $lastLevel} {
 	    set ::gui::gui(evalLevelVar) $thisLevel
 	} else {
 	    set ::gui::gui(evalLevelVar) $lastLevel
 	}
-    } elseif {$state == "running"} {
+    } elseif {$state eq "running"} {
 	# Append the bindtag that will disable key strokes.
 	bind::addBindTags $evalText disableKeys
 	set afterID [after $::gui::afterTime ::evalWin::resetWindow]
@@ -269,7 +269,7 @@ proc evalWin::moveLevel {amount} {
     set level [expr {[$levelCombo get] + $amount}]
     set last  [lindex [evalWin::getLevels] end]
 
-    if {$last == {}} {
+    if {$last eq {}} {
 	return
     }
     if {$level < 0} {
