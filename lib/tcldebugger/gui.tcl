@@ -2451,7 +2451,7 @@ proc gui::showAboutWindow {} {
     # Align the url to the bottom left edge of the copyright
     set height [expr {$imageHeight + $t1Height}]
     set t2 [$c create text $logoWidth $height -anchor nw -tag url \
-	    -fill blue -text "http://www.ajubasolutions.com"]
+	    -fill blue -text "TclPro on Tcler's Wiki"]
 
     set width [expr {$logoWidth + $t1Width}]
 
@@ -2507,7 +2507,7 @@ proc gui::showAboutWindow {} {
     "
     $c bind url <ButtonRelease-1> " \
 	    destroy .about
-	    system::openURL http://www.ajubasolutions.com
+	    system::openURL https://wiki.tcl-lang.org/page/TclPro
     "
     bind .about <Return> "
 	$okBut invoke
