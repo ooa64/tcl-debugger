@@ -158,8 +158,9 @@ proc blk::getSource {blockNum} {
 
     if {[info exists block(script)]} {
 	return $block(script)
-    } elseif {$block(file) != ""} {
+    } elseif {[info exists block(file)] && $block(file) != ""} {
 	set fd [open $block(file) r]
+	fconfigure $fd -encoding utf-8
 	set script [read $fd]
 	close $fd
 	incr block(version)
