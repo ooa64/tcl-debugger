@@ -36,7 +36,7 @@ set incrProcPrefix "#DBG INSTRUMENTED PROC TAG
 
 set incrProcSuffix "} DbgNub_result\]\]
     foreach DbgNub_index \[info locals\] {
-	if {\[trace info variable \$DbgNub_index\] != \"\"} {
+	if {\[trace info variable \$DbgNub_index\] ne \"\"} {
 	    if {0} {
 		catch {unset \$DbgNub_index}
 	    }
@@ -1773,8 +1773,8 @@ DbgNub_Do 0 {$b 6 {89 41}} {fcopy file1 file2 -size 10 -command {
 DbgNub_Do 0 {$b 6 {125 4}} body
 # DBGNUB END
 }}
-DbgNub_Do 0 {$b 7 {131 42}} {fcopy file1 file2 -command {
-# DBGNUB START: {$b 7 {131 42}}
+DbgNub_Do 0 {$b 7 {131 41}} {fcopy file1 file2 -command {
+# DBGNUB START: {$b 7 {131 41}}
 DbgNub_Do 0 {$b 7 {158 4}} body
 # DBGNUB END
 } -size 10}"
