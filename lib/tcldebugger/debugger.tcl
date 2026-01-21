@@ -373,10 +373,13 @@ proc ExitDebugger {} {
 proc CleanExit {} {
     proc ExitDebugger {} {}
     if {$::tcl_platform(platform) == "windows"} {
-	registry delete [pref::prefGet key]
+	set key "$::projectInfo::prefsRoot\\$::projectInfo::prefsLocation\\$::debugger::parameters(productName)"
+	registry delete $key
     } else {
-	file delete [pref::prefGet fileName]
+	set fileName [file join $::projectInfo::prefsRoot $::projectInfo::prefsLocation Debugger]
+	file delete -force $fileName
     }
+    dbg::finalize
     exit
 }
 
