@@ -1,8 +1,9 @@
-# prodebug.tcl --
+# initdebug.tcl --
 #
 #	This file contains the public routines used to start debugging user
 #	code in a remote application.
 #
+# Copyright (c) 1998-2000 Ajuba Solutions
 # Copyright (c) 1998-1999 by Scriptics Corporation.
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
@@ -23,6 +24,10 @@
 # without any instrumentation.
 #
 
+# Avoid redefining these functions in case this file is sourced multiple
+# times.  This ensures that we only connect to one debugger at a time.
+
+if {[info commands debugger_init] == ""} {
 
 # debugger_init --
 #
@@ -109,4 +114,46 @@ proc debugger_eval {args} {
 
 proc debugger_break {{str ""}} {
     return
+}
+
+# debugger_attached --
+#
+#	This command may be used to detect if the debugger is
+#	currently attached to the interpreter.
+#
+# Arguments:
+#	None.
+#
+# Results:
+#	Returns 1 if the debugger is currently attached.
+
+proc debugger_attached {} {
+    return 0
+}
+
+# debugger_setCatchFlag --
+#
+#	Set the catch flag to indicate if errors should be caught by the
+#	debugger.  This flag is normally set to 0 by the "catch" command.
+#	This command can be used to reset the flag to allow errors to be
+#	reported by the debugger even if they would normally be masked by a
+#	enclosing catch command.  Note that the catch flag can be overridden by
+#	the errorAction flag controlled by the user's project settings.
+#
+# Arguments:
+#	flag	The new value of the flag.  1 indicates thtat errors should
+#		be caught by the debugger.  0 indicates that the debugger
+#		should allow errors to propagate.
+#
+# Results:
+#	Returns the previous value of the catch flag.
+#
+# Side effects:
+#	None.
+
+proc debugger_setCatchFlag {flag} {
+    return 1
+}
+
+    
 }
