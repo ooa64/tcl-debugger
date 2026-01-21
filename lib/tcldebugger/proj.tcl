@@ -453,7 +453,8 @@ proc proj::saveOnCloseProjDialog {file} {
     # if there is a preference to always save w/o askling.  Otherwise,
     # nothing needs to be saved, so just return NO.
 
-    if {$projectOpen && ($projectNeverSaved || [pref::groupIsDirty Project])} {
+    if {$projectOpen && ($projectNeverSaved || [pref::groupIsDirty Project])
+    		&& [proj::getProjectPath] != ""} {
 	if {[pref::prefGet warnOnClose]} {
 	    append msg "Do you want to save the project information for: "
 	    append msg "${file}?"

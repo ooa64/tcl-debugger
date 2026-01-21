@@ -137,7 +137,7 @@ source [file join $::debugger::libdir xmlGen.pdx]
 # Results:
 #	None.
 
-proc debugger::init {argv newParameters} {
+proc debugger::init {argv newParameters {temporaryProject {}}} {
     variable parameters
     variable libdir
 
@@ -310,6 +310,14 @@ proc debugger::init {argv newParameters} {
 
     if {[llength $argv] == 1} {
 	set projPath [file join [pwd] [lindex $argv 0]]
+    } elseif {$temporaryProject ne ""} {
+	set projPath {}
+	set ::proj::projectNeverSaved 1
+	proj::setProjectPath $projPath
+	pref::groupNew Project {proj::SaveProjCmd [proj::getProjectPath]} {}
+	pref::groupCopy ProjectDefault Project
+	pref::GroupSetPrefs Project $temporaryProject
+	proj::InitNewProj
     } elseif {[pref::prefGet projectReload]} {
 	set projPath [pref::prefGet projectPrev]
     } else {
