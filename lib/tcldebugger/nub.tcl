@@ -2390,7 +2390,7 @@ proc DbgNub_sourceWrapper {args} {
     # Pass the contents of the file to the debugger for
     # instrumentation.
     
-    set result [catch {set f [open $file r]} msg]
+    set result [catch {set f [open $file r]; fconfigure $f -encoding utf-8} msg]
     if {$result != 0} {
 	# We failed to open the file, so let source take care of generating
 	# the error.

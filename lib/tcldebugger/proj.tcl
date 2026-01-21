@@ -1413,6 +1413,7 @@ proc proj::SaveProjCmd {projPath group} {
     set result [catch {
 	file mkdir [file dirname $projPath]
 	set id [open $projPath w]
+	fconfigure $id -encoding utf-8
 	foreach pref [pref::GroupGetPrefs $group] {
 	    puts $id [list $pref [pref::prefGet $pref $group]]
 	}
@@ -1441,6 +1442,7 @@ proc proj::SaveProjCmd {projPath group} {
 proc proj::RestoreProjCmd {projPath group} {
     set result [catch {
 	set id [open $projPath r]
+	fconfigure $id -encoding utf-8
 	set prefs [read $id]
 	pref::GroupSetPrefs $group $prefs
 	close $id
