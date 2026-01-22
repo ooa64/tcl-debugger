@@ -147,7 +147,7 @@ proc system::initGroups {} {
 	    exitPrompt		ask			{} \
 	    fileOpenDir		[pwd]		{}			\
 	    fontSize		10		gui::updateDbgText       \
-	    fontType		courier 	gui::updateDbgText       \
+	    fontType		TkFixedFont 	gui::updateDbgText       \
 	    highlight		lightblue 	gui::updateDbgHighlights \
 	    highlight_error	red		gui::updateDbgHighlights \
 	    highlight_cmdresult	#ffff80		gui::updateDbgHighlights \
@@ -543,19 +543,7 @@ proc system::getInterps {} {
 #	The list of fonts to use.
 
 proc system::getFontList {} {
-    # In the Prefs Window, we want to display as many fixed 
-    # fonts as possible.  Searching through all of the font 
-    # families in X is too slow and may crash the X Server.  
-    # For UNIX, use only a small set of fonts.  For Windows, 
-    # search all of the fonts.
-
-#    if {$::tcl_platform(platform) eq "windows"} {
-#	return [font families]
-#    } else {
-#	return {fixed courier {lucida typewriter} serif terminal screen}
-#    }
-
-	return [concat {Courier Times Helvetica} [font families]]
+    return [concat Courier [font families]]
 }
 
 # system::getBrowserCmd --
@@ -1083,19 +1071,19 @@ proc system::createBrowserWindow {mainFrm} {
 	set otherLbl [label $subFrm.otherLbl -text "Command Line:"]
 	set otherEnt [entry $subFrm.otherEnt \
 		-textvariable [pref::prefVar browserCmd TempPref]]
-	set defaultRad [radiobutton $subFrm.defaultRad -value 1 \
+	set defaultRad [ttk::radiobutton $subFrm.defaultRad -value 1 \
 		-text "Use default browser." \
 		-variable [pref::prefVar browserDefault TempPref] \
 		-command "system::checkBrowserWindowState $otherLbl $otherEnt"]
-	set otherRad [radiobutton $subFrm.otherRad -value 0 \
+	set otherRad [ttk::radiobutton $subFrm.otherRad -value 0 \
 		-text "Choose an alternative browser." \
 		-variable [pref::prefVar browserDefault] \
 		-command "system::checkBrowserWindowState $otherLbl $otherEnt"]
 
 	grid $defaultRad -row 0 -column 0 -sticky w  -padx $pad -columnspan 2
 	grid $otherRad   -row 1 -column 0 -sticky w  -padx $pad -columnspan 2
-	grid $otherLbl   -row 2 -column 1 -sticky w  -padx $pad  
-	grid $otherEnt   -row 3 -column 1 -sticky we -padx $pad 
+	grid $otherLbl   -row 2 -column 1 -sticky w  -padx $pad
+	grid $otherEnt   -row 3 -column 1 -sticky we -padx $pad
 	grid columnconfigure $subFrm 0 -minsize 40
 	grid columnconfigure $subFrm 1 -weight 1
 	pack $subFrm -fill both -expand true -padx $pad -pady $pad2

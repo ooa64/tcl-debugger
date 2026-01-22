@@ -120,11 +120,11 @@ proc watch::createWindow {} {
 
     # Create the entry for adding new Watch variables.
 
-    set mainFrm [frame $top.mainFrm -bd $bd -relief raised]
+    set mainFrm [frame $top.mainFrm -bd 1 -relief raised]
     set addFrm [frame $mainFrm.addFrm]
     set addLbl [label $addFrm.addLbl -anchor w -text "Variable:"]
     set addEnt [entry $addFrm.addEnt]
-    set addBut [button $mainFrm.addBut -text Add \
+    set addBut [ttk::button $mainFrm.addBut -text Add \
 	    -command "watch::addVarFromEntry $addEnt"]
     pack $addLbl -side left
     pack $addEnt -side left -fill x -expand true -padx 3
@@ -146,8 +146,12 @@ proc watch::createWindow {} {
     set valuFrm  [frame $varFrm.valuFrm]
     set valuText [text $valuFrm.valuTxt -width 20 -height 20 -bd 0 \
 	    -yscroll [list $valuFrm.sb set]]
-    set sb [scrollbar $valuFrm.sb -command {watch::scrollWindow \
+    set sb [ttk::scrollbar $valuFrm.sb -command {watch::scrollWindow \
 	    $::watch::nameText}]
+
+    guiUtil::redirWheel $vbpText $sb
+    guiUtil::redirWheel $nameText $sb
+    guiUtil::redirWheel $valuText $sb
 
     pack propagate $vbpFrm 0
     pack $vbpFrm   -side left -fill y
@@ -162,15 +166,15 @@ proc watch::createWindow {} {
     # Create the buttons to Inspect and remove vars.
 
     set butFrm [frame $mainFrm.butFrm]
-    set inspectBut [button $butFrm.insBut -text "Data Display" \
+    set inspectBut [ttk::button $butFrm.insBut -text "Data Display" \
 	    -command [list watch::showInspectorFromIndex $nameText current] \
 	    -state disabled]
-    set remBut [button $butFrm.remBut -text "Remove" \
-	    -command {watch::removeSelected} -state disabled] 
-    set allBut [button $butFrm.allBut -text "Remove All" \
-	    -command {watch::removeAll} -state disabled] 
-    set closeBut [button $butFrm.closeBut -text "Close" \
-	    -command {destroy $::gui::gui(watchDbgWin)}] 
+    set remBut [ttk::button $butFrm.remBut -text "Remove" \
+	    -command {watch::removeSelected} -state disabled]
+    set allBut [ttk::button $butFrm.allBut -text "Remove All" \
+	    -command {watch::removeAll} -state disabled]
+    set closeBut [ttk::button $butFrm.closeBut -text "Close" \
+	    -command {destroy $::gui::gui(watchDbgWin)}]
     pack $inspectBut $remBut $allBut $closeBut -fill x -pady 3
 
     grid $addFrm -row 0 -column 0 -sticky we -padx $pad -pady $pad
@@ -1450,14 +1454,6 @@ proc watch::changeFocus {text focus} {
 
     sel::changeFocus $valuText $focus
     sel::changeFocus $nameText $focus
-
-    if {$focus == "in"} {
-	set start "[sel::getCursor $nameText].0"
-	set end   "$start lineend + 1c"
-	$nameText tag remove focusIn 0.0 end
-	$nameText tag add focusIn $start $end
-    }
-
 }
 
 # watch::initSelection --

@@ -54,10 +54,15 @@ proc code::createWindow {masterFrm} {
 	    -bg $bar(color)]
     set lineBar [text $codeSubFrm.lineBar -width 1 -bd 0]
     set codeWin [text $codeSubFrm.text -width 1 -bd 0]
-    set yScroll [scrollbar $codeSubFrm.yScroll -command {code::scrollWindow}]
-    set xScroll [scrollbar $codeSubFrm.xScroll -orient horizontal \
+    set yScroll [ttk::scrollbar $codeSubFrm.yScroll \
+	    -command {code::scrollWindow}]
+    set xScroll [ttk::scrollbar $codeSubFrm.xScroll -orient horizontal \
 	    -command [list $codeWin xview]]
-    
+
+    guiUtil::redirWheel $codeBar $xScroll $yScroll
+    guiUtil::redirWheel $lineBar $xScroll $yScroll
+    guiUtil::redirWheel $codeWin $xScroll $yScroll
+
     pack $codeBar -fill both -expand true
 
     grid $codeBarFrm -row 0 -column 0  -sticky ns
@@ -469,14 +474,6 @@ proc code::resetWindow {{msg {}}} {
 
 proc code::changeFocus {focus} {
     variable codeWin
-
-    $codeWin tag remove focusIn 1.0 end
-    if {$focus == "in"} {
-	set ranges [$codeWin tag ranges [code::getHighlightTag]]
-	foreach {start end} $ranges {
-	    $codeWin tag add focusIn $start $end
-	}
-    }
 }
 
 # code::focusCodeWin --

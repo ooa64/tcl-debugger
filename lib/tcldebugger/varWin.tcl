@@ -43,8 +43,12 @@ proc var::createWindow {masterFrm} {
     set valuFrm  [frame $varFrm.valuFrm]
     set valuText [text $valuFrm.valuTxt -width 20 -height 20 -bd 0 \
 	    -yscroll [list $valuFrm.sb set]]
-    set sb [scrollbar $valuFrm.sb -command {watch::scrollWindow \
+    set sb [ttk::scrollbar $valuFrm.sb -command {watch::scrollWindow \
 	    $::var::nameText}]
+
+    guiUtil::redirWheel $vbpText $sb
+    guiUtil::redirWheel $nameText $sb
+    guiUtil::redirWheel $valuText $sb
 
     pack propagate $vbpFrm 0
     pack $vbpFrm   -side left -fill y

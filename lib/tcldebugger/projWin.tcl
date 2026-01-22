@@ -158,11 +158,11 @@ proc projWin::createWindow {} {
 
     # Create the modal buttons.
     set butFrm [frame $top.butFrm]
-    set okBut [button $butFrm.okBut -text "OK" -width 10 \
+    set okBut [ttk::button $butFrm.okBut -text "OK" -width 10 \
 	    -default active -command {projWin::ApplyProjSettings 1}]
-    set canBut [button $butFrm.canBut -text "Cancel" -width 10 \
+    set canBut [ttk::button $butFrm.canBut -text "Cancel" -width 10 \
 	    -default normal -command {projWin::CancelProjSettings}]
-    set appBut [button $butFrm.appBut -text "Apply" -width 10 \
+    set appBut [ttk::button $butFrm.appBut -text "Apply" -width 10 \
 	    -default normal -command {projWin::ApplyProjSettings 0}]
 
     bind $top <Return> "$okBut invoke"
@@ -214,19 +214,27 @@ proc projWin::updateWindow {{title {}}} {
 
     if {[winfo exists $localRad]} {
 	if {$state eq "dead" || $state eq "new"} {
-	    $localRad configure -fg [lindex [$localRad configure -fg] 3]
+	    catch {
+		$localRad configure -fg [lindex [$localRad configure -fg] 3]
+	    }
 	    $localRad configure -state normal
 	} else {
-	    $localRad configure -fg $color(darkInside)
+	    catch {
+		$localRad configure -fg $color(darkInside)
+	    }
 	    $localRad configure -state disabled
 	}
     }
     if {[winfo exists $remoteRad]} {
-	if {$state == "dead" || $state == "new"} {
-	    $remoteRad configure -fg [lindex [$remoteRad configure -fg] 3]
+	if {$state eq "dead" || $state eq "new"} {
+	    catch {
+		$remoteRad configure -fg [lindex [$remoteRad configure -fg] 3]
+	    }
 	    $remoteRad configure -state normal
 	} else {
-	    $remoteRad configure -fg $color(darkInside)
+	    catch {
+		$remoteRad configure -fg $color(darkInside)
+	    }
 	    $remoteRad configure -state disabled
 	}
     }
@@ -468,12 +476,12 @@ proc projWin::CreateScriptWindow {mainFrm} {
 
     set cntrFrm [frame $mainFrm.cntrFrm]
     set appFrm  [prefWin::createSubFrm $cntrFrm appFrm "Debugging Type"]
-    set localRad [radiobutton $appFrm.localRad \
+    set localRad [ttk::radiobutton $appFrm.localRad \
 	    -text "Local Debugging" \
 	    -command [list projWin::ShowDebuggingType $mainFrm local] \
 	    -variable [pref::prefVar appType TempProj] \
 	    -value local]
-    set remoteRad [radiobutton $appFrm.remoteRad \
+    set remoteRad [ttk::radiobutton $appFrm.remoteRad \
 	    -text "Remote Debugging" \
 	    -command [list projWin::ShowDebuggingType $mainFrm remote] \
 	    -variable [pref::prefVar appType TempProj] \
@@ -490,7 +498,7 @@ proc projWin::CreateScriptWindow {mainFrm} {
     set scriptCombo [guiUtil::ComboBox $localFrm.scriptCombo \
 	    -textvariable [pref::prefVar appScript TempProj] \
 	    -listheight 1]
-    set scriptBut [button $localFrm.scriptBut -text "Browse" \
+    set scriptBut [ttk::button $localFrm.scriptBut -text "Browse" \
 	    -command [list proj::openComboFileWindow $scriptCombo \
 	    [list {{Tcl Scripts} {.tcl .tk}} {{Test Scripts} .test} \
 	    {{All files} *}]]]
@@ -509,7 +517,7 @@ proc projWin::CreateScriptWindow {mainFrm} {
     set interpCombo [guiUtil::ComboBox $localFrm.interpCombo \
 	    -textvariable [pref::prefVar appInterp TempProj] \
 	    -listheight 1]
-    set interpBut [button $localFrm.interpBut -text "Browse" \
+    set interpBut [ttk::button $localFrm.interpBut -text "Browse" \
 	    -command [list proj::openComboFileWindow $interpCombo \
 	    [system::getExeFiles]]]
 
@@ -675,15 +683,15 @@ proc projWin::CreateErrorWindow {mainFrm} {
     set pad2 10
 
     set subFrm [prefWin::createSubFrm $mainFrm errorFrm "Errors"]
-    set errRad1 [radiobutton $subFrm.errRad1 \
+    set errRad1 [ttk::radiobutton $subFrm.errRad1 \
 	    -text "Always stop on errors." \
 	    -variable [pref::prefVar errorAction TempProj] \
 	    -value 2]
-    set errRad2 [radiobutton $subFrm.errRad2 \
+    set errRad2 [ttk::radiobutton $subFrm.errRad2 \
 	    -text "Only stop on uncaught errors." \
 	    -variable [pref::prefVar errorAction TempProj] \
 	    -value 1]
-    set errRad3 [radiobutton $subFrm.errRad3 \
+    set errRad3 [ttk::radiobutton $subFrm.errRad3 \
 	    -text "Never stop on errors." \
 	    -variable [pref::prefVar errorAction TempProj] \
 	    -value 0]
@@ -737,45 +745,48 @@ proc projWin::CreateNoInstruFilesWindow {mainFrm} {
 	    -yscroll [list $subFrm.noScroll set]]
     set doInstText [text $subFrm.doInstText -height 3 -width 3 \
 	    -yscroll [list $subFrm.doScroll set]]
-    set sbNoInst [scrollbar $subFrm.noScroll \
+    set sbNoInst [ttk::scrollbar $subFrm.noScroll \
 	    -command [list $noInstText yview]]
-    set sbDoInst [scrollbar $subFrm.doScroll \
+    set sbDoInst [ttk::scrollbar $subFrm.doScroll \
 	    -command [list $doInstText yview]]
 
+    guiUtil::redirWheel $noInstText $sbNoInst
+    guiUtil::redirWheel $doInstText $sbDoInst
+
     set noButFrm [frame $subFrm.noButFrm]
-    set addNoBut [button $noButFrm.addNoBut -text "Add" \
+    set addNoBut [ttk::button $noButFrm.addNoBut -text "Add" \
 	    -command [list projWin::AddInstruGlobFromEntry $instEnt 0]]
-    set remNoBut [button $noButFrm.delNoBut -text "Remove" \
+    set remNoBut [ttk::button $noButFrm.delNoBut -text "Remove" \
 	    -command {projWin::RemoveSelectedInstru 0} -state disabled]
 
     set doButFrm [frame $subFrm.doButFrm]
-    set addDoBut [button $doButFrm.addDoBut -text "Add" \
+    set addDoBut [ttk::button $doButFrm.addDoBut -text "Add" \
 	    -command [list projWin::AddInstruGlobFromEntry $instEnt 1]]
-    set remDoBut [button $doButFrm.delDoBut -text "Remove" \
+    set remDoBut [ttk::button $doButFrm.delDoBut -text "Remove" \
 	    -command {projWin::RemoveSelectedInstru 1} -state disabled]
 
     pack $addDoBut -fill both
-    pack $remDoBut -fill both
+    pack $remDoBut -fill both -pady $pad
     pack $addNoBut -fill both
-    pack $remNoBut -fill both
+    pack $remNoBut -fill both -pady $pad
 
     pack $instLbl -side left -anchor nw
     pack $instEnt -side left -anchor ne -fill x -expand true
     grid $entFrm -row 0 -column 0 -columnspan 3 -sticky new -padx $pad -pady $pad
 
-    grid $instDoLbl  -row 1 -column 0 -columnspan 3 -sticky nsw -padx $pad 
+    grid $instDoLbl  -row 1 -column 0 -columnspan 3 -sticky nsw -padx $pad
     grid $doInstText -row 2 -column 0 -sticky nswe
     grid $sbDoInst   -row 2 -column 1 -sticky nsw
     grid $doButFrm   -row 2 -column 2 -sticky new -padx $pad
-    
-    grid $instNoLbl  -row 3 -column 0 -columnspan 3 -sticky nsw -padx $pad 
+
+    grid $instNoLbl  -row 3 -column 0 -columnspan 3 -sticky nsw -padx $pad
     grid $noInstText -row 4 -column 0 -sticky nswe
     grid $sbNoInst   -row 4 -column 1 -sticky nsw
     grid $noButFrm   -row 4 -column 2 -sticky new -padx $pad
 
     grid columnconfigure $subFrm 0 -weight 1 -minsize $pad
     grid rowconfigure $subFrm [list 2 4] -weight 1 -minsize $pad
-    pack $subFrm -fill both -expand true -padx $pad -pady $pad 
+    pack $subFrm -fill both -expand true -padx $pad -pady $pad
 
     set font [$noInstText cget -font]
     bind::removeBindTag $noInstText Text
@@ -784,8 +795,6 @@ proc projWin::CreateNoInstruFilesWindow {mainFrm} {
     $doInstText configure -cursor [system::getArrow] -insertwidth 0 -wrap none
     $noInstText tag configure highlight -background [pref::prefGet highlight]
     $doInstText tag configure highlight -background [pref::prefGet highlight]
-    $noInstText tag configure focusIn -relief groove -borderwidth 2
-    $doInstText tag configure focusIn -relief groove -borderwidth 2
 
     bind::addBindTags $noInstText [list prefNoInstText scrollText selectFocus \
 	    selectLine selectRange selectCopy moveCursor]
@@ -855,19 +864,19 @@ proc projWin::CreateInstruOptionsWindow {mainFrm} {
     set pad2 10
 
     set subFrm [prefWin::createSubFrm $mainFrm optFrm "Options"]
-    set dynChk [checkbutton $subFrm.dynChk -pady 0 \
+    set dynChk [ttk::checkbutton $subFrm.dynChk \
 	    -text "Instrument dynamic procs." \
 	    -variable [pref::prefVar instrumentDynamic TempProj]]
-    set autoChk [checkbutton $subFrm.autoChk -pady 0 \
+    set autoChk [ttk::checkbutton $subFrm.autoChk \
 	    -text "Instrument auto loaded scripts." \
 	    -variable [pref::prefVar autoLoad TempProj]]
-    set incrChk [checkbutton $subFrm.incrChk -pady 0 \
+    set incrChk [ttk::checkbutton $subFrm.incrChk \
 	    -text "Instrument Incr Tcl." \
 	    -variable [pref::prefVar instrumentIncrTcl TempProj]]
-    set tclxChk [checkbutton $subFrm.tclxChk -pady 0 \
+    set tclxChk [ttk::checkbutton $subFrm.tclxChk \
 	    -text "Instrument TclX." \
 	    -variable [pref::prefVar instrumentTclx]]
-    set expectChk [checkbutton $subFrm.expectChk -pady 0 \
+    set expectChk [ttk::checkbutton $subFrm.expectChk \
 	    -text "Instrument Expect." \
 	    -variable [pref::prefVar instrumentExpect]]
 

@@ -24,11 +24,7 @@ proc ::TclProAboutBox {aboutImage logoImage} {
     # Create an undecorated toplevel with a raised bevel
     set top [toplevel .about -bd 4 -relief raised]
     wm overrideredirect .about 1
-
-    # This is a hack to get around a Tk bug.  Once Tk is fixed, we can
-    # let the geometry computations happen off-screen
-    wm geom .about 1x1
-#    wm withdraw .about
+    wm withdraw $top
 
     # Create a container frame so we can set the background without
     # affecting the color of the outermost bevel.
@@ -92,8 +88,8 @@ proc ::TclProAboutBox {aboutImage logoImage} {
     set height [winfo reqheight .about]
     set x [expr {([winfo screenwidth .]/2) - ($width/2)}]
     set y [expr {([winfo screenheight .]/2) - ($height/2)}]
-    wm deiconify .about
     wm geom .about ${width}x${height}+${x}+${y}
+    wm deiconify .about
     raise .about
 
     catch {
@@ -109,6 +105,10 @@ proc ::TclProAboutBox {aboutImage logoImage} {
 # Initialize the debugger library
 
 if {[catch {
+
+    if {$::tcl_platform(platform) eq "unix"} {
+	catch {ttk::setTheme alt}
+    }
 
     # This package require loads the debugger and system modules
     package require debugger

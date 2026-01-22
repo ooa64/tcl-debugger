@@ -114,7 +114,7 @@ proc find::createWindow {} {
     wm title $top "Find"
     wm transient $top $::gui::gui(mainDbgWin)
 
-    set mainFrm [frame $top.mainFrm -bd $bd -relief raised]
+    set mainFrm [frame $top.mainFrm -bd 1 -relief raised]
 
     set findFrm [frame $mainFrm.findFrm]
     set findLbl [label $findFrm.findLbl -text "Find What "]
@@ -127,16 +127,16 @@ proc find::createWindow {} {
     pack $findBox -side left -pady $pad -fill x -expand true
 
     set checkFrm [frame $mainFrm.checkFrm]
-    set wordChk [checkbutton $checkFrm.wordChk \
+    set wordChk [ttk::checkbutton $checkFrm.wordChk \
 	    -variable ::find::wordVar \
 	    -text "Match whole word only"]
-    set caseChk [checkbutton $checkFrm.caseChk \
+    set caseChk [ttk::checkbutton $checkFrm.caseChk \
 	    -variable ::find::caseVar \
 	    -text "Match case" ]
-    set regexpChk [checkbutton $checkFrm.regexpChk \
+    set regexpChk [ttk::checkbutton $checkFrm.regexpChk \
 	    -variable ::find::regexpVar \
 	    -text "Regular expression"]
-    set searchChk [checkbutton $checkFrm.searchChk \
+    set searchChk [ttk::checkbutton $checkFrm.searchChk \
 	    -variable ::find::searchVar \
 	    -text "Search all open documents"]
     pack $wordChk -padx $pad -anchor w
@@ -146,17 +146,17 @@ proc find::createWindow {} {
 
     set dirFrm [frame $mainFrm.dirFrm -bd $bd -relief groove]
     set dirLbl [label $dirFrm.dirLbl -text "Direction"]
-    set upRad  [radiobutton $dirFrm.upRad -text Up \
+    set upRad  [ttk::radiobutton $dirFrm.upRad -text Up \
 	    -variable ::find::dirVar -value 0]
-    set downRad [radiobutton $dirFrm.downRad -text Down \
+    set downRad [ttk::radiobutton $dirFrm.downRad -text Down \
 	    -variable ::find::dirVar -value 1]
     pack $dirLbl -anchor nw -padx $pad -pady $pad
     pack $upRad -anchor w
     pack $downRad -anchor w
 
-    set findBut [button $mainFrm.findBut -text "Find Next" -default active \
-	    -command {find::execute}]
-    set closeBut [button $mainFrm.closeBut -text "Close" -default normal \
+    set findBut [ttk::button $mainFrm.findBut -text "Find Next" \
+	    -default active -command {find::execute}]
+    set closeBut [ttk::button $mainFrm.closeBut -text "Close" -default normal \
 	    -command {destroy $::gui::gui(findDbgWin)}]
 
     grid $findFrm  -row 0 -column 0 -sticky nwe -columnspan 2 -padx $pad
@@ -574,7 +574,7 @@ proc goto::createWindow {} {
     wm title $top "Goto"
     wm transient $top $::gui::gui(mainDbgWin)
 
-    set mainFrm [frame $top.mainFrm -bd $bd -relief raised]
+    set mainFrm [frame $top.mainFrm -bd 1 -relief raised]
 
     set choiceLbl [label $mainFrm.choiceLbl -text "Goto what"]
     set lineLbl   [label $mainFrm.lineLbl -text "Enter line number" \
@@ -588,9 +588,9 @@ proc goto::createWindow {} {
     set choiceVar [lindex $gotoOptions end]
     set lineEnt [entry $mainFrm.lineEnt]
     set placeFrm [frame $mainFrm.placeFrm]
-    set gotoBut [button $placeFrm.gotoBut -text $choiceVar -default active \
-	    -command {goto::execute} -width 10]
-    set closeBut [button $placeFrm.closeBut -text Close -default normal\
+    set gotoBut [ttk::button $placeFrm.gotoBut -text $choiceVar \
+	    -default active -command {goto::execute} -width 10]
+    set closeBut [ttk::button $placeFrm.closeBut -text Close -default normal \
 	    -command {destroy $::gui::gui(gotoDbgWin)} -width 10]
 
     grid $gotoBut   -row 0 -column 0 -sticky w -padx $pad
@@ -599,12 +599,12 @@ proc goto::createWindow {} {
 
     grid $choiceLbl -row 0 -column 0 -sticky nw -padx $pad -pady $pad
     grid $lineLbl   -row 0 -column 1 -sticky nw -pady $pad
-    grid $choiceBox -row 1 -column 0 -sticky w -padx $pad 
+    grid $choiceBox -row 1 -column 0 -sticky w -padx $pad
     grid $lineEnt   -row 1 -column 1 -sticky we
     grid $placeFrm  -row 2 -column 0 -columnspan 2 -padx $pad -pady $pad
     grid columnconfigure $mainFrm 1 -weight 1
     grid rowconfigure $mainFrm 2 -weight 1
-    pack $mainFrm -fill both -expand true -padx $pad -pady $pad 
+    pack $mainFrm -fill both -expand true -padx $pad -pady $pad
 
     bind::addBindTags $choiceBox.e gotoDbgWin
     bind::addBindTags $lineEnt     gotoDbgWin

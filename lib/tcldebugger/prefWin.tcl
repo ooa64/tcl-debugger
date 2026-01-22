@@ -142,11 +142,11 @@ proc prefWin::createWindow {} {
 
     # Create the modal buttons.
     set butFrm [frame $top.butFrm]
-    set okBut [button $butFrm.okBut -text "OK" -width 10 \
+    set okBut [ttk::button $butFrm.okBut -text "OK" -width 10 \
 	    -default active -command {prefWin::Apply 1}]
-    set canBut [button $butFrm.canBut -text "Cancel" -width 10 \
+    set canBut [ttk::button $butFrm.canBut -text "Cancel" -width 10 \
 	    -default normal -command [list destroy $top]]
-    set appBut [button $butFrm.appBut -text "Apply" -width 10 \
+    set appBut [ttk::button $butFrm.appBut -text "Apply" -width 10 \
 	    -default normal -command {prefWin::Apply 0}]
 
     bind $top <Return> "$okBut invoke; break"
@@ -362,26 +362,27 @@ proc prefWin::createColorWindow {mainFrm} {
     set highLbl  [label $subFrm.highLbl -text "Highlight"]
     set highFrm  [frame $subFrm.highFrm]
     set highCol  [label $highFrm.highCol -width 10 -bg [pref::prefGet highlight] -relief sunken]
-    set highBut  [button $highFrm.highBut -text "Select ..." \
+    set highBut  [ttk::button $highFrm.highBut -text "Select ..." \
                       -command [list prefWin::chooseColor $highFrm.highCol highlight]]
-    pack $highCol $highBut -fill both -side left
+    pack $highCol $highBut -fill both -side left -padx 2
 
     set errorLbl [label $subFrm.errorLbl -text "Highlight On Error"]
     set errorFrm [frame  $subFrm.errorFrm]
     set errorCol [label $errorFrm.errorCol -width 10 -bg [pref::prefGet highlight_error] -relief sunken]
-    set errorBut [button $errorFrm.errorBut -text "Select ..." \
+    set errorBut [ttk::button $errorFrm.errorBut -text "Select ..." \
                       -command [list prefWin::chooseColor $errorFrm.errorCol highlight_error]]
-    pack $errorCol $errorBut -fill both -side left
+    pack $errorCol $errorBut -fill both -side left -padx 2
 
     set cmdresultLbl [label $subFrm.cmdresultLbl -text "Highlight On Result"]
     set cmdresultFrm [frame  $subFrm.cmdresultFrm]
     set cmdresultCol [label $cmdresultFrm.cmdresultCol -width 10 -bg [pref::prefGet highlight_cmdresult] -relief sunken]
-    set cmdresultBut [button $cmdresultFrm.cmdresultBut -text "Select ..." \
+    set cmdresultBut [ttk::button $cmdresultFrm.cmdresultBut \
+			  -text "Select ..." \
                           -command [list prefWin::chooseColor $cmdresultFrm.cmdresultCol highlight_cmdresult]]
-    pack $cmdresultCol $cmdresultBut -fill both -side left
+    pack $cmdresultCol $cmdresultBut -fill both -side left -padx 2
 
     grid $highLbl      -row 0 -column 0 -sticky w -padx $pad -pady $pad
-    grid $highFrm      -row 0 -column 1 -sticky w -pady $pad 
+    grid $highFrm      -row 0 -column 1 -sticky w -pady $pad
     grid $errorLbl     -row 1 -column 0 -sticky w -padx $pad -pady $pad
     grid $errorFrm     -row 1 -column 1 -sticky w -pady $pad
     grid $cmdresultLbl -row 2 -column 0 -sticky w -padx $pad -pady $pad
@@ -499,7 +500,7 @@ proc prefWin::createStartWindow {mainFrm} {
     set pad2 10
 
     set subFrm [prefWin::createSubFrm $mainFrm startFrm "Startup"]
-    set reloadChk [checkbutton $subFrm.reloadChk \
+    set reloadChk [ttk::checkbutton $subFrm.reloadChk \
 		     -text "Reload the previous project on startup." \
 		     -variable [pref::prefVar projectReload TempPref]]
     grid $reloadChk -row 0 -column 0 -sticky w -padx $pad
@@ -518,19 +519,19 @@ proc prefWin::createExitWindow {mainFrm} {
     set pad2 10
 
     set subFrm [prefWin::createSubFrm $mainFrm exitFrm "Exit"]
-    set askRad [radiobutton $subFrm.askRad \
+    set askRad [ttk::radiobutton $subFrm.askRad \
 		    -text "On exit, ask if the application should be killed." \
 		    -variable [pref::prefVar exitPrompt TempPref] \
 		    -value ask]
-    set killRad [radiobutton $subFrm.killRad \
+    set killRad [ttk::radiobutton $subFrm.killRad \
 		     -text "On exit, always kill the application." \
 		     -variable [pref::prefVar exitPrompt TempPref] \
 		     -value kill]
-    set runRad [radiobutton $subFrm.runRad \
+    set runRad [ttk::radiobutton $subFrm.runRad \
 		    -text "On exit, always leave the application running." \
 		    -variable [pref::prefVar exitPrompt TempPref] \
 		    -value run]
-    set warnChk [checkbutton $subFrm.warnChk \
+    set warnChk [ttk::checkbutton $subFrm.warnChk \
 		     -text "Warn before killing the application." \
 		     -variable [pref::prefVar warnOnKill TempPref]]
 
@@ -568,7 +569,7 @@ proc prefWin::createWarnWindow {mainFrm} {
     set pad2 10
 
     set subFrm [prefWin::createSubFrm $mainFrm otherFrm "Warnings"]
-    set mvBpChk [checkbutton $subFrm.mvBpChk \
+    set mvBpChk [ttk::checkbutton $subFrm.mvBpChk \
 		     -text "Warn when moving invalid breakpoints." \
 		     -variable [pref::prefVar warnInvalidBp TempPref]]
     grid $mvBpChk -row 0 -column 0 -sticky w -padx $pad

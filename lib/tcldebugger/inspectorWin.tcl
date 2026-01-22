@@ -170,9 +170,9 @@ proc inspector::createWindow {} {
     set inspectLbl [label $inspectFrm.inspectLbl -anchor w -text "Variable:"]
     set inspectEnt [entry $inspectFrm.inspectEnt \
 	    -textvariable ::inspector::entVar]
-    set inspectBut [button $inspectFrm.inspectBut -text "Display" -width 8 \
-	    -command inspector::updateVarFromEntry]
-    set closeBut [button $inspectFrm.closeBut -text "Close" -width 8 \
+    set inspectBut [ttk::button $inspectFrm.inspectBut -text "Display" \
+	    -width 8 -command inspector::updateVarFromEntry]
+    set closeBut [ttk::button $inspectFrm.closeBut -text "Close" -width 8 \
 	    -command "destroy $::gui::gui(dataDbgWin)"]
 
     pack $closeBut -side right -padx $pad
@@ -223,9 +223,12 @@ proc inspector::createWindow {} {
     set varText [text $varFrm.varText -width 1 -height 2 \
 	    -yscroll [list $varFrm.yscroll set] \
 	    -xscroll [list $varFrm.xscroll set] ]
-    set yscroll [scrollbar $varFrm.yscroll -command [list $varText yview]]
-    set xscroll [scrollbar $varFrm.xscroll -command [list $varText xview] \
+    set yscroll [ttk::scrollbar $varFrm.yscroll -command [list $varText yview]]
+    set xscroll [ttk::scrollbar $varFrm.xscroll -command [list $varText xview] \
 	    -orient horizontal]
+
+    guiUtil::redirWheel $varText $xscroll $yscroll
+
     grid $varText -row 0 -column 0 -sticky nswe
     grid $yscroll -row 0 -column 1 -sticky ns
     grid $xscroll -row 1 -column 0 -sticky we

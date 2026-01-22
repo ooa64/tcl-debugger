@@ -1118,9 +1118,11 @@ proc proj::ShowFileMissingWindow {prefix path types} {
     set msgLbl   [label $mainFrm.msgLbl -wraplength $width -text $msg]
 
     set butFrm  [frame $top.butFrm]
-    set browseBut [button $butFrm.browseBut -text "Browse" -width $butWidth \
-            -command [list proj::BrowseFileMissingWindow $path $types]] 
-    set cancelBut [button $butFrm.cancelBut -text "Cancel" -width $butWidth \
+    set browseBut [ttk::button $butFrm.browseBut -text "Browse" \
+    	    -width $butWidth \
+            -command [list proj::BrowseFileMissingWindow $path $types]]
+    set cancelBut [ttk::button $butFrm.cancelBut -text "Cancel" \
+    	    -width $butWidth \
             -command {proj::CancelFileMissingWindow}]
 
     pack $imageLbl -side left

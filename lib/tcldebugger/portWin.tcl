@@ -88,10 +88,10 @@ proc portWin::CreateWindow {} {
     set portEnt   [entry $portFrm.portEnt -width 6 -exportselection 0]
 
     set butFrm  [frame $top.butFrm]
-    set okBut [button $butFrm.okBut  -text "OK"  -default active \
+    set okBut [ttk::button $butFrm.okBut  -text "OK"  -default active \
 	    -command {portWin::ApplyWindow} -width 12]
-    set cancelBut [button $butFrm.cancelBut  -text "Cancel"  -default normal \
-	    -command [list destroy $top] -width 12]
+    set cancelBut [ttk::button $butFrm.cancelBut  -text "Cancel" \
+	    -default normal -command [list destroy $top] -width 12]
 
     pack $portEnt  -side right
     pack $portLabel -side right

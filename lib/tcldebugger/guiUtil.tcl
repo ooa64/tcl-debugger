@@ -239,7 +239,7 @@ proc guiUtil::tableCreate {master frm1 frm2 args} {
     # window.
 
     set pane(1) $frm1
-    set pane(t1) [label $title.title0  -relief raised -bd 2 \
+    set pane(t1) [label $title.title0  -relief raised -bd 1 \
 	    -text $pane(-title1) -justify $pane(-justify) \
 	    -anchor w -padx 6]
 
@@ -262,7 +262,7 @@ proc guiUtil::tableCreate {master frm1 frm2 args} {
 
     if {$frm2 ne {}} {
 	set pane(2) $frm2
-	set pane(t2) [label $title.title1  -relief raised -bd 2 \
+	set pane(t2) [label $title.title1  -relief raised -bd 1 \
 		-text $pane(-title2) -justify $pane(-justify) \
 		-anchor w -padx 6]
 	set pane(grip) [frame $title.grip -bg gray50 \
@@ -424,7 +424,7 @@ proc guiUtil::ComboBox {ComboBox args} {
     set frm  [frame $w.frm -bg black -bd 1]
     set list [listbox $frm.list -yscroll "$frm.yscroll set" -bd 0 \
 	    -highlightthickness 0]
-    set sb   [scrollbar $frm.yscroll -command "$list yview"]
+    set sb   [ttk::scrollbar $frm.yscroll -command "$list yview"]
     pack $list -side left -fill both -expand yes
     pack $frm -fill both -expand true
 
@@ -765,10 +765,10 @@ proc guiUtil::ComboBox_popup { {frame .f} {win .combobox} } {
     # OK , popup the shell
     #
 
-    wm deiconify $win
     raise $win
     focus $win.frm.list
     wm geometry $win ${width}x${height}+${x1}+${y}
+    wm deiconify $win
 
     set text [$frame.e get]
     set list [$win.frm.list get 0 end]
@@ -1027,4 +1027,46 @@ proc guiUtil::preservePaneGeometry {} {
 
     pref::prefSet GlobalDefault paneGeom [array get ::guiUtil::paneGeom]
     return
+}
+
+# guiUtil::redirWheel --
+#
+#	Redirect certain events from given widget to
+#	scrollbar for mouse wheel bindings.
+#
+# Arguments:
+#	from   - source widget
+#	scroll - scrollbar widget
+#
+# Results:
+#	None.
+
+proc guiUtil::redirWheel {from scroll args} {
+    set targets [concat [list $scroll] $args]
+    foreach event {
+	<MouseWheel> <Option-MouseWheel> <Shift-MouseWheel>
+	<Shift-Option-MouseWheel> <ButtonPress-4> <ButtonPress-5>
+	<Shift-ButtonPress-4> <Shift-ButtonPress-5>
+	<ButtonPress-6> <ButtonPress-7>
+    } {
+	catch {
+	    bind $from $event \
+		[list guiUtil::doRedirWheel $targets $event %x %y %b %D]
+	}
+    }
+}
+
+proc guiUtil::doRedirWheel {targets event x y b d} {
+    foreach sb $targets {
+	set cmd [list event generate]
+	lappend cmd [list $sb] [list $event] -x $x -y $y
+	if {[string is integer $b]} {
+	    lappend cmd -button $b
+	}
+	if {[string is integer $d]} {
+	    lappend cmd -delta $d
+	}
+	eval $cmd
+    }
+    return -code break
 }

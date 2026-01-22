@@ -97,8 +97,10 @@ proc tkCon::InitUI {w title} {
     bindtags $con [list $con PreCon TkConsole PostCon $root all]
 
     ## Scrollbar
-    set TKCON(scrolly) [scrollbar $w.sy -takefocus 0 -bd 1 \
+    set TKCON(scrolly) [ttk::scrollbar $w.sy -takefocus 0 \
 	    -command [list $con yview]]
+
+    guiUtil::redirWheel $TKCON(console) $TKCON(scrolly)
 
     tkCon::Bindings
 

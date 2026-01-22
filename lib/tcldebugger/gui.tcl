@@ -1209,7 +1209,6 @@ proc gui::setDbgTextBindings {w {sb {}}} {
     $w tag configure right -justify right
     $w tag configure leftIndent -lmargin1 4 -lmargin2 4
     $w tag configure underline -underline on
-    $w tag configure focusIn -relief groove -borderwidth 2
     $w tag configure highlight -background [pref::prefGet highlight]
     $w tag configure highlight_error -background \
 	    [pref::prefGet highlight_error]
@@ -2158,7 +2157,10 @@ proc gui::createErrorWindow {} {
     set infoFrm [frame $mainFrm.infoFrm]
     set errorInfoText [text $infoFrm.errorInfoText -width 40 -height 10 \
 	    -takefocus 0]
-    set sb      [scrollbar $mainFrm.sb -command [list $errorInfoText yview]]
+    set sb [ttk::scrollbar $mainFrm.sb -command [list $errorInfoText yview]]
+
+    guiUtil::redirWheel $errorInfoText $sb
+
     pack $errorInfoText -side left -fill both -expand true
     pack $titleFrm -fill x -padx $pad -pady $pad
     pack $infoFrm -fill both -expand true -padx $pad -pady $pad
@@ -2166,10 +2168,10 @@ proc gui::createErrorWindow {} {
     set butWidth [string length {Suppress and Continue}]
 
     set butFrm  [frame $top.butFrm]
-    set errorInfoSuppress  [button $butFrm.suppressBut \
+    set errorInfoSuppress  [ttk::button $butFrm.suppressBut \
 	    -text "Suppress Error" -default normal \
 	    -command {gui::handleError suppress} -width $butWidth]
-    set errorInfoDeliver [button $butFrm.deliverBut \
+    set errorInfoDeliver [ttk::button $butFrm.deliverBut \
 	    -text "Deliver Error" -default normal \
 	    -command {gui::handleError deliver} -width $butWidth]
     pack $errorInfoSuppress $errorInfoDeliver -side right -padx $pad
@@ -2312,7 +2314,10 @@ proc gui::createParseErrorWindow {} {
     pack $msgLbl -side left
     set infoFrm [frame $mainFrm.infoFrm]
     set parseInfoText [text $infoFrm.parseInfoText -width 1 -height 3]
-    set sb      [scrollbar $mainFrm.sb -command [list $parseInfoText yview]]
+    set sb [ttk::scrollbar $mainFrm.sb -command [list $parseInfoText yview]]
+
+    guiUtil::redirWheel $parseInfoText $sb
+
     pack $parseInfoText -side left -fill both -expand true
     pack $titleFrm -fill x -padx $pad -pady $pad
     pack $infoFrm -fill both -expand true -padx $pad -pady $pad
@@ -2320,11 +2325,11 @@ proc gui::createParseErrorWindow {} {
     set butWidth [string length {Continue Instrumenting}]
 
     set butFrm  [frame $top.butFrm]
-    set contBut [button $butFrm.contBut -text "Continue Instrumenting" \
+    set contBut [ttk::button $butFrm.contBut -text "Continue Instrumenting" \
 	    -command {gui::handleParseError cont} -width $butWidth]
-    set dontBut [button $butFrm.dontBut -text "Do Not Instrument" \
+    set dontBut [ttk::button $butFrm.dontBut -text "Do Not Instrument" \
 	    -command {gui::handleParseError dont} -width $butWidth]
-    set killBut [button $butFrm.killBut -text "Kill The Application" \
+    set killBut [ttk::button $butFrm.killBut -text "Kill The Application" \
 	    -command {gui::handleParseError kill} -width $butWidth]
     pack $killBut $dontBut $contBut -side right -padx $pad
 
@@ -2467,7 +2472,7 @@ proc gui::showAboutWindow {} {
 #    $::projectInfo::setupExtrasProc $c $width $height
 
     # Align the button to the bottom right corner of the copyright text
-    set okBut [button $c.okBut -text "OK" \
+    set okBut [ttk::button $c.okBut -text "OK" \
 	    -cursor [system::getArrow] -width 6 -default active \
 	    -command {destroy .about}]
     set b1 [$c create window $width $height -anchor ne -window $okBut]
@@ -2588,7 +2593,7 @@ proc gui::showConnectStatus {{update {}}} {
 	label $m.r4
 	label $m.l5 -text "Peer socket info:"
 	label $m.r5
-	button $m.b -text "Close" -command "destroy $w" -default active
+	ttk::button $m.b -text "Close" -command "destroy $w" -default active
 	bind $w <Return> "$m.b invoke; break"
 	bind $w <Escape> "$m.b invoke; break"
 

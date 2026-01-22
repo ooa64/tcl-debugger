@@ -915,14 +915,16 @@ proc menu::createFileWindow {} {
     set selectLbl [label $mainFrm.selectLbl -text "Select Window:"]
     set selectFrm [frame $mainFrm.selectFrm]
     set selectText [text  $selectFrm.selectText -height 10 -width 15]
-    set sb [scrollbar $selectFrm.sb -command [list $selectText yview]]
+    set sb [ttk::scrollbar $selectFrm.sb -command [list $selectText yview]]
     set instLbl [label $mainFrm.instLbl \
 	    -text "* means the file is uninstrumented"]
 
+    guiUtil::redirWheel $selectText $sb
+
     set butFrm [frame $mainFrm.butFrm]
-    set showBut [button $butFrm.showBut -text "Show Code" -default active \
-	    -command [list menu::showFile $selectText]]
-    set canBut [button $butFrm.canBut -text "Cancel" -default normal \
+    set showBut [ttk::button $butFrm.showBut -text "Show Code" \
+	    -default active -command [list menu::showFile $selectText]]
+    set canBut [ttk::button $butFrm.canBut -text "Cancel" -default normal \
 	    -command menu::removeFileWindow]
 
     pack $selectText -side left -fill both -expand true

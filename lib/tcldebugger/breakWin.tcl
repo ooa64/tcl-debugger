@@ -83,14 +83,17 @@ proc bp::createWindow {} {
     # buttons to the right for editing the table.
 
     set mainFrm [frame $breakDbgWin.mainFrm]
-    set breakFrm [frame $mainFrm.breakFrm -relief raised -bd 2]
+    set breakFrm [frame $mainFrm.breakFrm -relief raised -bd 1]
     set breakLbl [label $breakFrm.breakLbl -text "Breakpoints: " -anchor w]
     set breakSubFrm [frame $breakFrm.subFrm -relief sunken -bd 2]
     set breakBarFrm [frame $breakSubFrm.barFrm -width $bar(width)]
     set breakBar [text $breakBarFrm.barTxt -width 1 -height 20 -bd 0 \
 	    -bg $bar(color)]
     set breakText [text $breakSubFrm.breakText -width 10 -height 4 -bd 0]
-    set sb [scrollbar $breakSubFrm.sb -command {bp::scrollWindow}]
+    set sb [ttk::scrollbar $breakSubFrm.sb -command {bp::scrollWindow}]
+
+    guiUtil::redirWheel $breakBar $sb
+    guiUtil::redirWheel $breakText $sb
 
     pack propagate $breakBarFrm 0
     pack $breakBarFrm -side left -fill y
@@ -98,13 +101,13 @@ proc bp::createWindow {} {
     pack $breakText   -side left -fill both -expand true
 
     set butFrm  [frame $breakFrm.butFrm]
-    set showBut [button $butFrm.showBut -text "Show Code"  \
+    set showBut [ttk::button $butFrm.showBut -text "Show Code"  \
 	    -command {bp::showCode} -state disabled]
-    set remBut  [button $butFrm.remBut -text "Remove" \
+    set remBut  [ttk::button $butFrm.remBut -text "Remove" \
 	    -command {bp::removeSelected} -state disabled]
-    set allBut  [button $butFrm.allBut -text "Remove All" \
+    set allBut  [ttk::button $butFrm.allBut -text "Remove All" \
 	    -command {bp::removeAll} -state disabled]
-    set closeBut  [button $butFrm.closeBut -text "Close" \
+    set closeBut [ttk::button $butFrm.closeBut -text "Close" \
 	    -command {destroy $::gui::gui(breakDbgWin)}]
     pack $showBut $remBut $allBut $closeBut -fill x -padx $pad -pady 3
 

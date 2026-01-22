@@ -30,7 +30,7 @@ proc tool::createWindow {mainDbgWin} {
     variable tool
     variable toolbarFrm
 
-    set toolbarFrm [frame $mainDbgWin.tool -bd 2 -relief groove]
+    set toolbarFrm [frame $mainDbgWin.tool -bd 2]
 
     set tool(run) [tool::createButton $toolbarFrm.runButt $::image::image(run)  \
 	    {Run until break or EOF.} \

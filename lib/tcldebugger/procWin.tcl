@@ -96,11 +96,11 @@ proc procWin::createWindow {} {
 
     # Create the pattern entry interface.   The default pattern is "*".
 
-    set mainFrm [frame $top.mainFrm -bd $bd -relief raised]
+    set mainFrm [frame $top.mainFrm -bd 1 -relief raised]
     set patLbl [label $mainFrm.patLbl -anchor w -text "Pattern:"]
     set patEnt [entry $mainFrm.patEnt -bd $bd \
 	    -textvariable ::procWin::patValue]
-    set patBut [button $mainFrm.patBut -text "Search" \
+    set patBut [ttk::button $mainFrm.patBut -text "Search" \
 	    -command procWin::updateWindow]
 
     # Place a separating line between the var info and the
@@ -111,22 +111,26 @@ proc procWin::createWindow {} {
     # Create the text widget that displays all procs and the
     # "Show Code" button.
 
-    set showChk  [checkbutton $mainFrm.showChk -variable [namespace current]::showChkVar \
-            -text "Show Uninstrumented Procs." -command [namespace current]::updateWindow]
+    set showChk [ttk::checkbutton $mainFrm.showChk \
+	    -variable [namespace current]::showChkVar \
+            -text "Show Uninstrumented Procs." \
+	    -command [namespace current]::updateWindow]
     set procText [text $mainFrm.procText -width 30 -height 5 \
 	    -yscroll [list $mainFrm.procText.sb set]]
-    set sb [scrollbar $procText.sb -command [list $procText yview]]
+    set sb [ttk::scrollbar $procText.sb -command [list $procText yview]]
     set instLbl [label $mainFrm.instLbl \
 	    -text "* means the procedure is uninstrumented"]
 
+    guiUtil::redirWheel $procText $sb
+
     set butFrm [frame $mainFrm.butFrm]
-    set showBut [button $butFrm.showBut -text "Show Code" \
+    set showBut [ttk::button $butFrm.showBut -text "Show Code" \
 	    -command [list procWin::showCode $procText]]
-    set instruBut [button $butFrm.instruBut -text "Instrument" \
+    set instruBut [ttk::button $butFrm.instruBut -text "Instrument" \
 	    -command [list procWin::instrument 1 $procText]]
-    set uninstruBut [button $butFrm.uninstruBut -text "Uninstrument" \
+    set uninstruBut [ttk::button $butFrm.uninstruBut -text "Uninstrument" \
 	    -command [list procWin::instrument 0 $procText]]
-    set closeBut [button $butFrm.closeBut -text "Close" \
+    set closeBut [ttk::button $butFrm.closeBut -text "Close" \
 	    -command {destroy $::gui::gui(procDbgWin)}]
     pack $showBut $instruBut $uninstruBut $closeBut -fill x -pady 3
 
@@ -134,7 +138,7 @@ proc procWin::createWindow {} {
     grid $patEnt -row 0 -column 1 -sticky we -padx $pad -pady $pad
     grid $patBut -row 0 -column 2 -sticky we -padx $pad -pady $pad
     grid $sepFrm -row 1 -column 0 -sticky we -padx $pad -pady 3 -columnspan 3
-    grid $showChk -row 2 -column 0 -sticky nw -columnspan 3
+    grid $showChk -row 2 -column 0 -sticky nw -columnspan 3 -padx 6
     grid $procText -row 3 -column 0 -sticky nswe -padx $pad -pady $pad \
 	    -columnspan 2
     grid $butFrm  -row 3 -column 2 -sticky nwe -padx $pad -pady $pad

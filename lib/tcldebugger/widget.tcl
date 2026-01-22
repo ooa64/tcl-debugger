@@ -672,9 +672,9 @@ array set ScrolledText {
 	    {-xscrollcommand [list $data(xscrollbar) set] \
 	    -yscrollcommand [list $data(yscrollbar) set]}}
     components	{
-	{scrollbar xscrollbar sx {-orient h -bd 1 -highlightthickness 1 \
+	{ttk::scrollbar xscrollbar sx {-orient h -bd 1 -highlightthickness 1 \
 		-command [list $w xview]}}
-	{scrollbar yscrollbar sy {-orient v -bd 1 -highlightthickness 1 \
+	{ttk::scrollbar yscrollbar sy {-orient v -bd 1 -highlightthickness 1 \
 		-command [list $w yview]}}
     }
 

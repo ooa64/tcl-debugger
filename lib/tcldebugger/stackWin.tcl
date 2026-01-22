@@ -50,7 +50,10 @@ proc stack::createWindow {masterFrm} {
     set stackFrm  [frame $masterFrm.stack]
     set subFrm    [frame $stackFrm.sub]
     set stackText [text $subFrm.text -width 0 -height 20 -bd 0]
-    set scrollbar [scrollbar $stackText.sb -command [list $stackText yview]]
+    set scrollbar \
+	[ttk::scrollbar $stackText.sb -command [list $stackText yview]]
+
+    guiUtil::redirWheel $stackText $scrollbar
 
     guiUtil::tableCreate $subFrm $stackText {} -title1 "Stack Frames"
     gui::setDbgTextBindings $stackText $scrollbar
@@ -158,7 +161,7 @@ proc stack::updateWindow {currentLevel} {
 	    }
 	    source {
 		set block [loc::getBlock $loc]
-		if {($block != {}) && (![blk::isDynamic $block])} { 
+		if {($block ne {}) && (![blk::isDynamic $block])} {
 		    set shortName [file::getUniqueFile $block]
 		}
 	    }
@@ -187,7 +190,7 @@ proc stack::updateWindow {currentLevel} {
 	    gui::setCurrentType  $type
 	    gui::setCurrentProc  $name
 	    gui::setCurrentArgs  $args
-	    if {$type == "name"} {
+	    if {$type eq "name"} {
 		gui::setCurrentScope $name
 	    } else {
 		gui::setCurrentScope $type
@@ -249,7 +252,7 @@ proc stack::updateDbgWindow {} {
 	var::updateWindow
 	watch::updateWindow
 
-	if {$selectedArg != ""} {
+	if {$selectedArg ne ""} {
 	    var::seeVarInWindow $selectedArg 0
 	    set selectedArg {}
 	}
@@ -283,7 +286,7 @@ proc stack::resetWindow {{msg {}}} {
     set selectedArg {}
     gui::unsetFormatData $stackText
     $stackText delete 0.0 end
-    if {$msg != {}} {
+    if {$msg ne {}} {
 	$stackText insert 0.0 $msg message
     }
 }
@@ -323,7 +326,7 @@ proc stack::selectArg {text index} {
     variable selectedArg
 
     set range [stack::getStackWordRange $text $index stackEntry]
-    if {$range != {}} {
+    if {$range ne {}} {
 	set selectedArg [eval {$text get} $range]
     } else {
 	set selectedArg {}
@@ -348,7 +351,7 @@ proc stack::isVarFrameHidden {} {
     # is a stack entry with conflicting variable frames.
 
     set line [sel::getSelectedLines $stackText]
-    if {$line == {}} {
+    if {$line eq {}} {
 	return 1
     }
     if {[lsearch [$stackText tag names $line.0] hiddenLevel] < 0} {
@@ -408,7 +411,7 @@ proc stack::getLocation {line} {
 #	no stack data.
 
 proc stack::getPC {} {
-    if {[gui::getCurrentState] != "stopped"} {
+    if {[gui::getCurrentState] ne "stopped"} {
 	return {}
     }
     return [stack::getLocation [sel::getCursor $::stack::stackText]]
@@ -431,7 +434,7 @@ proc stack::getPCType {} {
     # If the selection cursor is on the last line, then
     # the PC type is "current".
 
-    if {[gui::getCurrentState] != "stopped"} {
+    if {[gui::getCurrentState] ne "stopped"} {
 	return {}
     }
     set cursor [sel::getCursor $::stack::stackText]

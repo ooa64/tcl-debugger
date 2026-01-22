@@ -208,7 +208,7 @@ proc coverage::createWindow {} {
 
     set top [toplevel $coverWin]
     ::guiUtil::positionWindow $top 400x225
-    wm minsize $top 175 100
+    wm minsize $top 175 200
     wm title $top "Code Coverage"
     wm transient $top $::gui::gui(mainDbgWin)
 
@@ -218,35 +218,40 @@ proc coverage::createWindow {} {
     # Create the text widget that displays all files and the
     # "Show Code" button.
 
-    set mainFrm [frame $top.mainFrm -bd $bd -relief raised]
+    set mainFrm [frame $top.mainFrm -bd 1 -relief raised]
 
-    set radio(cvr)  [radiobutton $mainFrm.radioCvr -variable ::coverage::radio(val) \
+    set radio(cvr) [ttk::radiobutton $mainFrm.radioCvr \
+	    -variable ::coverage::radio(val) \
 	    -value 0 -text "Highlight Covered Code for Selected File." \
 	    -command ::coverage::updateWindow]
-    set radio(uncvr)  [radiobutton $mainFrm.radioUncvr \
+    set radio(uncvr) [ttk::radiobutton $mainFrm.radioUncvr \
 	    -variable ::coverage::radio(val) -value 1 \
 	    -text "Highlight Uncovered Code for Selected File." \
 	    -command ::coverage::updateWindow]
     set coverText [text $mainFrm.coverText -width 30 -height 5 \
 	    -yscroll [list $mainFrm.coverText.sb set]]
-    set sb [scrollbar $coverText.sb -command [list $coverText yview]]
+    set sb [ttk::scrollbar $coverText.sb -command [list $coverText yview]]
+
+    guiUtil::redirWheel $coverText $sb
 
     set butFrm [frame $mainFrm.butFrm]
-    set showBut [button $butFrm.showBut -text "Show Code" \
+    set showBut [ttk::button $butFrm.showBut -text "Show Code" \
 	    -command [list coverage::showCode $coverText]]
-    set clearBut [button $butFrm.clearBut -text "Clear Selected Coverage" \
+    set clearBut [ttk::button $butFrm.clearBut \
+	    -text "Clear Selected Coverage" \
 	    -command [list coverage::clearBlockCoverage $coverText]]
-    set clearAllBut [button $butFrm.clearAllBut -text "Clear All Coverage" \
+    set clearAllBut [ttk::button $butFrm.clearAllBut \
+	    -text "Clear All Coverage" \
 	    -command [list coverage::clearAllCoverage $coverText]]
-    set closeBut [button $butFrm.closeBut -text "Close" \
+    set closeBut [ttk::button $butFrm.closeBut -text "Close" \
 	    -command {destroy $::coverage::coverWin}]
-    pack $showBut -fill x
-    pack $clearBut -fill x
-    pack $clearAllBut -fill x
-    pack $closeBut -fill x -anchor s
+    pack $showBut -fill x -pady 3
+    pack $clearBut -fill x -pady 3
+    pack $clearAllBut -fill x -pady 3
+    pack $closeBut -fill x -anchor s -pady 3
 
-    grid $radio(uncvr) -row 1 -column 0 -sticky nw -columnspan 3
-    grid $radio(cvr) -row 2 -column 0 -sticky nw -columnspan 3
+    grid $radio(uncvr) -row 1 -column 0 -sticky nw -columnspan 3 -padx 3
+    grid $radio(cvr) -row 2 -column 0 -sticky nw -columnspan 3 -padx 3
     grid $coverText -row 3 -column 0 -sticky nswe -padx $pad -pady $pad \
 	    -columnspan 2
     grid $butFrm  -row 3 -column 2 -sticky nwe -padx $pad -pady $pad

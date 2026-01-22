@@ -402,7 +402,6 @@ proc sel::widgetSeeCmd {w i} {
 #	None.
 
 proc sel::changeFocus {text focus} {
-    $text tag remove focusIn 1.0 end
     if {$focus eq "in"} {
 	sel::updateCursor $text
     }
@@ -675,8 +674,6 @@ proc sel::updateCursor {text} {
     set start "$::sel::selectCursor($text).0"
     set end   "$start lineend + 1c"
 
-    $text tag remove focusIn 0.0 end
-    $text tag add focusIn $start $end
     sel::widgetSeeCmd $text $start
 }
 
@@ -740,7 +737,7 @@ proc sel::multiLine {text line} {
 
 proc sel::lineRange {text line} {
     set lineList  [sel::getSelectedLines $text]
-    if {$lineList == {}} {
+    if {$lineList eq {}} {
 	sel::line $text $line
 	return
     }
@@ -944,7 +941,7 @@ proc sel::isTagInLine {text index tag} {
 
     set result 0
     set range [lindex [$text tag nextrange $tag $start $end] 0]
-    if {$range != {}} {
+    if {$range ne {}} {
 	# We did get a range for the tag in between the index.  See
 	# if the line number of the range is identical to the line
 	# number of the index.
@@ -1014,7 +1011,7 @@ proc sel::copy {text} {
 	    lappend result [$text get $start $end]
 	}
     }
-    if {$result != {}} {
+    if {$result ne {}} {
     	clipboard clear -displayof $text
 	clipboard append -displayof $text [join $result {}]
     }
@@ -1040,7 +1037,7 @@ proc sel::copy {text} {
 proc sel::scrollPages {w count} {
     set bbox [$w bbox [sel::getCursor $w].0]
     $w yview scroll $count pages
-    if {$bbox == ""} {
+    if {$bbox eq ""} {
 	return [$w index @[expr {[winfo height $w]/2}],0]
     }
     return [$w index @[lindex $bbox 0],[lindex $bbox 1]]

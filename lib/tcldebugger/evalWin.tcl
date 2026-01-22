@@ -76,13 +76,13 @@ proc evalWin::createWindow {} {
 
     # Create the level indicator and combo box.
 
-    set mainFrm [frame $top.mainFrm -bd $bd -relief raised]
+    set mainFrm [frame $top.mainFrm -bd 1 -relief raised]
     set levelFrm [frame $mainFrm.levelFrm]
     set levelLbl [label $levelFrm.levelLbl -text "Stack Level:"]
     set levelCombo [guiUtil::ComboBox $levelFrm.levelCombo -ewidth 8 \
 	    -textvariable ::gui::gui(evalLevelVar) -strict 1 \
 	    -listheight 1 -listwidth 8 -listexportselection 0]
-    set closeBut [button $levelFrm.closeBut -text "Close" -width 10 \
+    set closeBut [ttk::button $levelFrm.closeBut -text "Close" -width 10 \
 	    -command {destroy $::gui::gui(evalDbgWin)}]
     pack $levelLbl -side left
     pack $levelCombo -side left -padx 3
