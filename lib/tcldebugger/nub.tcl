@@ -2798,7 +2798,7 @@ proc DbgNub_AddVarTrace {level name} {
 
     set DbgNub(var:$handle) {}
     set DbgNub(varRefs:$handle) 1
-    trace add variable var wu "DbgNub_TraceVar $handle $type"
+    trace add variable var {write unset} "DbgNub_TraceVar $handle $type"
     return $handle
 }
 
@@ -2958,8 +2958,8 @@ proc DbgNub_TraceVar {handle type name1 name2 op} {
     # Compute the complete name and the correct operation to report
 
     if {$type eq "array"} {
-	if {$name2 ne "" && $op eq "u"} {
-	    set op "w"
+	if {$name2 ne "" && "unset" in $op} {
+	    set op "write"
 	}
 	set name $name1
     } elseif {$name2 eq ""} {
@@ -2971,15 +2971,16 @@ proc DbgNub_TraceVar {handle type name1 name2 op} {
     # Clean up the trace state if the handle is dead.
 
     if {! [DbgNub_infoCmd exists DbgNub(var:$handle)]} {
-	trace remove variable $name wu "DbgNub_TraceVar $handle $type"
+	trace remove variable $name {write unset} \
+       	    "DbgNub_TraceVar $handle $type"
 	return
     }
 
     # If the variable is being written, check to see if we should generate a
     # breakpoint.  Note that we execute all of the tests in case they have side
     # effects that are desired.
-    
-    if {$op ne "u"} {
+
+    if {"unset" ni $op} {
 	set varBreak 0
 	foreach test $DbgNub(var:$handle) {
 	    if {($test eq "")} {
