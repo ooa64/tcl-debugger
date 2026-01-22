@@ -72,7 +72,7 @@ test instrument-2.1 {instrument::initialize, incrTcl 3.0} {
     instrument::extension incrTcl 1
     instrument::initialize 8.0
     foreach {name ver body} $::instrument::incrTclCmds {
-	if {$name == "class" && $ver == "3.0"} {
+	if {$name eq "class" && $ver eq "3.0"} {
 	    break
 	}
     }
@@ -83,7 +83,7 @@ test instrument-2.2 {instrument::initialize, incrTcl 2.2} {
     instrument::extension incrTcl 1
     instrument::initialize 7.6
     foreach {name ver body} $::instrument::incrTclCmds {
-	if {$name == "class" && $ver == "2.0"} {
+	if {$name eq "class" && $ver eq "2.0"} {
 	    break
 	}
     }

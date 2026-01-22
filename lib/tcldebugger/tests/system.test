@@ -22,7 +22,7 @@ namespace eval debugger {
 # Windows files need .exe extensions
 namespace eval system {
     variable exeString
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	set exeString   ".exe"
     } else {
 	set exeString   ""
@@ -53,7 +53,7 @@ test system-1.1 {system::getInterps returns correct tclsh} {skipIfBuild} {
     set interpList [system::getInterps]
     set result $interpList
     foreach interp $interpList {
-	if {[file tail $interp] == $tclTail} {
+	if {[file tail $interp] eq $tclTail} {
 	    set result $interp
 	    break
 	}
@@ -65,7 +65,7 @@ test system-1.2 {system::getInterps returns correct wish} {skipIfBuild} {
     set interpList [system::getInterps]
     set result $interpList
     foreach interp $interpList {
-	if {[file tail $interp] == $tkTail} {
+	if {[file tail $interp] eq $tkTail} {
 	    set result $interp
 	    break
 	}

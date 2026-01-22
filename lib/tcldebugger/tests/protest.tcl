@@ -298,7 +298,7 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
 	    exit 1
 	}
     } else {
-	if {$::tcl_platform(platform) == "windows"} {
+	if {$::tcl_platform(platform) eq "windows"} {
 	    set ::protest::toolsDirectory \
 		    //pop/tools/$::protest::currentVersion(Tools)/${::protest::platform}/bin
 	} else {
@@ -367,13 +367,13 @@ proc ::tcltest::processCmdLineArgsHook {flagArray} {
     }
 
     # Set the DISPLAY environment variable if it doesn't already exist.
-    if {$::tcl_platform(platform) == "unix" && ![info exists ::env(DISPLAY)]} {
+    if {$::tcl_platform(platform) eq "unix" && ![info exists ::env(DISPLAY)]} {
 	set ::env(DISPLAY) weasel:0.0
     }
 
     if {$::tcltest::debug > 1} {
 	puts "::protest::platform = $::protest::platform"
-	if {$::tcl_platform(platform) == "unix"} {
+	if {$::tcl_platform(platform) eq "unix"} {
 	    puts "::env(DISPLAY) = $::env(DISPLAY)"
 	}
     }
@@ -503,7 +503,7 @@ proc ::protest::findExeFile {tool {wrapped 0}} {
     global tcl_platform flag
 
     set filePattern $tool
-    if {$tcl_platform(platform) == "windows"} {
+    if {$tcl_platform(platform) eq "windows"} {
 	# Windows files need .exe extensions
 	set fileTail "$filePattern.exe"
 	# 'd' is appended to root of Windows debug execuatbles
@@ -534,7 +534,7 @@ proc ::protest::findExeFile {tool {wrapped 0}} {
 	if {$::tcltest::debug > 2} {
 	    puts "unwrapped $filePattern --> $file"
 	}
-	if {$tcl_platform(platform) == "windows"} {
+	if {$tcl_platform(platform) eq "windows"} {
 	    regsub {exe$} $file bat file
 	}
 	return "$file"
@@ -548,11 +548,11 @@ proc ::protest::findExeFile {tool {wrapped 0}} {
 proc ::protest::findSoFile {ext index} {
     global tcl_platform
 
-    if {$tcl_platform(platform) == "windows"} {
+    if {$tcl_platform(platform) eq "windows"} {
 	regsub -all {\.} $::protest::currentVersion($index) "" vers
 	return [file join $::protest::executableDirectory $ext$vers.dll]
     } else {
-	if {$tcl_platform(os) == "HP-UX"} {
+	if {$tcl_platform(os) eq "HP-UX"} {
 	    set tail "sl"
 	} else {
 	    set tail "so"
@@ -593,8 +593,8 @@ proc ::protest::getMatchingDirectories {} {
 	    }
 	}
     }
-    if {$::protest::skipDirectories != {}} {
-	set skipDirs {} 
+    if {$::protest::skipDirectories ne {}} {
+	set skipDirs {}
 	foreach skip $::protest::skipDirectories {
 	    set skipDirs [concat $skipDirs \
 		    [glob -nocomplain [file join $::tcltest::testsDirectory \
@@ -609,7 +609,7 @@ proc ::protest::getMatchingDirectories {} {
     } else {
 	set matchingDirs [concat $matchingDirs $matchDirList]
     }
-    if {$matchingDirs == {}} {
+    if {$matchingDirs eq {}} {
 	::tcltest::PrintError "No test directories remain after applying your \
 		match and skip patterns!"
     }
@@ -619,7 +619,7 @@ proc ::protest::getMatchingDirectories {} {
 proc ::protest::resetTestsDirectory {dir} {
     set ::tcltest::testsDirectory $dir
     set oDir [pwd]
-    if {[file tail $::tcltest::testsDirectory] == "tests"} {
+    if {[file tail $::tcltest::testsDirectory] eq "tests"} {
 	cd [file join $::tcltest::testsDirectory .. ..]
     } else {
 	cd [file join $::tcltest::testsDirectory .. .. ..]
@@ -627,8 +627,8 @@ proc ::protest::resetTestsDirectory {dir} {
     set ::protest::workspaceDirectory [pwd]
     cd $oDir
     set ::protest::sourceDirectory [file join \
-	    $::protest::workspaceDirectory tcldebugger] 
-    if {$::protest::installationDirectory == ""} {
+	    $::protest::workspaceDirectory tcldebugger]
+    if {$::protest::installationDirectory eq ""} {
 	set ::protest::executableDirectory [file join \
 		$::protest::workspaceDirectory pro out \
 		$::protest::buildType $::protest::platform \

@@ -1,12 +1,11 @@
 # startup.tcl --
 #
-#	This file is the primary entry point for the 
+#	This file is the primary entry point for the
 #       TclPro Debugger.
 #
 # Copyright (c) 1999-2000 by Ajuba Solutions.
 # Copyright (c) 2017 Forward Folio LLC
 # See the file "license.terms" for information on usage and redistribution of this file.
-# 
 
 # Initialize the debugger library
 
@@ -70,7 +69,7 @@ proc ::TclProAboutBox {aboutImage logoImage} {
 	    -image logo
     pack $f2.logo -side left -anchor nw -padx 0 -pady 0
 
-    set okBut [button $f2.ok -text "OK" -width 6 -default active \
+    set okBut [ttk::button $f2.ok -text "OK" -width 6 -default active \
 	    -command {destroy .about}]
     pack $okBut -side right -anchor se -padx 0 -pady 0
 
@@ -96,7 +95,7 @@ proc ::TclProAboutBox {aboutImage logoImage} {
 
     # Add the Windows-only console hack
 
-    if {$::tcl_platform(platform) == "windows"} {
+    if {$::tcl_platform(platform) eq "windows"} {
 	bind $okBut <F12> {
 	    console show
 	    destroy .about; break

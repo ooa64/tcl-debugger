@@ -22,7 +22,7 @@ namespace eval debugger {
 	    aboutImage [file join $libdir images/about.png] \
 	    aboutCopyright "testing" \
 	    appType local \
-	    iconImage [expr {($::tcl_platform(platform) == "windows") \
+	    iconImage [expr {($::tcl_platform(platform) eq "windows") \
 	        ? "foo" : [file join $libdir images/debugUnixIcon.png]}]\
 	    productName "Debugger"]
 
@@ -40,7 +40,7 @@ foreach file {
     source $file
 }
 
-if {[info procs initProject] == {}} {
+if {[info procs initProject] eq {}} {
     source [file join [pwd] [file dirname [info script]] initProject.tcl]
 }
 
@@ -78,7 +78,7 @@ proc testGui {appScript testScript {setupScript ""}} {
 	# Run the setupScript to set up special project or debugger state,
 	# such as adding bpts.
 
-	if {$setupScript != ""} {
+	if {$setupScript ne ""} {
 	    set result [uplevel 1 $setupScript]
 	}
 
@@ -189,7 +189,7 @@ proc quitGui {} {
 proc eventProc {event cmd args} {
     global Gui_AppStopped
 #    puts "EVENT - $event"
-    if {$cmd != {}} {
+    if {$cmd ne {}} {
 	if {[catch {eval $cmd $args} msg]} {
 	    puts "Error $::errorInfo"
 	}
