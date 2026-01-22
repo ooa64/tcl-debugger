@@ -34,7 +34,7 @@ foreach file {
     source $file
 }
 
-if {[info procs initProject] == {}} {
+if {[info procs initProject] eq {}} {
     source [file join [pwd] [file dirname [info script]] initProject.tcl]
 }
 
@@ -137,7 +137,7 @@ proc testDbg {nubScript testScript {setupScript {}} {exename tclsh}} {
 	# Load the fake project file, extract the app arguments from the
 	# preferences and set the server listening on some random port.
 
-	if {$::tcl_platform(platform) == "windows"} {
+	if {$::tcl_platform(platform) eq "windows"} {
 	    set exeFile ${exename}$::protest::currentVersion(Tcl-short)
 	} else {
 	    set exeFile ${exename}$::protest::currentVersion(Tcl)
