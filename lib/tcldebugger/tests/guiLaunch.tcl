@@ -19,11 +19,11 @@ namespace eval debugger {
     variable libdir [pwd]
     variable parameters
     array set parameters [list \
-	    aboutImage [file join $libdir images/about.gif] \
+	    aboutImage [file join $libdir images/about.png] \
 	    aboutCopyright "testing" \
 	    appType local \
 	    iconImage [expr {($::tcl_platform(platform) == "windows") \
-	        ? "foo" : [file join $libdir images/debugUnixIcon.gif]}]\
+	        ? "foo" : [file join $libdir images/debugUnixIcon.png]}]\
 	    productName "Debugger"]
 
 }

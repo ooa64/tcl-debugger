@@ -49,10 +49,10 @@ namespace eval debugger {
 
     variable parameters
     array set parameters [list \
-	    aboutImage $libdir/images/about.gif \
+	    aboutImage $libdir/images/about.png \
 	    aboutCopyright "$::projectInfo::copyright\nVersion $::projectInfo::patchLevel" \
 	    appType local \
-	    iconImage $libdir/images/debugUnixIcon.gif \
+	    iconImage $libdir/images/debugUnixIcon.png \
 	    productName "$::projectInfo::productName Debugger" \
 	    ]
 

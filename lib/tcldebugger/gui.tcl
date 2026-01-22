@@ -2409,7 +2409,7 @@ proc gui::showAboutWindow {} {
 
     # Create and measure the three images
     set img [image create photo -file $::debugger::parameters(aboutImage)]
-    set img2 [image create photo -file $::debugger::libdir/images/logo.gif]
+    set img2 [image create photo -file $::debugger::libdir/images/logo.png]
     set logoWidth [image width $img2]
     set imageHeight [image height $img]
     set imageWidth  [image width $img]
@@ -2443,8 +2443,8 @@ proc gui::showAboutWindow {} {
 
     set t1Height [expr {[lindex $bbox 3] - [lindex $bbox 1]}]
 
-    # Align the text to the bottom of the splash gif and the right
-    # edge of the logo gif
+    # Align the text to the bottom of the splash png and the right
+    # edge of the logo png
     $c coords $t1 $logoWidth $imageHeight
 
     # Align the url to the bottom left edge of the copyright

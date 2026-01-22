@@ -13,12 +13,12 @@
 # Specify the additional debugger parameters.
 
 set parameters [list \
-	aboutCmd {::TclProAboutBox images/about.gif images/logo.gif} \
+	aboutCmd {::TclProAboutBox images/about.png images/logo.png} \
 	aboutCopyright "(c) Various" \
 	appType remote \
 	]
 
-lappend parameters iconImage images/debugUnixIcon.gif
+lappend parameters iconImage images/debugUnixIcon.png
 
 # ::TclProAboutBox --
 #

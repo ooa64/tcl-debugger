@@ -116,16 +116,16 @@ if {[catch {
     # Specify the additional debugger parameters.
 
     set script_dir [file dirname [file norm [info script]]]
-    set about_gif $script_dir/images/about.gif
-    set logo_gif $script_dir/images/logo.gif
+    set about_png $script_dir/images/about.png
+    set logo_png $script_dir/images/logo.png
 
     set parameters [list \
-                        aboutCmd [list ::TclProAboutBox $about_gif $logo_gif] \
+                        aboutCmd [list ::TclProAboutBox $about_png $logo_png] \
                         aboutCopyright "$::projectInfo::copyright\nVersion $::projectInfo::patchLevel" \
                         appType local \
                        ]
 
-    lappend parameters iconImage $script_dir/images/debugUnixIcon.gif
+    lappend parameters iconImage $script_dir/images/debugUnixIcon.png
 
     debugger::init $argv $parameters
 
